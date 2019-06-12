@@ -1,0 +1,31 @@
+/1.12.2
+/1.14.2-BACKUP1
+/DevAlbum
+/Models
+/src
+
+# eclipse
+1.14.2/bin
+1.14.2/*.launch
+1.14.2/.settings
+1.14.2/.metadata
+1.14.2/.classpath
+1.14.2/.project
+
+# idea
+1.14.2/out
+1.14.2/*.ipr
+1.14.2/*.iws
+1.14.2/*.iml
+1.14.2/.idea
+
+# gradle
+1.14.2/build
+1.14.2/.gradle
+
+# other
+1.14.2/eclipse
+1.14.2/run
+
+# Files from Forge MDK
+1.14.2/forge*changelog.txt
