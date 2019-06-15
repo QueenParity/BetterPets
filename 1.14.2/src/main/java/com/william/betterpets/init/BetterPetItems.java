@@ -25,6 +25,11 @@ public class BetterPetItems
     
     public static Item BETTER_WOLF_SPAWN_EGG;
     
+    public static void add(Item item)
+    {
+        ITEMS.add(item);
+    }
+    
     public static List<Item> getItems()
     {
         return Collections.unmodifiableList(ITEMS);

@@ -1,5 +1,6 @@
 package com.william.betterpets;
 
+import com.william.betterpets.init.BetterPetContainerTypes;
 import com.william.betterpets.network.PacketHandler;
 import com.william.betterpets.proxy.ClientProxy;
 import com.william.betterpets.proxy.IProxy;
@@ -18,40 +19,15 @@ import org.apache.logging.log4j.Logger;
 @Mod(Reference.ID)
 public class BetterPets
 {
-    public static BetterPets instance;
-    public static final Logger logger = LogManager.getLogger(Reference.ID);
+    private static final Logger logger = LogManager.getLogger();
     public static final IProxy PROXY = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
     
     public BetterPets()
     {
-        instance = this;
-        
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientRegistries);
-        //ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY);
     
-        /*ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> {
-        
-            return (OpenContainer) -> {
-            
-                ResourceLocation loc = OpenContainer.getId();
-            
-                if (loc.toString().equals(Reference.ID + ":typecraft_block"))
-                {
-                    EntityPlayerSP player = Minecraft.getInstance().player;
-                    BlockPos pos = OpenContainer.getAdditionalData().readBlockPos();
-                    TileEntity te = player.world.getTileEntity(pos);
-                
-                    if (te instanceof TileEntityTypecraftBlock)
-                    {
-                        return new GuiTypecraftBlock(player.inventory, (TileEntityTypecraftBlock) te);
-                    }
-                }
-                return null;
-            };
-        });*/
-        
-        //MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(this);
     }
     
     private void setup(final FMLCommonSetupEvent event)
@@ -64,6 +40,7 @@ public class BetterPets
     
     private void clientRegistries(final FMLClientSetupEvent event)
     {
+        BetterPetContainerTypes.bindScreens(event);
         logger.info("clientRegistries method registered");
         PROXY.clientRegistries();
     }

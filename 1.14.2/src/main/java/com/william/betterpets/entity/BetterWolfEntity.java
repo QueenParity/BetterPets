@@ -104,7 +104,7 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
         this.goalSelector.addGoal(10, new BetterWolfLookRandomlyGoal(this));
         this.targetSelector.addGoal(1, new OwnerHurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new OwnerHurtTargetGoal(this));
-        this.targetSelector.addGoal(3, (new HurtByTargetGoal(this)).func_220794_a());
+        this.targetSelector.addGoal(3, (new HurtByTargetGoal(this)).setCallsForHelp());
         this.targetSelector.addGoal(4, new NonTamedTargetGoal<>(this, AnimalEntity.class, false, field_213441_bD));
         this.targetSelector.addGoal(4, new NonTamedTargetGoal<>(this, TurtleEntity.class, false, TurtleEntity.TARGET_DRY_BABY));
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, AbstractSkeletonEntity.class, false));
@@ -173,17 +173,20 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
     
     private void initInventory()
     {
-        Inventory original = inventory;
-        inventory = new StorageInventory(17, this);
+        Inventory original = this.inventory;
+        this.inventory = new StorageInventory(17, this);
         // Copies the inventory if it exists already over to the new instance
         if(original != null)
         {
-            for(int i = 0; i < original.getSizeInventory(); i++)
+            original.removeListener(this);
+            int x = Math.min(original.getSizeInventory(), this.inventory.getSizeInventory());
+            
+            for(int i = 0; i < x; ++i)
             {
                 ItemStack stack = original.getStackInSlot(i);
                 if(!stack.isEmpty())
                 {
-                    inventory.setInventorySlotContents(i, stack.copy());
+                    this.inventory.setInventorySlotContents(i, stack.copy());
                 }
             }
         }
@@ -721,13 +724,13 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
     @OnlyIn(Dist.CLIENT)
     public float getShadingWhileWet(float p_70915_1_)
     {
-        return 0.75F + MathHelper.func_219799_g(p_70915_1_, this.prevTimeWolfIsShaking, this.timeWolfIsShaking) / 2.0F * 0.25F;
+        return 0.75F + MathHelper.lerp(p_70915_1_, this.prevTimeWolfIsShaking, this.timeWolfIsShaking) / 2.0F * 0.25F;
     }
     
     @OnlyIn(Dist.CLIENT)
     public float getShakeAngle(float p_70923_1_, float p_70923_2_)
     {
-        float f = (MathHelper.func_219799_g(p_70923_1_, this.prevTimeWolfIsShaking, this.timeWolfIsShaking) + p_70923_2_) / 1.8F;
+        float f = (MathHelper.lerp(p_70923_1_, this.prevTimeWolfIsShaking, this.timeWolfIsShaking) + p_70923_2_) / 1.8F;
         if(f < 0.0F)
         {
             f = 0.0F;
@@ -743,7 +746,7 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
     @OnlyIn(Dist.CLIENT)
     public float getInterestedAngle(float p_70917_1_)
     {
-        return MathHelper.func_219799_g(p_70917_1_, this.headRotationCourseOld, this.headRotationCourse) * 0.15F * (float)Math.PI;
+        return MathHelper.lerp(p_70917_1_, this.headRotationCourseOld, this.headRotationCourse) * 0.15F * (float)Math.PI;
     }
     
     @Override

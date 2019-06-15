@@ -25,9 +25,9 @@ public class BetterWolfAccessoriesLayer<T extends BetterWolfEntity> extends Laye
     }
     
     @Override
-    public void func_212842_a_(T betterWolf, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
+    public void render(T betterWolf, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
-        this.func_215333_a(new ResourceLocation(Reference.ID + ":textures/entity/better_wolf_chest2.png"));
+        this.bindTexture(new ResourceLocation(Reference.ID + ":textures/entity/better_wolf_chest2.png"));
         //this.renderer.bindTexture(new ResourceLocation("minecraft:textures/block/snow.png"));
         
         if(betterWolf.hasChest())

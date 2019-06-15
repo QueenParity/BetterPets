@@ -116,7 +116,7 @@ public class BetterWolfFollowOwnerGoal extends Goal
     @Override
     public void tick()
     {
-        this.betterWolf.getLookHelper().setLookPositionWithEntity(this.betterWolfOwner, 10.0F, (float)this.betterWolf.getVerticalFaceSpeed());
+        this.betterWolf.getLookController().setLookPositionWithEntity(this.betterWolfOwner, 10.0F, (float)this.betterWolf.getVerticalFaceSpeed());
         if(!this.betterWolf.isSitting())
         {
             if(--this.timeToRecalcPath <= 0)

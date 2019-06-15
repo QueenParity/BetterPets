@@ -54,6 +54,6 @@ public class BetterWolfLookRandomlyGoal extends Goal
     public void tick()
     {
         --this.idleTime;
-        this.betterWolf.getLookHelper().func_220679_a(this.betterWolf.posX + this.lookX, this.betterWolf.posY + (double)this.betterWolf.getEyeHeight(), this.betterWolf.posZ + this.lookZ);
+        this.betterWolf.getLookController().func_220679_a(this.betterWolf.posX + this.lookX, this.betterWolf.posY + (double)this.betterWolf.getEyeHeight(), this.betterWolf.posZ + this.lookZ);
     }
 }

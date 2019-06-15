@@ -33,13 +33,13 @@ public class BetterWolfLookAtGoal extends Goal
         this.setMutexFlags(EnumSet.of(Goal.Flag.LOOK));
         if(watchTargetClass == PlayerEntity.class)
         {
-            this.entityPredicate = (new EntityPredicate()).func_221013_a((double)maxDistance).func_221011_b().func_221008_a().func_221009_d().func_221012_a((p_220715_1_) -> {
+            this.entityPredicate = (new EntityPredicate()).setDistance((double)maxDistance).allowFriendlyFire().allowInvulnerable().setSkipAttackChecks().setCustomPredicate((p_220715_1_) -> {
                 return EntityPredicates.notRiding(betterWolf).test(p_220715_1_);
             });
         }
         else
         {
-            this.entityPredicate = (new EntityPredicate()).func_221013_a((double)maxDistance).func_221011_b().func_221008_a().func_221009_d();
+            this.entityPredicate = (new EntityPredicate()).setDistance((double)maxDistance).allowFriendlyFire().allowInvulnerable().setSkipAttackChecks();
         }
     }
     
@@ -133,7 +133,7 @@ public class BetterWolfLookAtGoal extends Goal
     @Override
     public void tick()
     {
-        this.betterWolf.getLookHelper().func_220679_a(this.closestEntity.posX, this.closestEntity.posY + (double)this.closestEntity.getEyeHeight(), this.closestEntity.posZ);
+        this.betterWolf.getLookController().func_220679_a(this.closestEntity.posX, this.closestEntity.posY + (double)this.closestEntity.getEyeHeight(), this.closestEntity.posZ);
         --this.lookTime;
     }
 }

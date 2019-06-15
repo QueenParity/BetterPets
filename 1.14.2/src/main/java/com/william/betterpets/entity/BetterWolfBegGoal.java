@@ -24,7 +24,7 @@ public class BetterWolfBegGoal extends Goal
         this.betterWolf = betterWolf;
         this.world = betterWolf.world;
         this.minPlayerDistance = minDistance;
-        this.entityPredicate = (new EntityPredicate()).func_221013_a((double)minDistance).func_221008_a().func_221011_b().func_221009_d();
+        this.entityPredicate = (new EntityPredicate()).setDistance((double)minDistance).allowInvulnerable().allowFriendlyFire().setSkipAttackChecks();
         this.setMutexFlags(EnumSet.of(Flag.LOOK));
     }
     
@@ -84,7 +84,7 @@ public class BetterWolfBegGoal extends Goal
     @Override
     public void tick()
     {
-        this.betterWolf.getLookHelper().setLookPosition(this.player.posX, this.player.posY + (double)this.player.getEyeHeight(), this.player.posZ, 10.0F, (float)this.betterWolf.getVerticalFaceSpeed());
+        this.betterWolf.getLookController().setLookPosition(this.player.posX, this.player.posY + (double)this.player.getEyeHeight(), this.player.posZ, 10.0F, (float)this.betterWolf.getVerticalFaceSpeed());
         --this.timeoutCounter;
     }
     
