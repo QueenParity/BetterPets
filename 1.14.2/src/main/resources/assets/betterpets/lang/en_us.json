@@ -1,4 +1,6 @@
 {
+  "betterpets.pet_food_info.food_points": "Food Points",
+  "betterpets.pet_food_info.saturation_restored": "Saturation Restored",
   "entity.betterpets.better_wolf": "Better Wolf",
   "item.betterpets.pet_chest": "Pet Chest",
   "item.betterpets.pet_birthday_hat": "Pet Birthday Hat"
