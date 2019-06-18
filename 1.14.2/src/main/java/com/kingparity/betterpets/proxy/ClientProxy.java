@@ -46,7 +46,7 @@ public class ClientProxy implements IProxy
             IPetContainer wrapper = (IPetContainer)entity;
             BetterWolfEntity betterWolf = (BetterWolfEntity)entity;
             BetterWolfContainer petContainer = new BetterWolfContainer(pkt.getWindowId(), player.inventory, wrapper.getInventory(), betterWolf);
-            Minecraft.getInstance().displayGuiScreen(new BetterWolfScreen(petContainer, player.inventory, betterWolf));
+            Minecraft.getInstance().displayGuiScreen(new BetterWolfScreen(petContainer, player.inventory, betterWolf.getDisplayName()));
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.kingparity.betterpets.init;
 
+import com.kingparity.betterpets.gui.container.BetterWolfContainer;
 import com.kingparity.betterpets.gui.container.PetFoodMakerContainer;
+import com.kingparity.betterpets.gui.screen.BetterWolfScreen;
 import com.kingparity.betterpets.gui.screen.PetFoodMakerScreen;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
@@ -24,6 +26,7 @@ public class BetterPetContainerTypes
     private static final List<ContainerType<?>> CONTAINER_TYPES = new ArrayList<>();
     
     public static ContainerType<PetFoodMakerContainer> PET_FOOD_MAKER_CONTAINER;
+    public static ContainerType<BetterWolfContainer> BETTER_WOLF_CONTAINER;
     
     public static List<ContainerType<?>> getContainerTypes()
     {
@@ -34,6 +37,7 @@ public class BetterPetContainerTypes
     public static void addContainerTypes(final RegistryEvent.Register<ContainerType<?>> event)
     {
         PET_FOOD_MAKER_CONTAINER = register("pet_food_maker_container", PetFoodMakerContainer::new);
+        BETTER_WOLF_CONTAINER = register("better_wolf_container", BetterWolfContainer::new);
         
         CONTAINER_TYPES.forEach(container_type -> event.getRegistry().register(container_type));
     }
@@ -41,6 +45,7 @@ public class BetterPetContainerTypes
     public static void bindScreens(FMLClientSetupEvent event)
     {
         bindScreen(PET_FOOD_MAKER_CONTAINER, PetFoodMakerScreen::new);
+        bindScreen(BETTER_WOLF_CONTAINER, BetterWolfScreen::new);
     }
     
     private static <T extends Container> ContainerType<T> register(String name, IContainerFactory<T> container)

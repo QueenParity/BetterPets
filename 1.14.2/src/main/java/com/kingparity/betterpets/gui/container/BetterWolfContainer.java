@@ -1,6 +1,8 @@
 package com.kingparity.betterpets.gui.container;
 
 import com.kingparity.betterpets.entity.BetterWolfEntity;
+import com.kingparity.betterpets.gui.slot.PetChestSlot;
+import com.kingparity.betterpets.init.BetterPetContainerTypes;
 import com.kingparity.betterpets.init.BetterPetItems;
 import com.kingparity.betterpets.util.PetInventory;
 import net.minecraft.entity.player.PlayerEntity;
@@ -8,15 +10,21 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 
 public class BetterWolfContainer extends Container
 {
     private PetInventory wolfInventory;
     private BetterWolfEntity theWolf;
     
+    public BetterWolfContainer(int windowId, PlayerInventory playerInventory, PacketBuffer extraData)
+    {
+        this(windowId, playerInventory, new PetInventory(17, (BetterWolfEntity)(playerInventory.player.world.getEntityByID(extraData.readVarInt()))), (BetterWolfEntity)(playerInventory.player.world.getEntityByID(extraData.readVarInt())));
+    }
+    
     public BetterWolfContainer(int windowId, PlayerInventory playerInventory, PetInventory wolfInventory, final BetterWolfEntity theWolf)
     {
-        super(null, windowId);
+        super(BetterPetContainerTypes.BETTER_WOLF_CONTAINER, windowId);
         this.wolfInventory = wolfInventory;
         this.theWolf = theWolf;
         
@@ -52,14 +60,11 @@ public class BetterWolfContainer extends Container
             }
         });
         
-        if(theWolf.hasChest())
-        {
-            for(int i = 0; i < 3; ++i)
-            {//row
-                for(int j = 0; j < 5; ++j)
-                {//col
-                    this.addSlot(new Slot(wolfInventory, 2 + j + i * 5, 80 + j * 18, 18 + i * 18));
-                }
+        for(int i = 0; i < 3; ++i)
+        {//row
+            for(int j = 0; j < 5; ++j)
+            {//col
+                this.addSlot(new PetChestSlot(theWolf, wolfInventory, 2 + j + i * 5, 80 + j * 18, 18 + i * 18));
             }
         }
         
@@ -146,5 +151,10 @@ public class BetterWolfContainer extends Container
     {
         super.onContainerClosed(playerIn);
         this.wolfInventory.closeInventory(playerIn);
+    }
+    
+    public BetterWolfEntity getTheWolf()
+    {
+        return theWolf;
     }
 }

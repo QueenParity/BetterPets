@@ -1,13 +1,14 @@
 package com.kingparity.betterpets.gui.screen;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.kingparity.betterpets.entity.BetterWolfEntity;
 import com.kingparity.betterpets.gui.container.BetterWolfContainer;
 import com.kingparity.betterpets.util.Reference;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -19,11 +20,11 @@ public class BetterWolfScreen extends ContainerScreen<BetterWolfContainer>
     private float mousePosx;
     private float mousePosy;
     
-    public BetterWolfScreen(BetterWolfContainer container, PlayerInventory playerInventory, BetterWolfEntity theWolf)
+    public BetterWolfScreen(BetterWolfContainer container, PlayerInventory playerInventory, ITextComponent title)
     {
-        super(container, playerInventory, theWolf.getDisplayName());
-        this.theWolf = theWolf;
+        super(container, playerInventory, title);
         this.passEvents = false;
+        this.theWolf = this.getContainer().getTheWolf();
     }
     
     /**

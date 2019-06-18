@@ -1,12 +1,12 @@
 package com.kingparity.betterpets.entity;
 
 import com.kingparity.betterpets.entity.goals.*;
+import com.kingparity.betterpets.gui.container.BetterWolfContainer;
 import com.kingparity.betterpets.init.BetterPetEntities;
 import com.kingparity.betterpets.init.BetterPetItems;
 import com.kingparity.betterpets.item.PetFoodItem;
 import com.kingparity.betterpets.network.PacketHandler;
 import com.kingparity.betterpets.network.message.MessageAttachChest;
-import com.kingparity.betterpets.network.message.MessageOpenPetContainer;
 import com.kingparity.betterpets.network.message.MessageRemoveChest;
 import com.kingparity.betterpets.util.IAttachableChest;
 import com.kingparity.betterpets.util.InventoryUtil;
@@ -24,8 +24,12 @@ import net.minecraft.entity.passive.TurtleEntity;
 import net.minecraft.entity.passive.horse.AbstractHorseEntity;
 import net.minecraft.entity.passive.horse.LlamaEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.inventory.*;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
@@ -36,12 +40,14 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -833,7 +839,27 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
             {
                 if(!this.world.isRemote)
                 {
-                    PacketHandler.sendToServer(new MessageOpenPetContainer(this.getEntityId()));
+                    //PacketHandler.sendToServer(new MessageOpenPetContainer(this.getEntityId()));
+                    ITextComponent displayName = this.getDisplayName();
+                    int entityId = this.getEntityId();
+                    PetInventory petInventory = this.getInventory();
+                    NetworkHooks.openGui((ServerPlayerEntity)player, new INamedContainerProvider()
+                    {
+                        @Override
+                        public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity p_createMenu_3_)
+                        {
+                            return new BetterWolfContainer(windowId, playerInventory, petInventory, (BetterWolfEntity)playerInventory.player.world.getEntityByID(entityId));
+                        }
+    
+                        @Override
+                        public ITextComponent getDisplayName()
+                        {
+                            return displayName;
+                        }
+                    }, extraData -> {
+                        extraData.writeVarInt(entityId);
+                        extraData.writeVarInt(entityId);
+                    });
                 }
                 return true;
             }
