@@ -143,43 +143,41 @@ public class BetterWolfModel<T extends BetterWolfEntity> extends EntityModel<T>
         {*/
         this.tail.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
         //}
-      
-      /*if(betterWolf.isLayingDown())
-      {
-         this.body.setRotationPoint(0.0F, 14.0F, 2.0F);
-         this.body.rotateAngleX = ((float)Math.PI / 2F);
-         this.body.setRotationPoint(0.0F, 14.0F, -2F);
-         this.body.rotateAngleY = -200;
-         this.mane.setRotationPoint(-1.0F, 14.0F, -3.0F);
-         this.mane.rotateAngleX = this.body.rotateAngleX;
-         this.tail.setRotationPoint(-1.0F, 12.0F, 8.0F);
-         this.back_leg_right.setRotationPoint(-2.5F, 22.0F, 2.0F);
-         this.back_leg_right.rotateAngleX = ((float)Math.PI * 3F / 2F);
-         this.back_leg_left.setRotationPoint(0.5F, 22.0F, 2.0F);
-         this.back_leg_left.rotateAngleX = ((float)Math.PI * 3F / 2F);
-         this.front_leg_right.rotateAngleX = 5.811947F;
-         this.front_leg_right.setRotationPoint(-2.49F, 17.0F, -4.0F);
-         this.front_leg_left.rotateAngleX = 5.811947F;
-         this.front_leg_left.setRotationPoint(0.51F, 17.0F, -4.0F);
-         this.tail.setRotationPoint(5.0F, 12.0F, 2.0F);
-         this.tail.rotateAngleY = -174;
-         this.tail.rotateAngleX = -99.6F;
-         this.head.setRotationPoint(0.5F, 13.5F, -8.0F);
-         this.head.rotateAngleY = 100;
-         this.tail.offsetY = 7.5F * 0.0625F;
-         this.head.offsetY = 7.5F * 0.0625F;
-         this.mane.offsetY = 7.5F * 0.0625F;
-         this.body.offsetY = 7.5F * 0.0625F;
-         
-         this.front_leg_left.isHidden = true;
-         this.front_leg_right.isHidden = true;
-         this.back_leg_left.isHidden = true;
-         this.back_leg_right.isHidden = true;
-         
-         this.head.rotateAngleZ = 100;
-      }
-      else */
-        if(betterWolf.isSitting())
+        
+        if(betterWolf.isLayingDown())
+        {
+            this.body.setRotationPoint(0.0F, 14.0F, 2.0F);
+            this.body.rotateAngleX = ((float)Math.PI / 2F);
+            this.body.setRotationPoint(0.0F, 14.0F, -2F);
+            this.body.rotateAngleY = -200;
+            this.mane.setRotationPoint(-1.0F, 14.0F, -3.0F);
+            this.mane.rotateAngleX = this.body.rotateAngleX;
+            this.tail.setRotationPoint(-1.0F, 12.0F, 8.0F);
+            this.back_leg_right.setRotationPoint(-2.5F, 22.0F, 2.0F);
+            this.back_leg_right.rotateAngleX = ((float)Math.PI * 3F / 2F);
+            this.back_leg_left.setRotationPoint(0.5F, 22.0F, 2.0F);
+            this.back_leg_left.rotateAngleX = ((float)Math.PI * 3F / 2F);
+            this.front_leg_right.rotateAngleX = 5.811947F;
+            this.front_leg_right.setRotationPoint(-2.49F, 17.0F, -4.0F);
+            this.front_leg_left.rotateAngleX = 5.811947F;
+            this.front_leg_left.setRotationPoint(0.51F, 17.0F, -4.0F);
+            this.tail.setRotationPoint(5.0F, 12.0F, 2.0F);
+            this.tail.rotateAngleY = -174;
+            this.tail.rotateAngleX = -99.6F;
+            this.head.setRotationPoint(0.5F, 13.5F, -8.0F);
+            this.head.rotateAngleY = 100;
+            this.tail.offsetY = 7.5F * 0.0625F;
+            this.head.offsetY = 7.5F * 0.0625F;
+            this.mane.offsetY = 7.5F * 0.0625F;
+            this.body.offsetY = 7.5F * 0.0625F;
+            
+            this.front_leg_left.isHidden = true;
+            this.front_leg_right.isHidden = true;
+            this.back_leg_left.isHidden = true;
+            this.back_leg_right.isHidden = true;
+            this.head.rotateAngleZ = 100;
+        }
+        else if(betterWolf.isSitting())
         {
             this.mane.setRotationPoint(-1.0F, 16.0F, -3.0F);
             this.mane.rotateAngleX = ((float)Math.PI * 2F / 5F);
