@@ -61,14 +61,28 @@ public class MessageCraftPetFood
                     if(container.getPos().equals(pkt.pos))
                     {
                         PetFoodMakerTileEntity tileEntity = (PetFoodMakerTileEntity)world.getTileEntity(pkt.pos);
+                        
+                        boolean flag = false;
+                        
                         for(int i = 0; i < tileEntity.getSizeInventory(); i++)
                         {
-                            tileEntity.removeStackFromSlot(i);
+                            if(tileEntity.getStackInSlot(i) != ItemStack.EMPTY)
+                            {
+                                flag = true;
+                                break;
+                            }
                         }
-                        PetFoodItem food = BetterPetItems.PET_FOOD;
-                        food.setFoodPoints(pkt.food_points);
-                        food.setSaturationRestored(pkt.saturation);
-                        tileEntity.setInventorySlotContents(0, new ItemStack(food));
+                        if(flag)
+                        {
+                            for(int i = 0; i < tileEntity.getSizeInventory(); i++)
+                            {
+                                tileEntity.removeStackFromSlot(i);
+                            }
+                            PetFoodItem food = BetterPetItems.PET_FOOD;
+                            food.setFoodPoints(pkt.food_points);
+                            food.setSaturationRestored(pkt.saturation);
+                            tileEntity.setInventorySlotContents(0, new ItemStack(food));
+                        }
                     }
                 }
             });
