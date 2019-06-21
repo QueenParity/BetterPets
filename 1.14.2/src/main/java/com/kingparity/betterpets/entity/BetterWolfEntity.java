@@ -94,11 +94,11 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
     @Override
     protected void registerGoals()
     {
-        this.field_70911_d = new SitGoal(this);
+        this.sitGoal = new SitGoal(this);
         this.layDownGoal = new BetterWolfLayDownGoal(this);
         this.sleepGoal = new BetterWolfSleepGoal(this);
         this.goalSelector.addGoal(1, new SwimGoal(this));
-        this.goalSelector.addGoal(2, this.field_70911_d);
+        this.goalSelector.addGoal(2, this.sitGoal);
         this.goalSelector.addGoal(2, this.layDownGoal);
         this.goalSelector.addGoal(2, this.sleepGoal);
         this.goalSelector.addGoal(3, new BetterWolfEntity.AvoidEntityGoal(this, LlamaEntity.class, 24.0F, 1.5D, 1.5D));
@@ -786,9 +786,9 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
         else
         {
             Entity entity = source.getTrueSource();
-            if(this.field_70911_d != null)
+            if(this.sitGoal != null)
             {
-                this.field_70911_d.setSitting(false);
+                this.sitGoal.setSitting(false);
             }
             
             if(entity != null && !(entity instanceof PlayerEntity) && !(entity instanceof AbstractArrowEntity))
@@ -911,21 +911,21 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
             {
                 if(!this.isSitting() && !this.isLayingDown())
                 {
-                    this.field_70911_d.setSitting(true);
+                    this.sitGoal.setSitting(true);
                     this.layDownGoal.setLayingDown(false);
                 }
                 else if(this.isSitting() && !this.isLayingDown())
                 {
-                    this.field_70911_d.setSitting(false);
+                    this.sitGoal.setSitting(false);
                     this.layDownGoal.setLayingDown(true);
                 }
                 else
                 {
-                    this.field_70911_d.setSitting(false);
+                    this.sitGoal.setSitting(false);
                     this.layDownGoal.setLayingDown(false);
                 }
                 this.sleepGoal.setSleeping(false);
-                //this.field_70911_d.setSitting(!this.isSitting());
+                //this.sitGoal.setSitting(!this.isSitting());
                 this.isJumping = false;
                 this.navigator.clearPath();
                 this.setAttackTarget((LivingEntity)null);
@@ -945,7 +945,7 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
                     this.setTamedBy(player);
                     this.navigator.clearPath();
                     this.setAttackTarget(null);
-                    this.field_70911_d.setSitting(true);
+                    this.sitGoal.setSitting(true);
                     this.setHealth(20.0F);
                     this.playTameEffect(true);
                     this.world.setEntityState(this, (byte)7);
