@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = Reference.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class BetterPetTileEntities
 {
     private static final List<TileEntityType<?>> TILE_ENTITY_TYPES = new LinkedList<>();

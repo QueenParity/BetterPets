@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = Reference.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class BetterPetEntities
 {
     public static EntityType<BetterWolfEntity> BETTER_WOLF;
@@ -31,27 +31,27 @@ public class BetterPetEntities
         return Collections.unmodifiableList(ENTITY_TYPES);
     }
     
+    static
+    {
+        BETTER_WOLF = register(BetterWolfEntity::new, EntityClassification.CREATURE, "better_wolf", 0.6F, 0.85F);
+    }
+    
     @SubscribeEvent
     public static void addEntities(final RegistryEvent.Register<EntityType<?>> event)
     {
-        register(BETTER_WOLF = createEntity(BetterWolfEntity::new, EntityClassification.CREATURE, "better_wolf", 0.6F, 0.85F));
         ENTITY_TYPES.forEach(entityType -> event.getRegistry().register(entityType));
     }
     
-    private static <T extends Entity> EntityType<T> createEntity(EntityType.IFactory<T> factory, EntityClassification classification, String name, float width, float height)
+    private static <T extends Entity> EntityType<T> register(EntityType.IFactory<T> factory, EntityClassification classification, String name, float width, float height)
     {
-        return createEntity(factory, classification, name, 256, 1, true, width, height);
+        return register(factory, classification, name, 256, 1, true, width, height);
     }
     
-    private static <T extends Entity> EntityType<T> createEntity(EntityType.IFactory<T> factory, EntityClassification classification, String name, int range, int updateFrequency, boolean sendVelocityUpdates, float width, float height)
+    private static <T extends Entity> EntityType<T> register(EntityType.IFactory<T> factory, EntityClassification classification, String name, int range, int updateFrequency, boolean sendVelocityUpdates, float width, float height)
     {
         EntityType<T> type = EntityType.Builder.create(factory, classification).size(width, height).setTrackingRange(range).setUpdateInterval(updateFrequency).setShouldReceiveVelocityUpdates(sendVelocityUpdates).build(Reference.ID + ":" + name);
         type.setRegistryName(new ResourceLocation(Reference.ID, name));
+        ENTITY_TYPES.add(type);
         return type;
-    }
-    
-    private static void register(EntityType<? extends Entity> entity)
-    {
-        ENTITY_TYPES.add(entity);
     }
 }

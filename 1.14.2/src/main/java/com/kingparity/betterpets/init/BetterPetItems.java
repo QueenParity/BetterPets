@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = Reference.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class BetterPetItems
 {
     private static final List<Item> ITEMS = new LinkedList<>();
@@ -74,14 +74,4 @@ public class BetterPetItems
         ITEMS.add(item);
         return item;
     }
-    
-    /*@Mod.EventBusSubscriber(modid = Reference.ID, value = Side.CLIENT)
-    public static class Models
-    {
-        @SubscribeEvent
-        public static void register(ModelRegistryEvent event)
-        {
-            ITEMS.forEach(item -> ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(Reference.ID + ":" + item.getUnlocalizedName().substring(5), "inventory")));
-        }
-    }*/
 }

@@ -4,6 +4,7 @@ import com.kingparity.betterpets.gui.container.BetterWolfContainer;
 import com.kingparity.betterpets.gui.container.PetFoodMakerContainer;
 import com.kingparity.betterpets.gui.screen.BetterWolfScreen;
 import com.kingparity.betterpets.gui.screen.PetFoodMakerScreen;
+import com.kingparity.betterpets.util.Reference;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.gui.screen.Screen;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = Reference.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class BetterPetContainerTypes
 {
     private static final List<ContainerType<?>> CONTAINER_TYPES = new ArrayList<>();

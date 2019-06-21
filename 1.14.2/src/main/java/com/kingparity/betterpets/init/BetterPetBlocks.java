@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = Reference.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class BetterPetBlocks
 {
     private static final List<Block> BLOCKS = new LinkedList<>();
