@@ -1,6 +1,5 @@
 package com.kingparity.betterpets.gui.screen;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.kingparity.betterpets.gui.GuiImageButton;
 import com.kingparity.betterpets.gui.container.PetFoodMakerContainer;
 import com.kingparity.betterpets.gui.slot.PetFoodMakerInputSlot;
@@ -8,6 +7,7 @@ import com.kingparity.betterpets.network.PacketHandler;
 import com.kingparity.betterpets.network.message.MessageCraftPetFood;
 import com.kingparity.betterpets.util.AllowedPetFood;
 import com.kingparity.betterpets.util.Reference;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;

@@ -1,11 +1,11 @@
 package com.kingparity.betterpets.client.renderer;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.kingparity.betterpets.client.layer.BetterWolfAccessoriesLayer;
 import com.kingparity.betterpets.client.layer.BetterWolfCollarLayer;
 import com.kingparity.betterpets.client.model.BetterWolfModel;
 import com.kingparity.betterpets.entity.BetterWolfEntity;
 import com.kingparity.betterpets.util.Reference;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
