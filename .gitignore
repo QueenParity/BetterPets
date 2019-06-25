@@ -17,6 +17,13 @@
 1.14.2/.classpath
 1.14.2/.project
 
+1.14.3/bin
+1.14.3/*.launch
+1.14.3/.settings
+1.14.3/.metadata
+1.14.3/.classpath
+1.14.3/.project
+
 # idea
 1.14.2/out
 1.14.2/*.ipr
@@ -24,13 +31,27 @@
 1.14.2/*.iml
 1.14.2/.idea
 
+1.14.3/out
+1.14.3/*.ipr
+1.14.3/*.iws
+1.14.3/*.iml
+1.14.3/.idea
+
 # gradle
 1.14.2/build
 1.14.2/.gradle
+
+1.14.3/build
+1.14.3/.gradle
 
 # other
 1.14.2/eclipse
 1.14.2/run
 
+1.14.3/eclipse
+1.14.3/run
+
 # Files from Forge MDK
 1.14.2/forge*changelog.txt
+
+1.14.3/forge*changelog.txt
