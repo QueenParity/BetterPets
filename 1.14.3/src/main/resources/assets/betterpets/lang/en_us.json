@@ -1,0 +1,11 @@
+{
+  "betterpets.pet_food_info.food_points": "Food Points",
+  "betterpets.pet_food_info.saturation_restored": "Saturation Restored",
+  "betterpets.canteen_info.isFiltered": "Is Filtered",
+  "betterpets.canteen_info.liquidAmount": "Liquid Amount",
+  "betterpets.canteen_info.maxLiquid": "Max Liquid",
+  "betterpets.canteen_info.poisonChance": "Poison Chance",
+  "entity.betterpets.better_wolf": "Better Wolf",
+  "item.betterpets.pet_chest": "Pet Chest",
+  "item.betterpets.pet_birthday_hat": "Pet Birthday Hat"
+}

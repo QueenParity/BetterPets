@@ -1,0 +1,81 @@
+{
+    "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
+    "textures": {
+        "light_blue_concrete": "minecraft:block/light_blue_concrete"
+    },
+    "display": {
+        "gui": {
+            "rotation": [ 30, 45, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 0.625, 0.625, 0.625 ]
+        },
+        "ground": {
+            "rotation": [ 0, 0, 0 ],
+            "translation": [ 0, 3, 0 ],
+            "scale": [ 0.25, 0.25, 0.25 ]
+        },
+        "fixed": {
+            "rotation": [ 0, 180, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 1, 1, 1 ]
+        },
+        "head": {
+            "rotation": [ 0, 180, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 1, 1, 1 ]
+        },
+        "firstperson_righthand": {
+            "rotation": [ 0, 315, 0 ],
+            "translation": [ 0, 2.5, 0 ],
+            "scale": [ 0.4, 0.4, 0.4 ]
+        },
+        "thirdperson_righthand": {
+            "rotation": [ 75, 315, 0 ],
+            "translation": [ 0, 2.5, 0 ],
+            "scale": [ 0.375, 0.375, 0.375 ]
+        }
+    },
+    "elements": [
+        {
+            "name": "Cube",
+            "from": [ 3, 0, 3 ], 
+            "to": [ 13, 8, 13 ], 
+            "faces": {
+                "north": { "texture": "#light_blue_concrete", "uv": [ 0, 0, 10, 8 ] },
+                "east": { "texture": "#light_blue_concrete", "uv": [ 0, 0, 10, 8 ] },
+                "south": { "texture": "#light_blue_concrete", "uv": [ 0, 0, 10, 8 ] },
+                "west": { "texture": "#light_blue_concrete", "uv": [ 0, 0, 10, 8 ] },
+                "up": { "texture": "#light_blue_concrete", "uv": [ 0, 0, 10, 10 ] },
+                "down": { "texture": "#light_blue_concrete", "uv": [ 0, 0, 10, 10 ] }
+            }
+        },
+        {
+            "name": "Cube",
+            "from": [ 3.25, 5.929, 0.929 ], 
+            "to": [ 12.75, 13, 8 ], 
+            "rotation": { "origin": [ 8, 13, 8 ], "axis": "x", "angle": -45.0 },
+            "faces": {
+                "north": { "texture": "#light_blue_concrete", "uv": [ 0, 0, 9.5, 7.071 ] },
+                "east": { "texture": "#light_blue_concrete", "uv": [ 0, 0, 7.071, 7.071 ] },
+                "south": { "texture": "#light_blue_concrete", "uv": [ 0, 0, 9.5, 7.071 ] },
+                "west": { "texture": "#light_blue_concrete", "uv": [ 0, 0, 7.071, 7.071 ] },
+                "up": { "texture": "#light_blue_concrete", "uv": [ 0, 0, 9.5, 7.071 ] },
+                "down": { "texture": "#light_blue_concrete", "uv": [ 0, 0, 9.5, 7.071 ] }
+            }
+        },
+        {
+            "name": "Cube",
+            "from": [ 0.929, 5.929, 3.25 ], 
+            "to": [ 8, 13, 12.75 ], 
+            "rotation": { "origin": [ 8, 13, 8 ], "axis": "z", "angle": 45.0 },
+            "faces": {
+                "north": { "texture": "#light_blue_concrete", "uv": [ 0, 0, 7.071, 7.071 ] },
+                "east": { "texture": "#light_blue_concrete", "uv": [ 0, 0, 9.5, 7.071 ] },
+                "south": { "texture": "#light_blue_concrete", "uv": [ 0, 0, 7.071, 7.071 ] },
+                "west": { "texture": "#light_blue_concrete", "uv": [ 0, 0, 9.5, 7.071 ] },
+                "up": { "texture": "#light_blue_concrete", "uv": [ 0, 0, 7.071, 9.5 ] },
+                "down": { "texture": "#light_blue_concrete", "uv": [ 0, 0, 7.071, 9.5 ] }
+            }
+        }
+    ]
+}
