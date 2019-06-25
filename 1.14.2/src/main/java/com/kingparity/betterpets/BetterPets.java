@@ -1,5 +1,6 @@
 package com.kingparity.betterpets;
 
+import com.google.gson.Gson;
 import com.kingparity.betterpets.init.BetterPetContainerTypes;
 import com.kingparity.betterpets.network.PacketHandler;
 import com.kingparity.betterpets.proxy.ClientProxy;
@@ -29,6 +30,8 @@ public class BetterPets
     
         MinecraftForge.EVENT_BUS.register(this);
     }
+    
+    public static Gson gsonInstance = new Gson();
     
     private void setup(final FMLCommonSetupEvent event)
     {

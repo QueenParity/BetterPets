@@ -12,12 +12,12 @@ public class GuiImageButton extends Button
     private int textureU, textureV;
     private int textureWidth, textureHeight;
     
-    public GuiImageButton(int x, int y, int textureU, int textureV, int textureWidth, int textureHeight, ResourceLocation resource, Button.IPressable pressable)
+    public GuiImageButton(int x, int y, int textureU, int textureV, int textureWidth, int textureHeight, ResourceLocation resource, IPressable pressable)
     {
         this(x, y, textureU, textureV, textureWidth, textureHeight, resource, "", pressable);
     }
     
-    public GuiImageButton(int x, int y, int textureU, int textureV, int textureWidth, int textureHeight, ResourceLocation resource, String msg, Button.IPressable pressable)
+    public GuiImageButton(int x, int y, int textureU, int textureV, int textureWidth, int textureHeight, ResourceLocation resource, String msg, IPressable pressable)
     {
         super(x, y, textureWidth + 4, textureHeight + 4, msg, pressable);
         this.resource = resource;

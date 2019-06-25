@@ -5,9 +5,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
-public class PetFoodMakerInputSlot extends Slot
+public class PetResourcesInputSlot extends Slot
 {
-    public PetFoodMakerInputSlot(IInventory inventory, int index, int xPosition, int yPosition)
+    public PetResourcesInputSlot(IInventory inventory, int index, int xPosition, int yPosition)
     {
         super(inventory, index, xPosition, yPosition);
     }

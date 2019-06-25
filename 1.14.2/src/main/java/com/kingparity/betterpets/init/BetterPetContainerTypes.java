@@ -1,9 +1,13 @@
 package com.kingparity.betterpets.init;
 
 import com.kingparity.betterpets.gui.container.BetterWolfContainer;
-import com.kingparity.betterpets.gui.container.PetFoodMakerContainer;
+import com.kingparity.betterpets.gui.container.WaterFilterContainer;
+import com.kingparity.betterpets.gui.container.PetResourcesCrafterContainer;
+import com.kingparity.betterpets.gui.container.WaterCollectorContainer;
 import com.kingparity.betterpets.gui.screen.BetterWolfScreen;
-import com.kingparity.betterpets.gui.screen.PetFoodMakerScreen;
+import com.kingparity.betterpets.gui.screen.WaterFilterScreen;
+import com.kingparity.betterpets.gui.screen.PetResourcesCrafterScreen;
+import com.kingparity.betterpets.gui.screen.WaterCollectorScreen;
 import com.kingparity.betterpets.util.Reference;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
@@ -26,7 +30,9 @@ public class BetterPetContainerTypes
 {
     private static final List<ContainerType<?>> CONTAINER_TYPES = new ArrayList<>();
     
-    public static ContainerType<PetFoodMakerContainer> PET_FOOD_MAKER_CONTAINER;
+    public static ContainerType<PetResourcesCrafterContainer> PET_RESOURCES_CRAFTER_CONTAINER;
+    public static ContainerType<WaterCollectorContainer> WATER_COLLECTOR_CONTAINER;
+    public static ContainerType<WaterFilterContainer> WATER_FILTER_CONTAINER;
     public static ContainerType<BetterWolfContainer> BETTER_WOLF_CONTAINER;
     
     public static List<ContainerType<?>> getContainerTypes()
@@ -37,7 +43,9 @@ public class BetterPetContainerTypes
     @SubscribeEvent
     public static void addContainerTypes(final RegistryEvent.Register<ContainerType<?>> event)
     {
-        PET_FOOD_MAKER_CONTAINER = register("pet_food_maker_container", PetFoodMakerContainer::new);
+        PET_RESOURCES_CRAFTER_CONTAINER = register("pet_resources_crafter_container", PetResourcesCrafterContainer::new);
+        WATER_COLLECTOR_CONTAINER = register("water_collector_container", WaterCollectorContainer::new);
+        WATER_FILTER_CONTAINER = register("water_filter_container", WaterFilterContainer::new);
         BETTER_WOLF_CONTAINER = register("better_wolf_container", BetterWolfContainer::new);
         
         CONTAINER_TYPES.forEach(container_type -> event.getRegistry().register(container_type));
@@ -45,7 +53,9 @@ public class BetterPetContainerTypes
     
     public static void bindScreens(FMLClientSetupEvent event)
     {
-        bindScreen(PET_FOOD_MAKER_CONTAINER, PetFoodMakerScreen::new);
+        bindScreen(PET_RESOURCES_CRAFTER_CONTAINER, PetResourcesCrafterScreen::new);
+        bindScreen(WATER_COLLECTOR_CONTAINER, WaterCollectorScreen::new);
+        bindScreen(WATER_FILTER_CONTAINER, WaterFilterScreen::new);
         bindScreen(BETTER_WOLF_CONTAINER, BetterWolfScreen::new);
     }
     

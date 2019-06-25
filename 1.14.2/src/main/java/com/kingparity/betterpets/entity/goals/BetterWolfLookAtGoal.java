@@ -71,11 +71,11 @@ public class BetterWolfLookAtGoal extends Goal
             
             if(this.watchedClass == PlayerEntity.class)
             {
-                this.closestEntity = this.betterWolf.world.func_217372_a(this.entityPredicate, this.betterWolf, this.betterWolf.posX, this.betterWolf.posY + (double)this.betterWolf.getEyeHeight(), this.betterWolf.posZ);
+                this.closestEntity = this.betterWolf.world.getClosestPlayer(this.entityPredicate, this.betterWolf, this.betterWolf.posX, this.betterWolf.posY + (double)this.betterWolf.getEyeHeight(), this.betterWolf.posZ);
             }
             else
             {
-                this.closestEntity = this.betterWolf.world.func_217360_a(this.watchedClass, this.entityPredicate, this.betterWolf, this.betterWolf.posX, this.betterWolf.posY + (double)this.betterWolf.getEyeHeight(), this.betterWolf.posZ, this.betterWolf.getBoundingBox().grow((double)this.maxDistance, 3.0D, (double)this.maxDistance));
+                this.closestEntity = this.betterWolf.world.getClosestEntityWithinAABB(this.watchedClass, this.entityPredicate, this.betterWolf, this.betterWolf.posX, this.betterWolf.posY + (double)this.betterWolf.getEyeHeight(), this.betterWolf.posZ, this.betterWolf.getBoundingBox().grow((double)this.maxDistance, 3.0D, (double)this.maxDistance));
             }
             
             return this.closestEntity != null;

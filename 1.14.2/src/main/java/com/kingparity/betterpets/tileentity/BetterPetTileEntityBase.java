@@ -1,32 +1,33 @@
 package com.kingparity.betterpets.tileentity;
 
-import com.kingparity.betterpets.gui.container.PetFoodMakerContainer;
-import com.kingparity.betterpets.init.BetterPetTileEntities;
+import com.kingparity.betterpets.init.BetterPetItems;
+import com.kingparity.betterpets.item.CanteenItem;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.LockableLootTileEntity;
+import net.minecraft.tileentity.LockableTileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
 
-public class PetFoodMakerTileEntity extends LockableLootTileEntity implements IInventory
+public abstract class BetterPetTileEntityBase extends LockableTileEntity implements IInventory
 {
-    public static int slotNum = 7;
-    protected NonNullList<ItemStack> inventory = NonNullList.withSize(slotNum, ItemStack.EMPTY);
+    private final String ID;
+    protected NonNullList<ItemStack> inventory;
     protected ITextComponent customName;
     
-    public PetFoodMakerTileEntity()
+    public BetterPetTileEntityBase(TileEntityType<?> tileEntityType, String id, int inventorySize)
     {
-        super(BetterPetTileEntities.PET_FOOD_MAKER_TILE_ENTITY);
+        super(tileEntityType);
+        this.ID = id;
+        this.inventory = NonNullList.withSize(inventorySize, ItemStack.EMPTY);
     }
     
     @Override
@@ -38,7 +39,7 @@ public class PetFoodMakerTileEntity extends LockableLootTileEntity implements II
     @Override
     protected ITextComponent getDefaultName()
     {
-        return new TranslationTextComponent("container.pet_food_maker");
+        return new TranslationTextComponent("container." + ID);
     }
     
     @Override
@@ -61,7 +62,7 @@ public class PetFoodMakerTileEntity extends LockableLootTileEntity implements II
     @Override
     public int getSizeInventory()
     {
-        return slotNum;
+        return inventory.size();
     }
     
     @Override
@@ -143,7 +144,18 @@ public class PetFoodMakerTileEntity extends LockableLootTileEntity implements II
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack)
     {
-        return true;
+        if(index == 0)
+        {
+            return stack.getItem() instanceof CanteenItem;
+        }
+        else if(index == 1)
+        {
+            return stack.getItem() == BetterPetItems.WATER_FILTER_FABRIC;
+        }
+        else
+        {
+            return false;
+        }
     }
     
     @Override
@@ -190,30 +202,12 @@ public class PetFoodMakerTileEntity extends LockableLootTileEntity implements II
     @Override
     public SUpdateTileEntityPacket getUpdatePacket()
     {
-        return new SUpdateTileEntityPacket(pos, slotNum, this.write(new CompoundNBT()));
+        return new SUpdateTileEntityPacket(pos, inventory.size(), this.write(new CompoundNBT()));
     }
     
     @Override
     public CompoundNBT getUpdateTag()
     {
         return this.write(new CompoundNBT());
-    }
-    
-    @Override
-    protected NonNullList<ItemStack> getItems()
-    {
-        return inventory;
-    }
-    
-    @Override
-    protected void setItems(NonNullList<ItemStack> itemsIn)
-    {
-        this.inventory = itemsIn;
-    }
-    
-    @Override
-    protected Container createMenu(int id, PlayerInventory inventory)
-    {
-        return new PetFoodMakerContainer(id, inventory, this, this.pos);
     }
 }

@@ -2,7 +2,7 @@ package com.kingparity.betterpets.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.kingparity.betterpets.tileentity.PetFoodMakerTileEntity;
+import com.kingparity.betterpets.tileentity.PetResourcesCrafterTileEntity;
 import com.kingparity.betterpets.util.VoxelShapeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -26,7 +26,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PetFoodMakerBlock extends DirectionalBlock// implements IWaterLoggable
+public class PetResourcesCrafterBlock extends DirectionalBlock// implements IWaterLoggable
 {
     public static final VoxelShape NS_FRONT = Block.makeCuboidShape(0, 0, 0, 16, 16, 4);
     public static final VoxelShape NS_MIDDLE = Block.makeCuboidShape(2, 2, 4, 14, 14, 12);
@@ -42,7 +42,7 @@ public class PetFoodMakerBlock extends DirectionalBlock// implements IWaterLogga
     
     public final ImmutableMap<BlockState, VoxelShape> SHAPES;
     
-    public PetFoodMakerBlock(Block block)
+    public PetResourcesCrafterBlock(Block block)
     {
         super(Block.Properties.from(block));
         this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH));
@@ -115,7 +115,7 @@ public class PetFoodMakerBlock extends DirectionalBlock// implements IWaterLogga
     {
         if(!world.isRemote)
         {
-            NetworkHooks.openGui((ServerPlayerEntity)player, (PetFoodMakerTileEntity)world.getTileEntity(pos), pos);
+            NetworkHooks.openGui((ServerPlayerEntity)player, (PetResourcesCrafterTileEntity)world.getTileEntity(pos), pos);
         }
         return true;
     }
@@ -123,7 +123,7 @@ public class PetFoodMakerBlock extends DirectionalBlock// implements IWaterLogga
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world)
     {
-        return new PetFoodMakerTileEntity();
+        return new PetResourcesCrafterTileEntity();
     }
     
     @Override

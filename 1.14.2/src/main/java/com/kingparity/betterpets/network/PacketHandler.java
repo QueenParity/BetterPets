@@ -29,6 +29,8 @@ public class PacketHandler
         HANDLER.registerMessage(3, MessageOpenPetContainer.class, MessageOpenPetContainer::encode, MessageOpenPetContainer::decode, MessageOpenPetContainer.Handler::handle);
         HANDLER.registerMessage(4, MessagePetWindow.class, MessagePetWindow::encode, MessagePetWindow::decode, MessagePetWindow.Handler::handle);
         HANDLER.registerMessage(5, MessageCraftPetFood.class, MessageCraftPetFood::encode, MessageCraftPetFood::decode, MessageCraftPetFood.Handler::handle);
+        HANDLER.registerMessage(6, MessageThirstStats.class, MessageThirstStats::encode, MessageThirstStats::decode, MessageThirstStats.Handler::handle);
+        HANDLER.registerMessage(7, MessageMovementSpeed.class, MessageMovementSpeed::encode, MessageMovementSpeed::decode, MessageMovementSpeed.Handler::handle);
     }
     
     /**

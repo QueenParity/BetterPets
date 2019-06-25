@@ -1,7 +1,10 @@
 package com.kingparity.betterpets.init;
 
-import com.kingparity.betterpets.block.PetFoodMakerBlock;
+import com.kingparity.betterpets.block.PetResourcesCrafterBlock;
 import com.kingparity.betterpets.block.PropertiesBlock;
+import com.kingparity.betterpets.block.WaterCollectorBlock;
+import com.kingparity.betterpets.block.WaterFilterBlock;
+import com.kingparity.betterpets.tank.TankBlock;
 import com.kingparity.betterpets.util.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -30,14 +33,19 @@ public class BetterPetBlocks
     
     public static Item.Properties tabMisc = new Item.Properties().group(ItemGroup.MISC);
     
-    public static Block PET_FOOD_MAKER;
+    public static Block PET_RESOURCES_CRAFTER, WATER_COLLECTOR, WATER_FILTER, TANK;
     
-    private static final Block PET_FOOD_MAKER_PROPERTIES = new PropertiesBlock(Material.IRON, MaterialColor.BLACK, 5.0F, 10.0F);
+    private static final Block PET_RESOURCES_CRAFTER_PROPERTIES = new PropertiesBlock(Material.IRON, MaterialColor.BLACK, 5.0F, 10.0F);
+    private static final Block WATER_COLLECTOR_PROPERTIES = new PropertiesBlock(Material.IRON, MaterialColor.BLACK, 5.0F, 10.0F);
+    private static final Block WATER_FILTER_PROPERTIES = new PropertiesBlock(Material.IRON, MaterialColor.BLACK, 5.0F, 10.0F);
     
     @SubscribeEvent
     public static void addBlocks(final RegistryEvent.Register<Block> event)
     {
-        PET_FOOD_MAKER = register("pet_food_maker", new PetFoodMakerBlock(PET_FOOD_MAKER_PROPERTIES), tabMisc);
+        PET_RESOURCES_CRAFTER = register("pet_resources_crafter", new PetResourcesCrafterBlock(PET_RESOURCES_CRAFTER_PROPERTIES), tabMisc);
+        WATER_COLLECTOR = register("water_collector", new WaterCollectorBlock(WATER_COLLECTOR_PROPERTIES), tabMisc);
+        WATER_FILTER = register("water_filter", new WaterFilterBlock(WATER_FILTER_PROPERTIES), tabMisc);
+        TANK = register("tank", new TankBlock(WATER_FILTER_PROPERTIES), tabMisc);
         
         BLOCKS.forEach(item -> event.getRegistry().register(item));
     }

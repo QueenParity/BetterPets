@@ -1,6 +1,9 @@
 package com.kingparity.betterpets.init;
 
-import com.kingparity.betterpets.tileentity.PetFoodMakerTileEntity;
+import com.kingparity.betterpets.tank.TankTile;
+import com.kingparity.betterpets.tileentity.WaterFilterTileEntity;
+import com.kingparity.betterpets.tileentity.PetResourcesCrafterTileEntity;
+import com.kingparity.betterpets.tileentity.WaterCollectorTileEntity;
 import com.kingparity.betterpets.util.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
@@ -20,7 +23,10 @@ public class BetterPetTileEntities
 {
     private static final List<TileEntityType<?>> TILE_ENTITY_TYPES = new LinkedList<>();
     
-    public static TileEntityType<PetFoodMakerTileEntity> PET_FOOD_MAKER_TILE_ENTITY;
+    public static TileEntityType<PetResourcesCrafterTileEntity> PET_RESOURCES_CRAFTER_TILE_ENTITY;
+    public static TileEntityType<WaterCollectorTileEntity> WATER_COLLECTOR_TILE_ENTITY;
+    public static TileEntityType<WaterFilterTileEntity> WATER_FILTER_TILE_ENTITY;
+    public static TileEntityType<TankTile> TANK_TILE_ENTITY;
     
     public static List<TileEntityType<?>> getTileEntityTypes()
     {
@@ -30,7 +36,10 @@ public class BetterPetTileEntities
     @SubscribeEvent
     public static void addTileEntityTypes(final RegistryEvent.Register<TileEntityType<?>> event)
     {
-        PET_FOOD_MAKER_TILE_ENTITY = register("pet_food_maker_tile_entity", PetFoodMakerTileEntity::new, BetterPetBlocks.PET_FOOD_MAKER);
+        PET_RESOURCES_CRAFTER_TILE_ENTITY = register("pet_resources_crafter_tile_entity", PetResourcesCrafterTileEntity::new, BetterPetBlocks.PET_RESOURCES_CRAFTER);
+        WATER_COLLECTOR_TILE_ENTITY = register("water_collector_tile_entity", WaterCollectorTileEntity::new, BetterPetBlocks.WATER_COLLECTOR);
+        WATER_FILTER_TILE_ENTITY = register("water_filter_tile_entity", WaterFilterTileEntity::new, BetterPetBlocks.WATER_FILTER);
+        TANK_TILE_ENTITY = register("tank_tile_entity", TankTile::new, BetterPetBlocks.TANK);
         
         TILE_ENTITY_TYPES.forEach(tile_entity_type -> event.getRegistry().register(tile_entity_type));
     }

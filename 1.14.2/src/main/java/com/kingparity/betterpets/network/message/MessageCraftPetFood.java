@@ -1,9 +1,9 @@
 package com.kingparity.betterpets.network.message;
 
-import com.kingparity.betterpets.gui.container.PetFoodMakerContainer;
+import com.kingparity.betterpets.gui.container.PetResourcesCrafterContainer;
 import com.kingparity.betterpets.init.BetterPetItems;
 import com.kingparity.betterpets.item.PetFoodItem;
-import com.kingparity.betterpets.tileentity.PetFoodMakerTileEntity;
+import com.kingparity.betterpets.tileentity.PetResourcesCrafterTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -55,12 +55,12 @@ public class MessageCraftPetFood
             ctx.get().enqueueWork(() -> {
                 PlayerEntity player = ctx.get().getSender();
                 World world = player.world;
-                if(player.openContainer instanceof PetFoodMakerContainer)
+                if(player.openContainer instanceof PetResourcesCrafterContainer)
                 {
-                    PetFoodMakerContainer container = (PetFoodMakerContainer)player.openContainer;
+                    PetResourcesCrafterContainer container = (PetResourcesCrafterContainer)player.openContainer;
                     if(container.getPos().equals(pkt.pos))
                     {
-                        PetFoodMakerTileEntity tileEntity = (PetFoodMakerTileEntity)world.getTileEntity(pkt.pos);
+                        PetResourcesCrafterTileEntity tileEntity = (PetResourcesCrafterTileEntity)world.getTileEntity(pkt.pos);
                         
                         boolean flag = false;
                         

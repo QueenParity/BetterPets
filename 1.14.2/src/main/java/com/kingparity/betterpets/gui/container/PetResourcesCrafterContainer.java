@@ -1,9 +1,9 @@
 package com.kingparity.betterpets.gui.container;
 
-import com.kingparity.betterpets.gui.slot.PetFoodMakerInputSlot;
-import com.kingparity.betterpets.gui.slot.PetFoodMakerResultSlot;
+import com.kingparity.betterpets.gui.slot.PetResourcesInputSlot;
+import com.kingparity.betterpets.gui.slot.BetterPetResultSlot;
 import com.kingparity.betterpets.init.BetterPetContainerTypes;
-import com.kingparity.betterpets.tileentity.PetFoodMakerTileEntity;
+import com.kingparity.betterpets.tileentity.PetResourcesCrafterTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
@@ -14,31 +14,31 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 
-public class PetFoodMakerContainer extends Container
+public class PetResourcesCrafterContainer extends Container
 {
     private final IInventory inventory;
     private BlockPos pos;
     
-    public PetFoodMakerContainer(int windowId, PlayerInventory playerInventory, PacketBuffer extraData)
+    public PetResourcesCrafterContainer(int windowId, PlayerInventory playerInventory, PacketBuffer extraData)
     {
-        this(windowId, playerInventory, new Inventory(PetFoodMakerTileEntity.slotNum), extraData.readBlockPos());
+        this(windowId, playerInventory, new Inventory(PetResourcesCrafterTileEntity.slotNum), extraData.readBlockPos());
     }
     
-    public PetFoodMakerContainer(int windowId, PlayerInventory playerInventory, IInventory inventory, BlockPos pos)
+    public PetResourcesCrafterContainer(int windowId, PlayerInventory playerInventory, IInventory inventory, BlockPos pos)
     {
-        super(BetterPetContainerTypes.PET_FOOD_MAKER_CONTAINER, windowId);
-        assertInventorySize(inventory, PetFoodMakerTileEntity.slotNum);
+        super(BetterPetContainerTypes.PET_RESOURCES_CRAFTER_CONTAINER, windowId);
+        assertInventorySize(inventory, PetResourcesCrafterTileEntity.slotNum);
         this.inventory = inventory;
         this.pos = pos;
         inventory.openInventory(playerInventory.player);
     
-        this.addSlot(new PetFoodMakerResultSlot(inventory, 0, 145, 39));
+        this.addSlot(new BetterPetResultSlot(inventory, 0, 145, 39));
         
         for(int i = 0; i < 3; ++i)
         {
             for(int j = 0; j < 2; ++j)
             {
-                this.addSlot(new PetFoodMakerInputSlot(inventory, 1 + j + i * 2, 81 + j * 18, 21 + i * 18));
+                this.addSlot(new PetResourcesInputSlot(inventory, 1 + j + i * 2, 81 + j * 18, 21 + i * 18));
             }
         }
         
@@ -78,14 +78,14 @@ public class PetFoodMakerContainer extends Container
         {
             ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy();
-            if(index < PetFoodMakerTileEntity.slotNum)
+            if(index < PetResourcesCrafterTileEntity.slotNum)
             {
-                if(!this.mergeItemStack(itemstack1, PetFoodMakerTileEntity.slotNum, 45, true))
+                if(!this.mergeItemStack(itemstack1, PetResourcesCrafterTileEntity.slotNum, 45, true))
                 {
                     return ItemStack.EMPTY;
                 }
             }
-            else if(!this.mergeItemStack(itemstack1, 0, PetFoodMakerTileEntity.slotNum, false))
+            else if(!this.mergeItemStack(itemstack1, 0, PetResourcesCrafterTileEntity.slotNum, false))
             {
                 return ItemStack.EMPTY;
             }

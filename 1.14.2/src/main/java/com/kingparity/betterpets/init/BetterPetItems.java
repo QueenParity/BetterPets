@@ -1,5 +1,6 @@
 package com.kingparity.betterpets.init;
 
+import com.kingparity.betterpets.item.CanteenItem;
 import com.kingparity.betterpets.item.PetFoodItem;
 import com.kingparity.betterpets.util.Reference;
 import net.minecraft.entity.EntityType;
@@ -26,6 +27,10 @@ public class BetterPetItems
     
     public static PetFoodItem PET_FOOD;
     
+    public static CanteenItem CANTEEN;
+    
+    public static Item WATER_FILTER_FABRIC;
+    
     public static Item BETTER_WOLF_SPAWN_EGG;
     
     public static void add(Item item)
@@ -45,6 +50,10 @@ public class BetterPetItems
         PET_BIRTHDAY_HAT = register("pet_birthday_hat", tabMisc);
     
         PET_FOOD = registerPetFood("pet_food", new PetFoodItem(new Item.Properties()));
+    
+        CANTEEN = registerCup("canteen", new CanteenItem(new Item.Properties()));
+        
+        WATER_FILTER_FABRIC = register("water_filter_fabric", tabMisc);
         
         BETTER_WOLF_SPAWN_EGG = registerSpawnEgg("better_wolf_spawn_egg", BetterPetEntities.BETTER_WOLF, 14144467, 13545366, tabMisc);
         
@@ -54,6 +63,13 @@ public class BetterPetItems
     private static Item register(String name, Item.Properties builder)
     {
         return register(name, new Item(builder));
+    }
+    
+    private static CanteenItem registerCup(String name, CanteenItem item)
+    {
+        item.setRegistryName(new ResourceLocation(Reference.ID, name));
+        ITEMS.add(item);
+        return item;
     }
     
     private static Item registerSpawnEgg(String name, EntityType entity, int primary, int secondary, Item.Properties builder)

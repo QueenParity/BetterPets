@@ -35,7 +35,7 @@ public class BetterWolfBegGoal extends Goal
     @Override
     public boolean shouldExecute()
     {
-        this.player = this.world.func_217370_a(this.entityPredicate, this.betterWolf);
+        this.player = this.world.getClosestPlayer(this.entityPredicate, this.betterWolf);
         return this.player != null && this.hasTemptationItemInHand(this.player);
     }
     

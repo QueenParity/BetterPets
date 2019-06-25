@@ -1,8 +1,8 @@
 package com.kingparity.betterpets.gui.screen;
 
 import com.kingparity.betterpets.gui.GuiImageButton;
-import com.kingparity.betterpets.gui.container.PetFoodMakerContainer;
-import com.kingparity.betterpets.gui.slot.PetFoodMakerInputSlot;
+import com.kingparity.betterpets.gui.container.PetResourcesCrafterContainer;
+import com.kingparity.betterpets.gui.slot.PetResourcesInputSlot;
 import com.kingparity.betterpets.network.PacketHandler;
 import com.kingparity.betterpets.network.message.MessageCraftPetFood;
 import com.kingparity.betterpets.util.AllowedPetFood;
@@ -15,15 +15,15 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class PetFoodMakerScreen extends ContainerScreen<PetFoodMakerContainer>
+public class PetResourcesCrafterScreen extends ContainerScreen<PetResourcesCrafterContainer>
 {
-    private static final ResourceLocation GUI_TEXTURES = new ResourceLocation(Reference.ID + ":textures/gui/pet_food_maker.png");
-    private static final ResourceLocation BUTTON_TEXTURES = new ResourceLocation(Reference.ID + ":textures/gui/pet_food_maker_buttons.png");
+    private static final ResourceLocation GUI_TEXTURES = new ResourceLocation(Reference.ID + ":textures/gui/pet_resources_crafter.png");
+    private static final ResourceLocation BUTTON_TEXTURES = new ResourceLocation(Reference.ID + ":textures/gui/pet_resources_crafter_buttons.png");
     private static final ResourceLocation BAR_TEXTURES = new ResourceLocation(Reference.ID + ":textures/gui/bar.png");
     
     private int food_points, saturation, effectiveness;
     
-    public PetFoodMakerScreen(PetFoodMakerContainer container, PlayerInventory playerInventory, ITextComponent title)
+    public PetResourcesCrafterScreen(PetResourcesCrafterContainer container, PlayerInventory playerInventory, ITextComponent title)
     {
         super(container, playerInventory, title);
         this.food_points = 0;
@@ -96,9 +96,9 @@ public class PetFoodMakerScreen extends ContainerScreen<PetFoodMakerContainer>
         int x = 0;
         for(Slot slot : this.getContainer().inventorySlots)
         {
-            if(slot instanceof PetFoodMakerInputSlot)
+            if(slot instanceof PetResourcesInputSlot)
             {
-                PetFoodMakerInputSlot inputSlot = (PetFoodMakerInputSlot)slot;
+                PetResourcesInputSlot inputSlot = (PetResourcesInputSlot)slot;
                 for(AllowedPetFood food : AllowedPetFood.values())
                 {
                     if(food.getItem() == inputSlot.getStack().getItem())
@@ -144,9 +144,9 @@ public class PetFoodMakerScreen extends ContainerScreen<PetFoodMakerContainer>
         int y = 0;
         for(Slot slot : this.getContainer().inventorySlots)
         {
-            if(slot instanceof PetFoodMakerInputSlot)
+            if(slot instanceof PetResourcesInputSlot)
             {
-                PetFoodMakerInputSlot inputSlot = (PetFoodMakerInputSlot)slot;
+                PetResourcesInputSlot inputSlot = (PetResourcesInputSlot)slot;
                 for(AllowedPetFood food : AllowedPetFood.values())
                 {
                     if(food.getItem() == inputSlot.getStack().getItem())
@@ -183,9 +183,9 @@ public class PetFoodMakerScreen extends ContainerScreen<PetFoodMakerContainer>
         int z = 0;
         for(Slot slot : this.getContainer().inventorySlots)
         {
-            if(slot instanceof PetFoodMakerInputSlot)
+            if(slot instanceof PetResourcesInputSlot)
             {
-                PetFoodMakerInputSlot inputSlot = (PetFoodMakerInputSlot)slot;
+                PetResourcesInputSlot inputSlot = (PetResourcesInputSlot)slot;
                 for(AllowedPetFood food : AllowedPetFood.values())
                 {
                     if(food.getItem() == inputSlot.getStack().getItem())
