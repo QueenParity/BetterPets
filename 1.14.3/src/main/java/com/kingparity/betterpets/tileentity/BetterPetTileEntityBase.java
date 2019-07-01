@@ -1,7 +1,5 @@
 package com.kingparity.betterpets.tileentity;
 
-import com.kingparity.betterpets.init.BetterPetItems;
-import com.kingparity.betterpets.item.CanteenItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -144,18 +142,7 @@ public abstract class BetterPetTileEntityBase extends LockableTileEntity impleme
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack)
     {
-        if(index == 0)
-        {
-            return stack.getItem() instanceof CanteenItem;
-        }
-        else if(index == 1)
-        {
-            return stack.getItem() == BetterPetItems.WATER_FILTER_FABRIC;
-        }
-        else
-        {
-            return false;
-        }
+        return true;
     }
     
     @Override

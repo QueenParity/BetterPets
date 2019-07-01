@@ -3,13 +3,15 @@ package com.kingparity.betterpets.proxy;
 import com.kingparity.betterpets.ThirstStats;
 import com.kingparity.betterpets.client.ClientEvents;
 import com.kingparity.betterpets.client.KeyBinds;
-import com.kingparity.betterpets.client.renderer.BetterWolfRenderer;
+import com.kingparity.betterpets.client.renderer.entity.BetterWolfRenderer;
+import com.kingparity.betterpets.client.renderer.tileentity.WaterCollectorTESR;
+import com.kingparity.betterpets.client.renderer.tileentity.WaterFilterTESR;
 import com.kingparity.betterpets.entity.BetterWolfEntity;
 import com.kingparity.betterpets.gui.container.BetterWolfContainer;
 import com.kingparity.betterpets.gui.screen.BetterWolfScreen;
 import com.kingparity.betterpets.network.message.MessagePetWindow;
-import com.kingparity.betterpets.tank.TankTESR;
-import com.kingparity.betterpets.tank.TankTile;
+import com.kingparity.betterpets.tileentity.WaterCollectorTileEntity;
+import com.kingparity.betterpets.tileentity.WaterFilterTileEntity;
 import com.kingparity.betterpets.util.IPetContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -37,7 +39,8 @@ public class ClientProxy implements IProxy
         
         RenderingRegistry.registerEntityRenderingHandler(BetterWolfEntity.class, BetterWolfRenderer::new);
     
-        ClientRegistry.bindTileEntitySpecialRenderer(TankTile.class, new TankTESR());
+        ClientRegistry.bindTileEntitySpecialRenderer(WaterCollectorTileEntity.class, new WaterCollectorTESR());
+        ClientRegistry.bindTileEntitySpecialRenderer(WaterFilterTileEntity.class, new WaterFilterTESR());
         
         KeyBinds.register();
     }

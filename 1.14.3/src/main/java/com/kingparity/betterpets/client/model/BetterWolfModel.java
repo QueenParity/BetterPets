@@ -104,10 +104,10 @@ public class BetterWolfModel<T extends BetterWolfEntity> extends EntityModel<T>
      * Sets the models various rotation angles then renders the model.
      */
     @Override
-    public void func_78088_a(T betterWolf, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale)
+    public void render(T betterWolf, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
-        super.func_78088_a(betterWolf, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-        this.func_212844_a_(betterWolf, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+        super.render(betterWolf, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+        this.setRotationAngles(betterWolf, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
         front_leg_left.render(scale);
         front_leg_right.render(scale);
         back_leg_left.render(scale);
@@ -133,7 +133,7 @@ public class BetterWolfModel<T extends BetterWolfEntity> extends EntityModel<T>
      * and third as in the func_212844_a_ method.
      */
     @Override
-    public void func_212843_a_(T betterWolf, float limbSwing, float limbSwingAmount, float partialTickTime)
+    public void setLivingAnimations(T betterWolf, float limbSwing, float limbSwingAmount, float partialTickTime)
     {
         /*if (betterWolf.isAngry())
         {
@@ -255,9 +255,9 @@ public class BetterWolfModel<T extends BetterWolfEntity> extends EntityModel<T>
      * "far" arms and legs can swing at most.
      */
     @Override
-    public void func_212844_a_(T betterWolf, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor)
+    public void setRotationAngles(T betterWolf, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor)
     {
-        super.func_212844_a_(betterWolf, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
+        super.setRotationAngles(betterWolf, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
         this.head.rotateAngleX = headPitch * 0.017453292F;
         this.head.rotateAngleY = netHeadYaw * 0.017453292F;
         this.tail.rotateAngleX = ageInTicks;

@@ -20,13 +20,13 @@ public class WaterCollectorContainer extends Container
     
     public WaterCollectorContainer(int windowId, PlayerInventory playerInventory, PacketBuffer extraData)
     {
-        this(windowId, playerInventory, new Inventory(WaterCollectorTileEntity.slotNum), extraData.readBlockPos());
+        this(windowId, playerInventory, new Inventory(5000), extraData.readBlockPos());
     }
     
     public WaterCollectorContainer(int windowId, PlayerInventory playerInventory, IInventory inventory, BlockPos pos)
     {
         super(BetterPetContainerTypes.WATER_COLLECTOR_CONTAINER, windowId);
-        assertInventorySize(inventory, WaterCollectorTileEntity.slotNum);
+        assertInventorySize(inventory, 5000);
         this.inventory = inventory;
         this.pos = pos;
         inventory.openInventory(playerInventory.player);
@@ -71,12 +71,12 @@ public class WaterCollectorContainer extends Container
             itemstack = itemstack1.copy();
             if(index == 0)
             {
-                if(!this.mergeItemStack(itemstack1, WaterCollectorTileEntity.slotNum, 37, true))
+                if(!this.mergeItemStack(itemstack1, 5000, 37, true))
                 {
                     return ItemStack.EMPTY;
                 }
             }
-            else if(!this.mergeItemStack(itemstack1, 0, WaterCollectorTileEntity.slotNum, false))
+            else if(!this.mergeItemStack(itemstack1, 0, 5000, false))
             {
                 return ItemStack.EMPTY;
             }

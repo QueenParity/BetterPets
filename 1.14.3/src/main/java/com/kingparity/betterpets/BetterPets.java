@@ -1,6 +1,7 @@
 package com.kingparity.betterpets;
 
 import com.google.gson.Gson;
+import com.kingparity.betterpets.common.CommonEvents;
 import com.kingparity.betterpets.init.BetterPetContainerTypes;
 import com.kingparity.betterpets.network.PacketHandler;
 import com.kingparity.betterpets.proxy.ClientProxy;
@@ -35,7 +36,10 @@ public class BetterPets
     
     private void setup(final FMLCommonSetupEvent event)
     {
-        DeferredWorkQueue.runLater(PacketHandler::register);
+        DeferredWorkQueue.runLater(() -> {
+            PacketHandler.register();
+            MinecraftForge.EVENT_BUS.register(new CommonEvents());
+        });
         
         logger.info("Setup method registered");
         PROXY.setup();

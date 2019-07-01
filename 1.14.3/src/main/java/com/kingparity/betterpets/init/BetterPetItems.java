@@ -19,10 +19,6 @@ import java.util.List;
 @Mod.EventBusSubscriber(modid = Reference.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class BetterPetItems
 {
-    private static final List<Item> ITEMS = new LinkedList<>();
-    
-    public static Item.Properties tabMisc = new Item.Properties().group(ItemGroup.MISC);
-    
     public static Item PET_CHEST, PET_BIRTHDAY_HAT;
     
     public static PetFoodItem PET_FOOD;
@@ -32,6 +28,12 @@ public class BetterPetItems
     public static Item WATER_FILTER_FABRIC;
     
     public static Item BETTER_WOLF_SPAWN_EGG;
+    
+    public static Item FLUID_TUBE, FLUID_TUBE_CONNECTING;
+    
+    public static Item.Properties tabMisc = new Item.Properties().group(ItemGroup.MISC);
+    
+    private static final List<Item> ITEMS = new LinkedList<>();
     
     public static void add(Item item)
     {
@@ -43,20 +45,26 @@ public class BetterPetItems
         return Collections.unmodifiableList(ITEMS);
     }
     
-    @SubscribeEvent
-    public static void addItems(final RegistryEvent.Register<Item> event)
+    static
     {
         PET_CHEST = register("pet_chest", tabMisc);
         PET_BIRTHDAY_HAT = register("pet_birthday_hat", tabMisc);
-    
+        
         PET_FOOD = registerPetFood("pet_food", new PetFoodItem(new Item.Properties()));
     
         CANTEEN = registerCup("canteen", new CanteenItem(new Item.Properties()));
-        
+    
         WATER_FILTER_FABRIC = register("water_filter_fabric", tabMisc);
-        
+    
         BETTER_WOLF_SPAWN_EGG = registerSpawnEgg("better_wolf_spawn_egg", BetterPetEntities.BETTER_WOLF, 14144467, 13545366, tabMisc);
         
+        FLUID_TUBE = register("fluid_tube", tabMisc);
+        FLUID_TUBE_CONNECTING = register("fluid_tube_connecting", new Item.Properties());
+    }
+    
+    @SubscribeEvent
+    public static void registerItems(final RegistryEvent.Register<Item> event)
+    {
         ITEMS.forEach(item -> event.getRegistry().register(item));
     }
     

@@ -4,7 +4,6 @@ import com.kingparity.betterpets.block.PetResourcesCrafterBlock;
 import com.kingparity.betterpets.block.PropertiesBlock;
 import com.kingparity.betterpets.block.WaterCollectorBlock;
 import com.kingparity.betterpets.block.WaterFilterBlock;
-import com.kingparity.betterpets.tank.TankBlock;
 import com.kingparity.betterpets.util.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -24,6 +23,14 @@ import java.util.List;
 @Mod.EventBusSubscriber(modid = Reference.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class BetterPetBlocks
 {
+    public static Block PET_RESOURCES_CRAFTER, WATER_COLLECTOR, WATER_FILTER;
+    
+    public static Item.Properties tabMisc = new Item.Properties().group(ItemGroup.MISC);
+    
+    private static final Block PET_RESOURCES_CRAFTER_PROPERTIES = new PropertiesBlock(Material.IRON, MaterialColor.BLACK, 5.0F, 10.0F);
+    private static final Block WATER_COLLECTOR_PROPERTIES = new PropertiesBlock(Material.IRON, MaterialColor.BLACK, 5.0F, 10.0F);
+    private static final Block WATER_FILTER_PROPERTIES = new PropertiesBlock(Material.IRON, MaterialColor.BLACK, 5.0F, 10.0F);
+    
     private static final List<Block> BLOCKS = new LinkedList<>();
     
     public static List<Block> getBlocks()
@@ -31,22 +38,16 @@ public class BetterPetBlocks
         return Collections.unmodifiableList(BLOCKS);
     }
     
-    public static Item.Properties tabMisc = new Item.Properties().group(ItemGroup.MISC);
-    
-    public static Block PET_RESOURCES_CRAFTER, WATER_COLLECTOR, WATER_FILTER, TANK;
-    
-    private static final Block PET_RESOURCES_CRAFTER_PROPERTIES = new PropertiesBlock(Material.IRON, MaterialColor.BLACK, 5.0F, 10.0F);
-    private static final Block WATER_COLLECTOR_PROPERTIES = new PropertiesBlock(Material.IRON, MaterialColor.BLACK, 5.0F, 10.0F);
-    private static final Block WATER_FILTER_PROPERTIES = new PropertiesBlock(Material.IRON, MaterialColor.BLACK, 5.0F, 10.0F);
-    
-    @SubscribeEvent
-    public static void addBlocks(final RegistryEvent.Register<Block> event)
+    static
     {
         PET_RESOURCES_CRAFTER = register("pet_resources_crafter", new PetResourcesCrafterBlock(PET_RESOURCES_CRAFTER_PROPERTIES), tabMisc);
         WATER_COLLECTOR = register("water_collector", new WaterCollectorBlock(WATER_COLLECTOR_PROPERTIES), tabMisc);
         WATER_FILTER = register("water_filter", new WaterFilterBlock(WATER_FILTER_PROPERTIES), tabMisc);
-        TANK = register("tank", new TankBlock(WATER_FILTER_PROPERTIES), tabMisc);
-        
+    }
+    
+    @SubscribeEvent
+    public static void registerBlocks(final RegistryEvent.Register<Block> event)
+    {
         BLOCKS.forEach(item -> event.getRegistry().register(item));
     }
     

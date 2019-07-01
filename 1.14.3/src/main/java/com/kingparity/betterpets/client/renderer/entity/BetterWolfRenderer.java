@@ -1,4 +1,4 @@
-package com.kingparity.betterpets.client.renderer;
+package com.kingparity.betterpets.client.renderer.entity;
 
 import com.kingparity.betterpets.client.layer.BetterWolfAccessoriesLayer;
 import com.kingparity.betterpets.client.layer.BetterWolfCollarLayer;
@@ -31,7 +31,7 @@ public class BetterWolfRenderer extends MobRenderer<BetterWolfEntity, BetterWolf
      * Defines what float the third param in setRotationAngles of ModelBase is
      */
     @Override
-    protected float func_77044_a(BetterWolfEntity betterWolf, float partialTicks)
+    protected float handleRotationFloat(BetterWolfEntity betterWolf, float partialTicks)
     {
         return betterWolf.getTailRotation();
     }
@@ -40,7 +40,7 @@ public class BetterWolfRenderer extends MobRenderer<BetterWolfEntity, BetterWolf
      * Renders the desired {@code T} type Entity.
      */
     @Override
-    public void func_76986_a(BetterWolfEntity betterWolf, double x, double y, double z, float entityYaw, float partialTicks)
+    public void doRender(BetterWolfEntity betterWolf, double x, double y, double z, float entityYaw, float partialTicks)
     {
         if(betterWolf.isWolfWet())
         {
@@ -48,14 +48,14 @@ public class BetterWolfRenderer extends MobRenderer<BetterWolfEntity, BetterWolf
             GlStateManager.color3f(f, f, f);
         }
         
-        super.func_76986_a(betterWolf, x, y, z, entityYaw, partialTicks);
+        super.doRender(betterWolf, x, y, z, entityYaw, partialTicks);
     }
     
     /**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
     @Override
-    protected ResourceLocation func_110775_a(BetterWolfEntity betterWolf)
+    protected ResourceLocation getEntityTexture(BetterWolfEntity betterWolf)
     {
         if(betterWolf.isTamed())
         {

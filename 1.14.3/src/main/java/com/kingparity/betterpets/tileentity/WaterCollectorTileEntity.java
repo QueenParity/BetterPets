@@ -1,100 +1,276 @@
 package com.kingparity.betterpets.tileentity;
 
-import com.kingparity.betterpets.gui.container.WaterCollectorContainer;
+import com.kingparity.betterpets.common.CommonEvents;
 import com.kingparity.betterpets.init.BetterPetTileEntities;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.ServerWorld;
+import net.minecraft.world.chunk.ChunkManager;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
-public class WaterCollectorTileEntity extends BetterPetTileEntityBase
+public class WaterCollectorTileEntity extends TileEntity implements ITickableTileEntity
 {
-    public static final int MAX_CONTENTS = 10000; //1 bucket = 1000 contents; this is 10 buckets
+    public final int MAX_CONTENTS = 12000;       // 12 buckets
+    
+    private int fluidAmount = 0;
+    private int tubingEntityId;
+    private BlockPos tubingTileEntityPos;
+    private PlayerEntity tubingEntity;
     
     public WaterCollectorTileEntity()
     {
-        super(BetterPetTileEntities.WATER_COLLECTOR_TILE_ENTITY, "water_collector", slotNum);
+        super(BetterPetTileEntities.WATER_COLLECTOR_TILE_ENTITY);
     }
     
-    private FluidTank tank = new FluidTank(MAX_CONTENTS)
+    public void fillTank()
     {
-        @Override
-        protected void onContentsChanged()
+        fluidAmount = MAX_CONTENTS;
+        syncToClient();
+    }
+    
+    public boolean addFluid(int amount)
+    {
+        if(fluidAmount + amount <= MAX_CONTENTS)
         {
-            BlockState state = world.getBlockState(pos);
-            world.notifyBlockUpdate(pos, state, state, 3);
-            markDirty();
+            fluidAmount += amount;
+            syncToClient();
+            return true;
         }
-    };
+        return false;
+    }
     
-    public static int slotNum = 3;
-    
-    @Override
-    public CompoundNBT getUpdateTag()
+    public boolean removeFluid(int amount)
     {
-        CompoundNBT nbtTag = super.getUpdateTag();
-        CompoundNBT tankNBT = new CompoundNBT();
-        tank.writeToNBT(tankNBT);
-        nbtTag.put("tank", tankNBT);
-        return nbtTag;
+        if(fluidAmount >= amount)
+        {
+            fluidAmount -= amount;
+            syncToClient();
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean hasFluid()
+    {
+        return fluidAmount != 0;
+    }
+    
+    public int getCapacity()
+    {
+        return MAX_CONTENTS;
+    }
+    
+    public int getFluidAmount()
+    {
+        return fluidAmount;
+    }
+    
+    public ResourceLocation getStill()
+    {
+        return new ResourceLocation("block/water_still");
+    }
+    
+    public ResourceLocation getFlowing()
+    {
+        return new ResourceLocation("block/water_flow");
+    }
+    
+    public PlayerEntity getTubingEntity()
+    {
+        return tubingEntity;
+    }
+    
+    @Nullable
+    public BlockPos getTubingTileEntityBlockPos()
+    {
+        return tubingTileEntityPos;
+    }
+    
+    public void setTubingEntity(@Nullable PlayerEntity entity)
+    {
+        if(!world.isRemote)
+        {
+            if(tubingEntity != null)
+            {
+                tubingEntity.getDataManager().set(CommonEvents.WATER_COLLECTOR, Optional.empty());
+            }
+            this.tubingEntity = null;
+            this.tubingEntityId = -1;
+            if(entity != null)
+            {
+                this.tubingEntityId = entity.getEntityId();
+                entity.getDataManager().set(CommonEvents.WATER_COLLECTOR, Optional.ofNullable(this.getPos()));
+            }
+            this.syncToClient();
+        }
+    }
+    
+    @Nullable
+    public void setTubingTileEntityPos(BlockPos tubingTileEntityPos)
+    {
+        this.tubingTileEntityPos = tubingTileEntityPos;
+        this.syncToClient();
     }
     
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket()
+    public void tick()
     {
-        return new SUpdateTileEntityPacket(pos, 1, getUpdateTag());
-    }
-    
-    @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt)
-    {
-        tank.readFromNBT(pkt.getNbtCompound().getCompound("tank"));
+        if(tubingEntityId != -1)
+        {
+            if(tubingEntity == null)
+            {
+                Entity entity = world.getEntityByID(tubingEntityId);
+                if(entity instanceof PlayerEntity)
+                {
+                    tubingEntity = (PlayerEntity)entity;
+                }
+                else if(!world.isRemote)
+                {
+                    tubingEntityId = -1;
+                    this.syncToClient();
+                }
+            }
+        }
+        else if(world.isRemote && tubingEntity != null)
+        {
+            tubingEntity = null;
+        }
+        
+        if(!world.isRemote)
+        {
+            if(tubingEntity != null)
+            {
+                if(Math.sqrt(tubingEntity.getDistanceSq(this.getPos().getX(), this.getPos().getY(), this.getPos().getZ())) > 6.0 || !tubingEntity.isAlive())
+                {
+                    if(tubingEntity.isAlive())
+                    {
+                        world.playSound(null, tubingEntity.getPosition(), SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                    }
+                    tubingEntity.getDataManager().set(CommonEvents.WATER_COLLECTOR, Optional.empty());
+                    tubingEntityId = -1;
+                    tubingEntity = null;
+                    this.syncToClient();
+                    //TODO add breaking sound
+                }
+            }
+            
+            if(fluidAmount < MAX_CONTENTS)
+            {
+                if(world.isRaining())
+                {
+                    if(world.rand.nextInt(20) == 1)
+                    {
+                        float temperature = world.getBiome(pos).getTemperature(pos);
+                        if(!(temperature < 0.15F))
+                        {
+                            if(world.isThundering())
+                            {
+                                temperature += 1.0F;
+                            }
+                            if(!this.addFluid(Math.round(500 * temperature)))
+                            {
+                                this.fillTank();
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
     
     @Override
     public void read(CompoundNBT compound)
     {
         super.read(compound);
-        tank.readFromNBT(compound.getCompound("tank"));
+        if(compound.contains("FluidAmount", Constants.NBT.TAG_INT))
+        {
+            this.fluidAmount = compound.getInt("FluidAmount");
+        }
+        if(compound.contains("TubingEntityId", Constants.NBT.TAG_INT))
+        {
+            this.tubingEntityId = compound.getInt("TubingEntityId");
+        }
+        if(compound.contains("TubingTileEntityPos", Constants.NBT.TAG_COMPOUND))
+        {
+            this.tubingTileEntityPos = NBTUtil.readBlockPos(compound.getCompound("TubingTileEntityPos"));
+        }
     }
     
     @Override
     public CompoundNBT write(CompoundNBT compound)
     {
-        CompoundNBT tankNBT = new CompoundNBT();
-        tank.writeToNBT(tankNBT);
-        compound.put("tank", tankNBT);
-        return super.write(compound);
+        super.write(compound);
+        compound.putInt("FluidAmount", fluidAmount);
+        if(tubingTileEntityPos != null)
+        {
+            compound.put("TubingTileEntityPos", NBTUtil.writeBlockPos(this.tubingTileEntityPos));
+        }
+        return compound;
     }
     
-    public FluidTank getTank()
+    @Override
+    public CompoundNBT getUpdateTag()
     {
-        return tank;
+        CompoundNBT compound = write(new CompoundNBT());
+        compound.putInt("TubingEntityId", this.tubingEntityId);
+        return compound;
+    }
+    
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public double getMaxRenderDistanceSquared()
+    {
+        return 3536.0D;
+    }
+    
+    public void syncToClient()
+    {
+        this.markDirty();
+        if(!world.isRemote)
+        {
+            if(world instanceof ServerWorld)
+            {
+                ServerWorld server = (ServerWorld)world;
+                ChunkPos chunkPos = new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4);
+                ChunkManager manager = (server.getChunkProvider()).chunkManager;
+                if(manager != null)
+                {
+                    SUpdateTileEntityPacket packet = getUpdatePacket();
+                    if(packet != null)
+                    {
+                        manager.getTrackingPlayers(chunkPos, false).forEach(e -> e.connection.sendPacket(packet));
+                    }
+                }
+            }
+        }
     }
     
     @Nullable
     @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing)
+    public SUpdateTileEntityPacket getUpdatePacket()
     {
-        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-        {
-            return LazyOptional.of(() -> (T) tank);
-        }
-        return super.getCapability(capability, facing);
+        return new SUpdateTileEntityPacket(getPos(), 0, getUpdateTag());
     }
     
     @Override
-    protected Container createMenu(int id, PlayerInventory inventory)
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet)
     {
-        return new WaterCollectorContainer(id, inventory, this, this.pos);
+        read(packet.getNbtCompound());
     }
 }

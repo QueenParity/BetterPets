@@ -37,7 +37,7 @@ public class BetterPetEntities
     }
     
     @SubscribeEvent
-    public static void addEntities(final RegistryEvent.Register<EntityType<?>> event)
+    public static void registerEntities(final RegistryEvent.Register<EntityType<?>> event)
     {
         ENTITY_TYPES.forEach(entityType -> event.getRegistry().register(entityType));
     }

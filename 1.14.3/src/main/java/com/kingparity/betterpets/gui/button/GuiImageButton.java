@@ -1,4 +1,4 @@
-package com.kingparity.betterpets.gui;
+package com.kingparity.betterpets.gui.button;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
@@ -44,7 +44,7 @@ public class GuiImageButton extends Button
         Minecraft mc = Minecraft.getInstance();
         if(this.visible)
         {
-            FontRenderer fontrenderer = mc.fontRenderer;
+            //FontRenderer fontrenderer = mc.fontRenderer;
             mc.getTextureManager().bindTexture(resource);
             GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             this.isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;

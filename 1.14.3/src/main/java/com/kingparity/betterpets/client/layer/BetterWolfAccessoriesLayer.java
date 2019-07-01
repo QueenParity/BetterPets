@@ -25,7 +25,7 @@ public class BetterWolfAccessoriesLayer<T extends BetterWolfEntity> extends Laye
     }
     
     @Override
-    public void func_212842_a_(T betterWolf, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
+    public void render(T betterWolf, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
         this.bindTexture(new ResourceLocation(Reference.ID + ":textures/entity/better_wolf_chest2.png"));
         //this.renderer.bindTexture(new ResourceLocation("minecraft:textures/block/snow.png"));
@@ -33,16 +33,16 @@ public class BetterWolfAccessoriesLayer<T extends BetterWolfEntity> extends Laye
         if(betterWolf.hasChest())
         {
             this.chest = new BetterWolfModelChest<>();
-            this.chest.func_212843_a_(betterWolf, limbSwing, limbSwingAmount, partialTicks);
+            this.chest.setLivingAnimations(betterWolf, limbSwing, limbSwingAmount, partialTicks);
             GlStateManager.color4f(1, 1, 1, 1);
-            this.chest.func_78088_a(betterWolf, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+            this.chest.render(betterWolf, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
         }
         if(betterWolf.getHatItem().getItem() == BetterPetItems.PET_BIRTHDAY_HAT)
         {
             this.hat = new BetterWolfModelHat<>();
-            this.hat.func_212843_a_(betterWolf, limbSwing, limbSwingAmount, partialTicks);
+            this.hat.setLivingAnimations(betterWolf, limbSwing, limbSwingAmount, partialTicks);
             GlStateManager.color4f(1, 1, 1, 1);
-            this.hat.func_78088_a(betterWolf, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+            this.hat.render(betterWolf, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
         }
     }
     

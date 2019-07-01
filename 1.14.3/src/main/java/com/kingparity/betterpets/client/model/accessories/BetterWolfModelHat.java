@@ -37,9 +37,9 @@ public class BetterWolfModelHat<T extends BetterWolfEntity> extends BetterWolfMo
     }
     
     @Override
-    public void func_212843_a_(T betterWolf, float limbSwing, float limbSwingAmount, float partialTickTime)
+    public void setLivingAnimations(T betterWolf, float limbSwing, float limbSwingAmount, float partialTickTime)
     {
-        super.func_212843_a_(betterWolf, limbSwing, limbSwingAmount, partialTickTime);
+        super.setLivingAnimations(betterWolf, limbSwing, limbSwingAmount, partialTickTime);
         if(betterWolf.isLayingDown())
         {
             /*hat.rotateAngleX = 0.0F * 0.0625F;
@@ -65,8 +65,8 @@ public class BetterWolfModelHat<T extends BetterWolfEntity> extends BetterWolfMo
     }
     
     @Override
-    public void func_212844_a_(T betterWolf, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor)
+    public void setRotationAngles(T betterWolf, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor)
     {
-        super.func_212844_a_(betterWolf, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
+        super.setRotationAngles(betterWolf, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
     }
 }

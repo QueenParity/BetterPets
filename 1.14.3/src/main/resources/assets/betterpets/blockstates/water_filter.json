@@ -1,7 +1,7 @@
 {
     "forge_marker": 1,
 	"defaults": {
-		"model": "betterpets:water_collector"
+		"model": "betterpets:water_filter"
 	},
 	"variants": {
         "facing": {

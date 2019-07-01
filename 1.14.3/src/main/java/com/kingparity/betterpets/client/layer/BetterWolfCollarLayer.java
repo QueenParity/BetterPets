@@ -20,14 +20,14 @@ public class BetterWolfCollarLayer extends LayerRenderer<BetterWolfEntity, Bette
     }
     
     @Override
-    public void func_212842_a_(BetterWolfEntity betterWolf, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
+    public void render(BetterWolfEntity betterWolf, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
         if(betterWolf.isTamed() && !betterWolf.isInvisible())
         {
             this.bindTexture(WOLF_COLLAR);
             float[] afloat = betterWolf.getCollarColor().getColorComponentValues();
             GlStateManager.color3f(afloat[0], afloat[1], afloat[2]);
-            this.getEntityModel().func_78088_a(betterWolf, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+            this.getEntityModel().render(betterWolf, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
         }
     }
     

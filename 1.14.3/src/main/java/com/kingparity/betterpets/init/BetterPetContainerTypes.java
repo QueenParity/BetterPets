@@ -28,26 +28,29 @@ import java.util.List;
 @Mod.EventBusSubscriber(modid = Reference.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class BetterPetContainerTypes
 {
-    private static final List<ContainerType<?>> CONTAINER_TYPES = new ArrayList<>();
-    
     public static ContainerType<PetResourcesCrafterContainer> PET_RESOURCES_CRAFTER_CONTAINER;
     public static ContainerType<WaterCollectorContainer> WATER_COLLECTOR_CONTAINER;
     public static ContainerType<WaterFilterContainer> WATER_FILTER_CONTAINER;
     public static ContainerType<BetterWolfContainer> BETTER_WOLF_CONTAINER;
+    
+    private static final List<ContainerType<?>> CONTAINER_TYPES = new ArrayList<>();
     
     public static List<ContainerType<?>> getContainerTypes()
     {
         return Collections.unmodifiableList(CONTAINER_TYPES);
     }
     
-    @SubscribeEvent
-    public static void addContainerTypes(final RegistryEvent.Register<ContainerType<?>> event)
+    static
     {
         PET_RESOURCES_CRAFTER_CONTAINER = register("pet_resources_crafter_container", PetResourcesCrafterContainer::new);
         WATER_COLLECTOR_CONTAINER = register("water_collector_container", WaterCollectorContainer::new);
         WATER_FILTER_CONTAINER = register("water_filter_container", WaterFilterContainer::new);
         BETTER_WOLF_CONTAINER = register("better_wolf_container", BetterWolfContainer::new);
-        
+    }
+    
+    @SubscribeEvent
+    public static void registerContainerTypes(final RegistryEvent.Register<ContainerType<?>> event)
+    {
         CONTAINER_TYPES.forEach(container_type -> event.getRegistry().register(container_type));
     }
     

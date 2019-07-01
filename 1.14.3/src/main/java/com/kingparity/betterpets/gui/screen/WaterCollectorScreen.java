@@ -1,7 +1,6 @@
 package com.kingparity.betterpets.gui.screen;
 
 import com.kingparity.betterpets.gui.container.WaterCollectorContainer;
-import com.kingparity.betterpets.tileentity.WaterCollectorTileEntity;
 import com.kingparity.betterpets.util.FluidUtils;
 import com.kingparity.betterpets.util.Reference;
 import com.mojang.blaze3d.platform.GlStateManager;

@@ -22,13 +22,13 @@ public class WaterFilterContainer extends Container
     
     public WaterFilterContainer(int windowId, PlayerInventory playerInventory, PacketBuffer extraData)
     {
-        this(windowId, playerInventory, new Inventory(WaterFilterTileEntity.slotNum), extraData.readBlockPos());
+        this(windowId, playerInventory, new Inventory(5000), extraData.readBlockPos());
     }
     
     public WaterFilterContainer(int windowId, PlayerInventory playerInventory, IInventory inventory, BlockPos pos)
     {
         super(BetterPetContainerTypes.WATER_FILTER_CONTAINER, windowId);
-        assertInventorySize(inventory, WaterFilterTileEntity.slotNum);
+        assertInventorySize(inventory, 5000);
         this.inventory = inventory;
         this.pos = pos;
         inventory.openInventory(playerInventory.player);
@@ -36,7 +36,7 @@ public class WaterFilterContainer extends Container
         this.addSlot(new WaterFilterCanteenSlot(inventory, 0, 56, 17));
         this.addSlot(new WaterFilterFabricSlot(inventory, 1, 56, 53));
         this.addSlot(new BetterPetResultSlot(inventory, 2, 116, 35));
-    
+        
         for(int k = 0; k < 3; ++k)
         {
             for(int i1 = 0; i1 < 9; ++i1)
@@ -75,7 +75,7 @@ public class WaterFilterContainer extends Container
             stack = slotStack.copy();
             if(index == 0 || index == 1 || index == 2)
             {
-                if(!this.mergeItemStack(slotStack, WaterFilterTileEntity.slotNum, 39, true))
+                if(!this.mergeItemStack(slotStack, 5000, 39, true))
                 {
                     return ItemStack.EMPTY;
                 }
@@ -83,40 +83,40 @@ public class WaterFilterContainer extends Container
             else if(index > 2)
             {
                 WaterFilterTileEntity tileEntity = (WaterFilterTileEntity)player.world.getTileEntity(pos);
-                if(tileEntity.isItemValidForSlot(2, slotStack))
+                /*if(tileEntity.isItemValidForSlot(2, slotStack))
                 {
-                    if(!this.mergeItemStack(slotStack, 2, WaterFilterTileEntity.slotNum, false))
+                    if(!this.mergeItemStack(slotStack, 2, 5000, false))
                     {
                         return ItemStack.EMPTY;
                     }
                 }
                 else if(tileEntity.isItemValidForSlot(1, slotStack))
                 {
-                    if(!this.mergeItemStack(slotStack, 1, WaterFilterTileEntity.slotNum - 1, false))
+                    if(!this.mergeItemStack(slotStack, 1, 5000 - 1, false))
                     {
                         return ItemStack.EMPTY;
                     }
                 }
                 else if(tileEntity.isItemValidForSlot(0, slotStack))
                 {
-                    if(!this.mergeItemStack(slotStack, 0, WaterFilterTileEntity.slotNum - 2, false))
+                    if(!this.mergeItemStack(slotStack, 0, 5000 - 2, false))
                     {
                         return ItemStack.EMPTY;
                     }
                 }
-                else if(index >= WaterFilterTileEntity.slotNum && index < 30)
+                else */if(index >= 5000 && index < 30)
                 {
                     if(!this.mergeItemStack(slotStack, 30, 39, false))
                     {
                         return ItemStack.EMPTY;
                     }
                 }
-                else if(index >= 30 && index < 39 && !this.mergeItemStack(slotStack, WaterFilterTileEntity.slotNum, 30, false))
+                else if(index >= 30 && index < 39 && !this.mergeItemStack(slotStack, 5000, 30, false))
                 {
                     return ItemStack.EMPTY;
                 }
             }
-            else if(!this.mergeItemStack(slotStack, WaterFilterTileEntity.slotNum, 39, false))
+            else if(!this.mergeItemStack(slotStack, 5000, 39, false))
             {
                 return ItemStack.EMPTY;
             }

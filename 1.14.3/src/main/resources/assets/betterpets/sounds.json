@@ -1,0 +1,8 @@
+{
+    "tube_pick_up": {
+        "sounds": [ {"name": "betterpets:tube_pick_up"}]
+    },
+    "tube_put_down": {
+        "sounds": [ {"name": "betterpets:tube_put_down"}]
+    }
+}

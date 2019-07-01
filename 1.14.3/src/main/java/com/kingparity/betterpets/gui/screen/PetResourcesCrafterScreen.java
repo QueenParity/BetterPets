@@ -1,6 +1,6 @@
 package com.kingparity.betterpets.gui.screen;
 
-import com.kingparity.betterpets.gui.GuiImageButton;
+import com.kingparity.betterpets.gui.button.GuiImageButton;
 import com.kingparity.betterpets.gui.container.PetResourcesCrafterContainer;
 import com.kingparity.betterpets.gui.slot.PetResourcesInputSlot;
 import com.kingparity.betterpets.network.PacketHandler;
