@@ -44,13 +44,13 @@ public class FluidPipeTESR extends TileEntityRenderer<FluidPipeTileEntity>
             double fX2 = 0.0, fZ2 = 0.0, fW2 = 0.0, fD2 = 0.0;
             double fX3 = 0.0, fZ3 = 0.0, fW3 = 0.0, fD3 = 0.0;
             boolean hasf2 = false, hasf3 = false;
-            if(fluidPipeState.get(FluidPipeBlock.EAST) && fluidPipeState.get(FluidPipeBlock.WEST))
+            if(east && west)
             {
                 fX1 = 6.51 * 0.0625;
                 fZ1 = 0.00 * 0.0625;
                 fW1 = (3 - 0.02) * 0.0625;
                 fD1 = (16 - 0.01) * 0.0625;
-                if(fluidPipeState.get(FluidPipeBlock.NORTH))
+                if(north)
                 {
                     hasf2 = true;
                     fX2 = 0.01 * 0.0625;
@@ -58,7 +58,7 @@ public class FluidPipeTESR extends TileEntityRenderer<FluidPipeTileEntity>
                     fW2 = (7 - 0.51) * 0.0625;
                     fD2 = (3 - 0.02) * 0.0625;
                 }
-                if(fluidPipeState.get(FluidPipeBlock.SOUTH))
+                if(south)
                 {
                     hasf3 = true;
                     fX3 = 9.50 * 0.0625;
@@ -67,13 +67,13 @@ public class FluidPipeTESR extends TileEntityRenderer<FluidPipeTileEntity>
                     fD3 = (3 - 0.02) * 0.0625;
                 }
             }
-            else if(fluidPipeState.get(FluidPipeBlock.NORTH) && fluidPipeState.get(FluidPipeBlock.SOUTH))
+            else if(north && south)
             {
                 fX1 = 0.01 * 0.0625;
                 fZ1 = 6.51 * 0.0625;
                 fW1 = (16 - 0.01) * 0.0625;
                 fD1 = (3 - 0.02) * 0.0625;
-                if(fluidPipeState.get(FluidPipeBlock.EAST))
+                if(east)
                 {
                     hasf2 = true;
                     fX2 = 6.51 * 0.0625;
@@ -81,7 +81,7 @@ public class FluidPipeTESR extends TileEntityRenderer<FluidPipeTileEntity>
                     fW2 = (3 - 0.02) * 0.0625;
                     fD2 = (7 - 0.50) * 0.0625;
                 }
-                if(fluidPipeState.get(FluidPipeBlock.WEST))
+                if(west)
                 {
                     hasf3 = true;
                     fX3 = 6.51 * 0.0625;
@@ -90,13 +90,13 @@ public class FluidPipeTESR extends TileEntityRenderer<FluidPipeTileEntity>
                     fD3 = (7 - 0.51) * 0.0625;
                 }
             }
-            else if(fluidPipeState.get(FluidPipeBlock.NORTH))
+            else if(north)
             {
                 fX1 = 0.01 * 0.0625;
                 fZ1 = 6.51 * 0.0625;
                 fW1 = (9.5 - 0.02) * 0.0625;
                 fD1 = (3 - 0.02) * 0.0625;
-                if(fluidPipeState.get(FluidPipeBlock.EAST))
+                if(east)
                 {
                     hasf2 = true;
                     fX2 = 6.51 * 0.0625;
@@ -104,7 +104,7 @@ public class FluidPipeTESR extends TileEntityRenderer<FluidPipeTileEntity>
                     fW2 = (3 - 0.02) * 0.0625;
                     fD2 = (7 - 0.50) * 0.0625;
                 }
-                if(fluidPipeState.get(FluidPipeBlock.WEST))
+                if(west)
                 {
                     hasf3 = true;
                     fX3 = 6.51 * 0.0625;
@@ -113,13 +113,13 @@ public class FluidPipeTESR extends TileEntityRenderer<FluidPipeTileEntity>
                     fD3 = (7 - 0.51) * 0.0625;
                 }
             }
-            else if(fluidPipeState.get(FluidPipeBlock.EAST))
+            else if(east)
             {
                 fX1 = 6.51 * 0.0625;
                 fZ1 = 0.00 * 0.0625;
                 fW1 = (3 - 0.02) * 0.0625;
                 fD1 = (9.5 - 0.02) * 0.0625;
-                if(fluidPipeState.get(FluidPipeBlock.SOUTH))
+                if(south)
                 {
                     hasf3 = true;
                     fX3 = 9.50 * 0.0625;
@@ -128,13 +128,13 @@ public class FluidPipeTESR extends TileEntityRenderer<FluidPipeTileEntity>
                     fD3 = (3 - 0.02) * 0.0625;
                 }
             }
-            else if(fluidPipeState.get(FluidPipeBlock.SOUTH))
+            else if(south)
             {
                 fX1 = 6.51 * 0.0625;
                 fZ1 = 6.51 * 0.0625;
                 fW1 = (9.5 - 0.01) * 0.0625;
                 fD1 = (3 - 0.02) * 0.0625;
-                if(fluidPipeState.get(FluidPipeBlock.WEST))
+                if(west)
                 {
                     hasf3 = true;
                     fX3 = 6.51 * 0.0625;
@@ -143,7 +143,7 @@ public class FluidPipeTESR extends TileEntityRenderer<FluidPipeTileEntity>
                     fD3 = (7 - 0.51) * 0.0625;
                 }
             }
-            else if(fluidPipeState.get(FluidPipeBlock.WEST))
+            else if(west)
             {
                 fX1 = 6.51 * 0.0625;
                 fZ1 = 6.51 * 0.0625;
