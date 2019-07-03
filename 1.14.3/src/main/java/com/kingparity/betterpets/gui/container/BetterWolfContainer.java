@@ -1,9 +1,9 @@
 package com.kingparity.betterpets.gui.container;
 
+import com.kingparity.betterpets.core.ModItems;
 import com.kingparity.betterpets.entity.BetterWolfEntity;
 import com.kingparity.betterpets.gui.slot.PetChestSlot;
-import com.kingparity.betterpets.init.BetterPetContainerTypes;
-import com.kingparity.betterpets.init.BetterPetItems;
+import com.kingparity.betterpets.core.ModContainers;
 import com.kingparity.betterpets.util.PetInventory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -24,7 +24,7 @@ public class BetterWolfContainer extends Container
     
     public BetterWolfContainer(int windowId, PlayerInventory playerInventory, PetInventory wolfInventory, final BetterWolfEntity theWolf)
     {
-        super(BetterPetContainerTypes.BETTER_WOLF_CONTAINER, windowId);
+        super(ModContainers.BETTER_WOLF, windowId);
         this.wolfInventory = wolfInventory;
         this.theWolf = theWolf;
         
@@ -56,7 +56,7 @@ public class BetterWolfContainer extends Container
             @Override
             public boolean isItemValid(ItemStack stack)
             {
-                return stack.getItem() == BetterPetItems.PET_CHEST;
+                return stack.getItem() == ModItems.PET_CHEST;
             }
         });
         

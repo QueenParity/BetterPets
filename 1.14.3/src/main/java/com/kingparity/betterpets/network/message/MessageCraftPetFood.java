@@ -1,7 +1,7 @@
 package com.kingparity.betterpets.network.message;
 
 import com.kingparity.betterpets.gui.container.PetResourcesCrafterContainer;
-import com.kingparity.betterpets.init.BetterPetItems;
+import com.kingparity.betterpets.core.ModItems;
 import com.kingparity.betterpets.item.PetFoodItem;
 import com.kingparity.betterpets.tileentity.PetResourcesCrafterTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -78,7 +78,7 @@ public class MessageCraftPetFood
                             {
                                 tileEntity.removeStackFromSlot(i);
                             }
-                            PetFoodItem food = BetterPetItems.PET_FOOD;
+                            PetFoodItem food = ModItems.PET_FOOD;
                             food.setFoodPoints(pkt.food_points);
                             food.setSaturationRestored(pkt.saturation);
                             tileEntity.setInventorySlotContents(0, new ItemStack(food));

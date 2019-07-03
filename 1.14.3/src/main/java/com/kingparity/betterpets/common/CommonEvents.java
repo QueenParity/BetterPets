@@ -1,6 +1,7 @@
 package com.kingparity.betterpets.common;
 
-import com.kingparity.betterpets.init.BetterPetBlocks;
+import com.kingparity.betterpets.block.WaterCollectorBlock;
+import com.kingparity.betterpets.block.WaterFilterBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.datasync.DataParameter;
@@ -48,13 +49,13 @@ public class CommonEvents
         BlockState state = event.getWorld().getBlockState(event.getPos());
         if(event.getEntityPlayer().getDataManager().get(WATER_COLLECTOR).isPresent())
         {
-            if(!(state.getBlock() == BetterPetBlocks.WATER_COLLECTOR || state.getBlock() == BetterPetBlocks.WATER_FILTER))
+            if(!(state.getBlock() instanceof WaterCollectorBlock || state.getBlock() instanceof WaterFilterBlock))
             {
                 event.setCanceled(true);
             }
         }
     
-        if(state.getBlock() != BetterPetBlocks.WATER_FILTER && event.getEntityPlayer().getDataManager().get(WATER_FILTER).isPresent())
+        if(!(state.getBlock() instanceof WaterFilterBlock) && event.getEntityPlayer().getDataManager().get(WATER_FILTER).isPresent())
         {
             event.setCanceled(true);
         }

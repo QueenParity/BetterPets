@@ -1,8 +1,8 @@
 package com.kingparity.betterpets.item;
 
-import com.kingparity.betterpets.BetterPets;
+import com.kingparity.betterpets.BetterPetMod;
 import com.kingparity.betterpets.ThirstStats;
-import com.kingparity.betterpets.init.BetterPetItems;
+import com.kingparity.betterpets.core.ModItems;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
@@ -58,10 +58,10 @@ public class CanteenItem extends Item
                 int thirstReplenish = canteen.getTag().getInt("thirstReplenishAmount");
                 float saturationReplenish = canteen.getTag().getFloat("saturationReplenishAmount");
                 float poisonChance = canteen.getTag().getFloat("poisonChance");
-                ThirstStats stats = BetterPets.PROXY.getStatsByUUID(player.getUniqueID());
+                ThirstStats stats = BetterPetMod.PROXY.getStatsByUUID(player.getUniqueID());
                 stats.addStats(thirstReplenish, saturationReplenish);
                 stats.attemptToPoison(poisonChance);
-                return new ItemStack(BetterPetItems.CANTEEN);
+                return new ItemStack(ModItems.CANTEEN);
             }
         }
         return canteen;
@@ -85,7 +85,7 @@ public class CanteenItem extends Item
         int liquidAmount = player.getHeldItem(hand).getTag().getInt("liquidAmount");
         if(liquidAmount > 0)
         {
-            ThirstStats stats = world.isRemote ? BetterPets.PROXY.getClientStats() : BetterPets.PROXY.getStatsByUUID(player.getUniqueID());
+            ThirstStats stats = world.isRemote ? BetterPetMod.PROXY.getClientStats() : BetterPetMod.PROXY.getStatsByUUID(player.getUniqueID());
             if(stats.canDrink() || player.abilities.isCreativeMode)
             {
                 player.setActiveHand(hand);

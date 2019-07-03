@@ -1,6 +1,5 @@
 modLoader="javafml" #mandatory
 loaderVersion="[27,)"
-#issueTrackerURL="http://my.issue.tracker/"
 
 [[mods]]
 modId="betterpets"

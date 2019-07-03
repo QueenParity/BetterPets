@@ -1,6 +1,6 @@
 package com.kingparity.betterpets.gui.screen;
 
-import com.kingparity.betterpets.BetterPets;
+import com.kingparity.betterpets.BetterPetMod;
 import com.kingparity.betterpets.util.Reference;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
@@ -26,13 +26,13 @@ public class BetterPetPlayerHUDOverlay
             
             ClientPlayerEntity player = Minecraft.getInstance().player;
             
-            if(!player.isRidingHorse() && BetterPets.PROXY.getClientStats() != null)
+            if(!player.isRidingHorse() && BetterPetMod.PROXY.getClientStats() != null)
             {
-                int thirstLevel = BetterPets.PROXY.getClientStats().thirstLevel;
+                int thirstLevel = BetterPetMod.PROXY.getClientStats().thirstLevel;
                 int xStart = mc.mainWindow.getScaledWidth()/2 + 10;
                 int yStart = mc.mainWindow.getScaledHeight() - 49;
                 
-                int poisonModifier = BetterPets.PROXY.getClientStats().poisoned ? 16 : 0;
+                int poisonModifier = BetterPetMod.PROXY.getClientStats().poisoned ? 16 : 0;
                 
                 for(int i = 0; i < 10; i++)
                 {

@@ -19,7 +19,7 @@ public class PropertiesBlock extends Block
     
     public PropertiesBlock(Material material, MaterialColor materialColor)
     {
-        super(Block.Properties.create(material, materialColor));
+        super(Properties.create(material, materialColor));
     }
     
     public PropertiesBlock(Material material, float hardnessAndResistance)
@@ -34,7 +34,7 @@ public class PropertiesBlock extends Block
     
     public PropertiesBlock(Material material, MaterialColor materialColor, float hardnessAndResistance)
     {
-        super(Block.Properties.create(material, materialColor).hardnessAndResistance(hardnessAndResistance, hardnessAndResistance));
+        super(Properties.create(material, materialColor).hardnessAndResistance(hardnessAndResistance, hardnessAndResistance));
     }
     
     public PropertiesBlock(Material material, float hardness, float resistance)
@@ -49,6 +49,6 @@ public class PropertiesBlock extends Block
     
     public PropertiesBlock(Material material, MaterialColor materialColor, float hardness, float resistance)
     {
-        super(Block.Properties.create(material, materialColor).hardnessAndResistance(hardness, resistance));
+        super(Properties.create(material, materialColor).hardnessAndResistance(hardness, resistance));
     }
 }

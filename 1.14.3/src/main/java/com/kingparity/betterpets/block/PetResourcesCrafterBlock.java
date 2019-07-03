@@ -2,6 +2,7 @@ package com.kingparity.betterpets.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.kingparity.betterpets.core.ModTileEntities;
 import com.kingparity.betterpets.tileentity.PetResourcesCrafterTileEntity;
 import com.kingparity.betterpets.util.VoxelShapeHelper;
 import net.minecraft.block.Block;
@@ -42,9 +43,9 @@ public class PetResourcesCrafterBlock extends DirectionalBlock// implements IWat
     
     public final ImmutableMap<BlockState, VoxelShape> SHAPES;
     
-    public PetResourcesCrafterBlock(Block block)
+    public PetResourcesCrafterBlock(Properties properties)
     {
-        super(Block.Properties.from(block));
+        super(properties);
         this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH));
         SHAPES = this.generateShapes(this.getStateContainer().getValidStates());
     }
@@ -123,7 +124,7 @@ public class PetResourcesCrafterBlock extends DirectionalBlock// implements IWat
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world)
     {
-        return new PetResourcesCrafterTileEntity();
+        return ModTileEntities.PET_RESOURCES_CRAFTER.create();
     }
     
     @Override

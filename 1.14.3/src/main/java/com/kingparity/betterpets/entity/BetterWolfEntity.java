@@ -1,9 +1,9 @@
 package com.kingparity.betterpets.entity;
 
+import com.kingparity.betterpets.core.ModItems;
 import com.kingparity.betterpets.entity.goals.*;
 import com.kingparity.betterpets.gui.container.BetterWolfContainer;
-import com.kingparity.betterpets.init.BetterPetEntities;
-import com.kingparity.betterpets.init.BetterPetItems;
+import com.kingparity.betterpets.core.ModEntities;
 import com.kingparity.betterpets.item.PetFoodItem;
 import com.kingparity.betterpets.network.PacketHandler;
 import com.kingparity.betterpets.network.message.MessageAttachChest;
@@ -206,12 +206,12 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
         if(!this.world.isRemote)
         {
             ItemStack chest = this.inventory.getStackInSlot(1);
-            if(chest.getItem() == BetterPetItems.PET_CHEST && !this.hasChest())
+            if(chest.getItem() == ModItems.PET_CHEST && !this.hasChest())
             {
                 this.setChest(true);
                 PacketHandler.sendToServer(new MessageAttachChest(this.getEntityId()));
             }
-            else if(chest.getItem() != BetterPetItems.PET_CHEST && this.hasChest())
+            else if(chest.getItem() != ModItems.PET_CHEST && this.hasChest())
             {
                 this.setChest(false);
                 PacketHandler.sendToServer(new MessageRemoveChest(this.getEntityId()));
@@ -239,7 +239,7 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
     @Override
     protected boolean canEquipItem(ItemStack stack)
     {
-        return stack.getItem() == BetterPetItems.PET_BIRTHDAY_HAT && (!this.hasHat() || stack.isEmpty());
+        return stack.getItem() == ModItems.PET_BIRTHDAY_HAT && (!this.hasHat() || stack.isEmpty());
     }
     
     @Override
@@ -255,7 +255,7 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
     @Override
     public void attachChest(ItemStack stack)
     {
-        if(!stack.isEmpty() && stack.getItem() == BetterPetItems.PET_CHEST)
+        if(!stack.isEmpty() && stack.getItem() == ModItems.PET_CHEST)
         {
             this.setChest(true);
             
@@ -530,7 +530,7 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
     {
         ItemStack stack = this.dataManager.get(HAT_ITEM);
         
-        if(stack.getItem() != BetterPetItems.PET_BIRTHDAY_HAT)
+        if(stack.getItem() != ModItems.PET_BIRTHDAY_HAT)
         {
             this.dataManager.set(HAT_ITEM, ItemStack.EMPTY);
             return ItemStack.EMPTY;
@@ -879,7 +879,7 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
                             this.heal((float)item.getFood().getHealing());
                             return true;
                         }
-                        else if(item == BetterPetItems.PET_FOOD)
+                        else if(item == ModItems.PET_FOOD)
                         {
                             PetFoodItem petFoodItem = (PetFoodItem)item;
                             if(!player.abilities.isCreativeMode)
@@ -1045,7 +1045,7 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
     @Override
     public BetterWolfEntity createChild(AgeableEntity ageable)
     {
-        BetterWolfEntity betterWolf = BetterPetEntities.BETTER_WOLF.create(this.world);//EntityType.WOLF.create(this.world);
+        BetterWolfEntity betterWolf = ModEntities.BETTER_WOLF.create(this.world);//EntityType.WOLF.create(this.world);
         UUID uuid = this.getOwnerId();
         if(uuid != null)
         {
@@ -1094,7 +1094,7 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
     
     public boolean isHat(ItemStack stack)
     {
-        return stack.getItem() == BetterPetItems.PET_BIRTHDAY_HAT;
+        return stack.getItem() == ModItems.PET_BIRTHDAY_HAT;
     }
     
     @Override

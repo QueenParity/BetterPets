@@ -1,6 +1,6 @@
 package com.kingparity.betterpets.gui.slot;
 
-import com.kingparity.betterpets.init.BetterPetItems;
+import com.kingparity.betterpets.core.ModItems;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -15,6 +15,6 @@ public class WaterFilterFabricSlot extends Slot
     @Override
     public boolean isItemValid(ItemStack stack)
     {
-        return stack.getItem() == BetterPetItems.WATER_FILTER_FABRIC;
+        return stack.getItem() == ModItems.WATER_FILTER_FABRIC;
     }
 }

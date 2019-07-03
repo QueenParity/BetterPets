@@ -1,6 +1,6 @@
 package com.kingparity.betterpets.network.message;
 
-import com.kingparity.betterpets.init.BetterPetItems;
+import com.kingparity.betterpets.core.ModItems;
 import com.kingparity.betterpets.util.IAttachableChest;
 import net.minecraft.block.SoundType;
 import net.minecraft.entity.Entity;
@@ -53,7 +53,7 @@ public class MessageAttachChest
                         IAttachableChest attachableChest = (IAttachableChest)targetEntity;
                         if(!attachableChest.hasChest())
                         {
-                            attachableChest.attachChest(new ItemStack(BetterPetItems.PET_CHEST));
+                            attachableChest.attachChest(new ItemStack(ModItems.PET_CHEST));
                             world.playSound(null, targetEntity.posX, targetEntity.posY, targetEntity.posZ, SoundType.WOOD.getPlaceSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                         }
                     }

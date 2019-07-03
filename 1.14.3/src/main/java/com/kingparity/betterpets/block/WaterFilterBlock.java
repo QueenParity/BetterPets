@@ -1,10 +1,7 @@
 package com.kingparity.betterpets.block;
 
-import com.kingparity.betterpets.init.BetterPetItems;
-import com.kingparity.betterpets.init.BetterPetSounds;
-import com.kingparity.betterpets.tileentity.WaterCollectorTileEntity;
+import com.kingparity.betterpets.core.ModTileEntities;
 import com.kingparity.betterpets.tileentity.WaterFilterTileEntity;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BucketItem;
@@ -12,7 +9,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
@@ -21,17 +18,12 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class WaterFilterBlock extends RotatedBlock
+public class WaterFilterBlock extends PetHorizontalBlock
 {
-    public WaterFilterBlock(Block block)
+    public WaterFilterBlock(Properties properties)
     {
-        super(Properties.from(block));
-    }
-    
-    @Override
-    public BlockRenderLayer getRenderLayer()
-    {
-        return BlockRenderLayer.CUTOUT;
+        super(properties);
+        this.setDefaultState(this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH));
     }
     
     @Override
@@ -52,27 +44,25 @@ public class WaterFilterBlock extends RotatedBlock
                         String itemName = heldItem.getRegistryName().toString();
                         if(itemName.equals("minecraft:bucket"))
                         {
-                            if(waterFilter.removeFluid(1000))
+                            waterFilter.removeFluid(1000);
+                            if(!player.abilities.isCreativeMode)
                             {
-                                if(!player.abilities.isCreativeMode)
+                                heldItemStack.shrink(1);
+                                if(heldItemStack.isEmpty())
                                 {
-                                    heldItemStack.shrink(1);
-                                    if(heldItemStack.isEmpty())
-                                    {
-                                        player.setHeldItem(hand, new ItemStack(Items.WATER_BUCKET));
-                                    }
-                                    else if(!player.inventory.addItemStackToInventory(new ItemStack(Items.WATER_BUCKET)))
-                                    {
-                                        player.dropItem(new ItemStack(Items.WATER_BUCKET), false);
-                                    }
+                                    player.setHeldItem(hand, new ItemStack(Items.WATER_BUCKET));
                                 }
-                            
-                                world.playSound(null, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                                else if(!player.inventory.addItemStackToInventory(new ItemStack(Items.WATER_BUCKET)))
+                                {
+                                    player.dropItem(new ItemStack(Items.WATER_BUCKET), false);
+                                }
                             }
+                        
+                            world.playSound(null, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                         }
                         else
                         {
-                            if(waterFilter.addFluid(1000))
+                            if(waterFilter.addFluid(1000) == 0.0F)
                             {
                                 if(!player.abilities.isCreativeMode)
                                 {
@@ -83,32 +73,32 @@ public class WaterFilterBlock extends RotatedBlock
                             }
                         }
                     }
-                    else if(waterFilter.getTubingEntity() != null && waterFilter.getTubingEntity().getEntityId() == player.getEntityId())
+                    /*else if(waterFilter.getTubingEntity() != null && waterFilter.getTubingEntity().getEntityId() == player.getEntityId())
                     {
                         waterFilter.setTubingEntity(null);
-                        world.playSound(null, pos, BetterPetSounds.TUBE_PUT_DOWN, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                        world.playSound(null, pos, ModSounds.TUBE_PUT_DOWN, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     }
-                    else if(heldItem == BetterPetItems.FLUID_TUBE)
+                    else if(heldItem == ModItems.FLUID_TUBE)
                     {
                         waterFilter.setTubingEntity(player);
                         if(!player.abilities.isCreativeMode)
                         {
                             heldItemStack.shrink(1);
                         }
-                        world.playSound(null, pos, BetterPetSounds.TUBE_PICK_UP, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                    }
+                        world.playSound(null, pos, ModSounds.TUBE_PICK_UP, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                    }*/
                 }
-                else if(waterFilter.getTubingEntity() != null && waterFilter.getTubingEntity().getEntityId() == player.getEntityId())
+                /*else if(waterFilter.getTubingEntity() != null && waterFilter.getTubingEntity().getEntityId() == player.getEntityId())
                 {
                     waterFilter.setTubingEntity(null);
                     if(!player.abilities.isCreativeMode)
                     {
-                        if(!player.addItemStackToInventory(new ItemStack(BetterPetItems.FLUID_TUBE)))
+                        if(!player.addItemStackToInventory(new ItemStack(ModItems.FLUID_TUBE)))
                         {
-                            player.dropItem(new ItemStack(BetterPetItems.FLUID_TUBE), false);
+                            player.dropItem(new ItemStack(ModItems.FLUID_TUBE), false);
                         }
                     }
-                    world.playSound(null, pos, BetterPetSounds.TUBE_PUT_DOWN, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                    world.playSound(null, pos, ModSounds.TUBE_PUT_DOWN, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 }
                 else if(waterFilter.getTubingTileEntity() instanceof WaterCollectorTileEntity)
                 {
@@ -119,8 +109,8 @@ public class WaterFilterBlock extends RotatedBlock
                     waterFilter.setTubingTileEntityPos(null);
                     waterCollector.syncToClient();
                     waterFilter.syncToClient();
-                    world.playSound(null, pos, BetterPetSounds.TUBE_PICK_UP, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                }
+                    world.playSound(null, pos, ModSounds.TUBE_PICK_UP, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                }*/
             }
         }
         return true;
@@ -129,7 +119,7 @@ public class WaterFilterBlock extends RotatedBlock
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world)
     {
-        return new WaterFilterTileEntity();
+        return ModTileEntities.WATER_FILTER.create();
     }
     
     @Override

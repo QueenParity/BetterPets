@@ -1,6 +1,6 @@
 package com.kingparity.betterpets.client;
 
-import com.kingparity.betterpets.BetterPets;
+import com.kingparity.betterpets.BetterPetMod;
 import com.kingparity.betterpets.ThirstStats;
 import com.kingparity.betterpets.gui.screen.BetterPetPlayerHUDOverlay;
 import com.kingparity.betterpets.network.PacketHandler;
@@ -33,7 +33,7 @@ public class ClientEvents
     {
         if(!event.player.world.isRemote)
         {
-            ThirstStats stats = BetterPets.PROXY.getStatsByUUID(event.player.getUniqueID());
+            ThirstStats stats = BetterPetMod.PROXY.getStatsByUUID(event.player.getUniqueID());
             if(stats != null)
             {
                 stats.update(event.player);
@@ -41,7 +41,7 @@ public class ClientEvents
         }
         else
         {
-            PacketHandler.sendToServer(new MessageMovementSpeed(event.player.getUniqueID(), BetterPets.PROXY.getClientStats().getMovementSpeed(event.player)));
+            PacketHandler.sendToServer(new MessageMovementSpeed(event.player.getUniqueID(), BetterPetMod.PROXY.getClientStats().getMovementSpeed(event.player)));
         }
     }
     
@@ -50,7 +50,7 @@ public class ClientEvents
     {
         if(!attack.getEntityPlayer().world.isRemote)
         {
-            ThirstStats stats = BetterPets.PROXY.getStatsByUUID(attack.getEntityPlayer().getUniqueID());
+            ThirstStats stats = BetterPetMod.PROXY.getStatsByUUID(attack.getEntityPlayer().getUniqueID());
             stats.addExhaustion(0.5F);
         }
         attack.setResult(Event.Result.DEFAULT);
@@ -64,7 +64,7 @@ public class ClientEvents
             PlayerEntity player = (PlayerEntity)hurt.getEntity();
             if(!player.world.isRemote)
             {
-                ThirstStats stats = BetterPets.PROXY.getStatsByUUID(player.getUniqueID());
+                ThirstStats stats = BetterPetMod.PROXY.getStatsByUUID(player.getUniqueID());
                 stats.addExhaustion(0.4f);
             }
         }
@@ -79,7 +79,7 @@ public class ClientEvents
         {
             if(!player.world.isRemote)
             {
-                ThirstStats stats = BetterPets.PROXY.getStatsByUUID(player.getUniqueID());
+                ThirstStats stats = BetterPetMod.PROXY.getStatsByUUID(player.getUniqueID());
                 stats.addExhaustion(0.03f);
             }
         }
@@ -92,7 +92,7 @@ public class ClientEvents
         {
             if(event.isWasDeath())
             {
-                ThirstStats stats = BetterPets.PROXY.getStatsByUUID(event.getEntityPlayer().getUniqueID());
+                ThirstStats stats = BetterPetMod.PROXY.getStatsByUUID(event.getEntityPlayer().getUniqueID());
                 stats.resetStats();
             }
         }
@@ -107,21 +107,21 @@ public class ClientEvents
             File saveFile = event.getPlayerFile("thirstmod");
             if(!saveFile.exists())
             {
-                BetterPets.PROXY.registerPlayer(player, new ThirstStats());
+                BetterPetMod.PROXY.registerPlayer(player, new ThirstStats());
             }
             else
             {
                 try
                 {
                     FileReader reader = new FileReader(saveFile);
-                    ThirstStats stats = BetterPets.gsonInstance.fromJson(reader, ThirstStats.class);
+                    ThirstStats stats = BetterPetMod.gsonInstance.fromJson(reader, ThirstStats.class);
                     if(stats == null)
                     {
-                        BetterPets.PROXY.registerPlayer(player, new ThirstStats());
+                        BetterPetMod.PROXY.registerPlayer(player, new ThirstStats());
                     }
                     else
                     {
-                        BetterPets.PROXY.registerPlayer(player, stats);
+                        BetterPetMod.PROXY.registerPlayer(player, stats);
                     }
                 }
                 catch(IOException e)
@@ -137,11 +137,11 @@ public class ClientEvents
     {
         if(!event.getEntityPlayer().world.isRemote)
         {
-            ThirstStats stats = BetterPets.PROXY.getStatsByUUID(event.getEntityPlayer().getUniqueID());
+            ThirstStats stats = BetterPetMod.PROXY.getStatsByUUID(event.getEntityPlayer().getUniqueID());
             File saveFile = new File(event.getPlayerDirectory(), event.getPlayerUUID() + ".thirstmod");
             try
             {
-                String write = BetterPets.gsonInstance.toJson(stats);
+                String write = BetterPetMod.gsonInstance.toJson(stats);
                 saveFile.createNewFile();
                 BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile));
                 writer.write(write);

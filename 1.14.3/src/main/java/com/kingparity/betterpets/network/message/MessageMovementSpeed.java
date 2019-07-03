@@ -1,6 +1,6 @@
 package com.kingparity.betterpets.network.message;
 
-import com.kingparity.betterpets.BetterPets;
+import com.kingparity.betterpets.BetterPetMod;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -35,7 +35,7 @@ public class MessageMovementSpeed
     
     public void handleServerSide()
     {
-        BetterPets.PROXY.getStatsByUUID(uuid).movementSpeed = movementSpeed;
+        BetterPetMod.PROXY.getStatsByUUID(uuid).movementSpeed = movementSpeed;
     }
     
     //onMessage

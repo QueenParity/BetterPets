@@ -4,12 +4,14 @@ import com.kingparity.betterpets.ThirstStats;
 import com.kingparity.betterpets.client.ClientEvents;
 import com.kingparity.betterpets.client.KeyBinds;
 import com.kingparity.betterpets.client.renderer.entity.BetterWolfRenderer;
+import com.kingparity.betterpets.client.renderer.tileentity.FluidPipeTESR;
 import com.kingparity.betterpets.client.renderer.tileentity.WaterCollectorTESR;
 import com.kingparity.betterpets.client.renderer.tileentity.WaterFilterTESR;
 import com.kingparity.betterpets.entity.BetterWolfEntity;
 import com.kingparity.betterpets.gui.container.BetterWolfContainer;
 import com.kingparity.betterpets.gui.screen.BetterWolfScreen;
 import com.kingparity.betterpets.network.message.MessagePetWindow;
+import com.kingparity.betterpets.tileentity.FluidPipeTileEntity;
 import com.kingparity.betterpets.tileentity.WaterCollectorTileEntity;
 import com.kingparity.betterpets.tileentity.WaterFilterTileEntity;
 import com.kingparity.betterpets.util.IPetContainer;
@@ -21,7 +23,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
-public class ClientProxy implements IProxy
+public class ClientProxy extends CommonProxy
 {
     public ThirstStats clientStats = new ThirstStats();
     
@@ -32,7 +34,7 @@ public class ClientProxy implements IProxy
     }
     
     @Override
-    public void clientRegistries()
+    public void onSetupClient()
     {
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
@@ -41,20 +43,9 @@ public class ClientProxy implements IProxy
     
         ClientRegistry.bindTileEntitySpecialRenderer(WaterCollectorTileEntity.class, new WaterCollectorTESR());
         ClientRegistry.bindTileEntitySpecialRenderer(WaterFilterTileEntity.class, new WaterFilterTESR());
+        ClientRegistry.bindTileEntitySpecialRenderer(FluidPipeTileEntity.class, new FluidPipeTESR());
         
         KeyBinds.register();
-    }
-    
-    @Override
-    public boolean isSinglePlayer()
-    {
-        return Minecraft.getInstance().isSingleplayer();
-    }
-    
-    @Override
-    public boolean isDedicatedServer()
-    {
-        return false;
     }
     
     @Override

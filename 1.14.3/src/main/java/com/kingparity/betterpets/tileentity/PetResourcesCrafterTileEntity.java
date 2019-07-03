@@ -1,7 +1,7 @@
 package com.kingparity.betterpets.tileentity;
 
 import com.kingparity.betterpets.gui.container.PetResourcesCrafterContainer;
-import com.kingparity.betterpets.init.BetterPetTileEntities;
+import com.kingparity.betterpets.core.ModTileEntities;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 
@@ -11,7 +11,7 @@ public class PetResourcesCrafterTileEntity extends BetterPetTileEntityBase
     
     public PetResourcesCrafterTileEntity()
     {
-        super(BetterPetTileEntities.PET_RESOURCES_CRAFTER_TILE_ENTITY, "pet_resources_crafter", slotNum);
+        super(ModTileEntities.PET_RESOURCES_CRAFTER, "pet_resources_crafter", slotNum);
     }
     
     @Override

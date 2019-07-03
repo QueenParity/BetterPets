@@ -1,6 +1,6 @@
 package com.kingparity.betterpets.network.message;
 
-import com.kingparity.betterpets.BetterPets;
+import com.kingparity.betterpets.BetterPetMod;
 import com.kingparity.betterpets.ThirstStats;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -42,7 +42,7 @@ public class MessageThirstStats
     
     public void handleClientSide()
     {
-        ThirstStats stats = BetterPets.PROXY.getClientStats();
+        ThirstStats stats = BetterPetMod.PROXY.getClientStats();
         stats.thirstLevel = this.thirstLevel;
         stats.saturation = this.saturation;
         stats.exhaustion = this.exhaustion;

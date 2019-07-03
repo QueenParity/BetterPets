@@ -1,6 +1,6 @@
 package com.kingparity.betterpets.network.message;
 
-import com.kingparity.betterpets.BetterPets;
+import com.kingparity.betterpets.BetterPetMod;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -39,7 +39,7 @@ public class MessagePetWindow
     {
         public static void handle(final MessagePetWindow pkt, Supplier<NetworkEvent.Context> ctx)
         {
-            ctx.get().enqueueWork(() -> BetterPets.PROXY.openPetWindow(pkt));
+            ctx.get().enqueueWork(() -> BetterPetMod.PROXY.openPetWindow(pkt));
             ctx.get().setPacketHandled(true);
         }
     }

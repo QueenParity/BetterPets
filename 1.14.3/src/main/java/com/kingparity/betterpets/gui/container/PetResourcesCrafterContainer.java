@@ -2,7 +2,7 @@ package com.kingparity.betterpets.gui.container;
 
 import com.kingparity.betterpets.gui.slot.PetResourcesInputSlot;
 import com.kingparity.betterpets.gui.slot.BetterPetResultSlot;
-import com.kingparity.betterpets.init.BetterPetContainerTypes;
+import com.kingparity.betterpets.core.ModContainers;
 import com.kingparity.betterpets.tileentity.PetResourcesCrafterTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -26,7 +26,7 @@ public class PetResourcesCrafterContainer extends Container
     
     public PetResourcesCrafterContainer(int windowId, PlayerInventory playerInventory, IInventory inventory, BlockPos pos)
     {
-        super(BetterPetContainerTypes.PET_RESOURCES_CRAFTER_CONTAINER, windowId);
+        super(ModContainers.PET_RESOURCES_CRAFTER, windowId);
         assertInventorySize(inventory, PetResourcesCrafterTileEntity.slotNum);
         this.inventory = inventory;
         this.pos = pos;

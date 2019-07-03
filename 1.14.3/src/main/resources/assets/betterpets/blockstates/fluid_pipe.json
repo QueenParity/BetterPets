@@ -1,0 +1,24 @@
+{
+	"forge_maker": 1,
+	"defaults": {
+		"uvlock": true
+	},
+    "variants": {
+		"east=true,north=true,south=true,west=true": { "model": "betterpets:block/pipe_cross" },
+        "east=false,north=true,south=true,west=true": { "model": "betterpets:block/pipe_3_way" },
+        "east=true,north=true,south=false,west=true": { "model": "betterpets:block/pipe_3_way", "y": 90 },
+        "east=true,north=true,south=true,west=false": { "model": "betterpets:block/pipe_3_way", "y": 180 },
+        "east=true,north=false,south=true,west=true": { "model": "betterpets:block/pipe_3_way", "y": 270 },
+        "east=false,north=true,south=true,west=false": { "model": "betterpets:block/pipe_line" },
+		"east=true,north=false,south=false,west=true": { "model": "betterpets:block/pipe_line", "y": 90 },
+        "east=false,north=true,south=false,west=true": { "model": "betterpets:block/pipe_corner" },
+		"east=true,north=true,south=false,west=false": { "model": "betterpets:block/pipe_corner", "y": 90 },
+		"east=true,north=false,south=true,west=false": { "model": "betterpets:block/pipe_corner", "y": 180 },
+		"east=false,north=false,south=true,west=true": { "model": "betterpets:block/pipe_corner", "y": 270 },
+		"east=false,north=true,south=false,west=false": { "model": "betterpets:block/pipe" },
+		"east=true,north=false,south=false,west=false": { "model": "betterpets:block/pipe", "y": 90 },
+		"east=false,north=false,south=true,west=false": { "model": "betterpets:block/pipe", "y": 180 },
+		"east=false,north=false,south=false,west=true": { "model": "betterpets:block/pipe", "y": 270 },
+		"east=false,north=false,south=false,west=false": { "model": "betterpets:block/pipe_dot" }
+    }
+}

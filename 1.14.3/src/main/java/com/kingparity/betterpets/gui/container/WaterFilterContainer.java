@@ -3,7 +3,7 @@ package com.kingparity.betterpets.gui.container;
 import com.kingparity.betterpets.gui.slot.BetterPetResultSlot;
 import com.kingparity.betterpets.gui.slot.WaterFilterCanteenSlot;
 import com.kingparity.betterpets.gui.slot.WaterFilterFabricSlot;
-import com.kingparity.betterpets.init.BetterPetContainerTypes;
+import com.kingparity.betterpets.core.ModContainers;
 import com.kingparity.betterpets.tileentity.WaterFilterTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -27,7 +27,7 @@ public class WaterFilterContainer extends Container
     
     public WaterFilterContainer(int windowId, PlayerInventory playerInventory, IInventory inventory, BlockPos pos)
     {
-        super(BetterPetContainerTypes.WATER_FILTER_CONTAINER, windowId);
+        super(ModContainers.WATER_FILTER, windowId);
         assertInventorySize(inventory, 5000);
         this.inventory = inventory;
         this.pos = pos;

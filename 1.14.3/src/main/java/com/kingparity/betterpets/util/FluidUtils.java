@@ -61,12 +61,4 @@ public class FluidUtils
         buffer.pos(x, y, 0).tex(minU, minV).endVertex();
         tessellator.draw();
     }
-    
-    public static void fixEmptyTag(CompoundNBT tag)
-    {
-        if(tag.contains("FluidName", Constants.NBT.TAG_STRING) && tag.contains("Amount", Constants.NBT.TAG_INT))
-        {
-            tag.remove("Empty");
-        }
-    }
 }

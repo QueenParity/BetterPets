@@ -4,7 +4,7 @@ import com.kingparity.betterpets.client.model.BetterWolfModel;
 import com.kingparity.betterpets.client.model.accessories.BetterWolfModelChest;
 import com.kingparity.betterpets.client.model.accessories.BetterWolfModelHat;
 import com.kingparity.betterpets.entity.BetterWolfEntity;
-import com.kingparity.betterpets.init.BetterPetItems;
+import com.kingparity.betterpets.core.ModItems;
 import com.kingparity.betterpets.util.Reference;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
@@ -37,7 +37,7 @@ public class BetterWolfAccessoriesLayer<T extends BetterWolfEntity> extends Laye
             GlStateManager.color4f(1, 1, 1, 1);
             this.chest.render(betterWolf, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
         }
-        if(betterWolf.getHatItem().getItem() == BetterPetItems.PET_BIRTHDAY_HAT)
+        if(betterWolf.getHatItem().getItem() == ModItems.PET_BIRTHDAY_HAT)
         {
             this.hat = new BetterWolfModelHat<>();
             this.hat.setLivingAnimations(betterWolf, limbSwing, limbSwingAmount, partialTicks);
