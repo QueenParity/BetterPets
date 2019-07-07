@@ -3,7 +3,7 @@ package com.kingparity.betterpets.core;
 import com.kingparity.betterpets.BetterPetMod;
 import com.kingparity.betterpets.item.CanteenItem;
 import com.kingparity.betterpets.item.PetFoodItem;
-import com.kingparity.betterpets.util.ItemNames;
+import com.kingparity.betterpets.names.ItemNames;
 import com.kingparity.betterpets.util.Reference;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;

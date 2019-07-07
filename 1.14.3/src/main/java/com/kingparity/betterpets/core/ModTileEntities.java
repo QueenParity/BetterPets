@@ -5,7 +5,7 @@ import com.kingparity.betterpets.tileentity.PetResourcesCrafterTileEntity;
 import com.kingparity.betterpets.tileentity.WaterCollectorTileEntity;
 import com.kingparity.betterpets.tileentity.WaterFilterTileEntity;
 import com.kingparity.betterpets.util.Reference;
-import com.kingparity.betterpets.util.TileEntityNames;
+import com.kingparity.betterpets.names.TileEntityNames;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;

@@ -1,7 +1,7 @@
 package com.kingparity.betterpets.core;
 
 import com.kingparity.betterpets.entity.BetterWolfEntity;
-import com.kingparity.betterpets.util.EntityNames;
+import com.kingparity.betterpets.names.EntityNames;
 import com.kingparity.betterpets.util.Reference;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;

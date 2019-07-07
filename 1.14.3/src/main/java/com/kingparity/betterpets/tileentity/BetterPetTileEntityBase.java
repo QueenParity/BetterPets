@@ -19,7 +19,6 @@ public abstract class BetterPetTileEntityBase extends LockableTileEntity impleme
 {
     private final String ID;
     protected NonNullList<ItemStack> inventory;
-    protected ITextComponent customName;
     
     public BetterPetTileEntityBase(TileEntityType<?> tileEntityType, String id, int inventorySize)
     {
@@ -29,32 +28,9 @@ public abstract class BetterPetTileEntityBase extends LockableTileEntity impleme
     }
     
     @Override
-    public ITextComponent getName()
-    {
-        return (this.customName != null ? this.customName : this.getDefaultName());
-    }
-    
-    @Override
     protected ITextComponent getDefaultName()
     {
         return new TranslationTextComponent("container." + ID);
-    }
-    
-    @Override
-    public boolean hasCustomName()
-    {
-        return this.customName != null;
-    }
-    
-    @Override
-    public ITextComponent getCustomName()
-    {
-        return customName;
-    }
-    
-    public void setCustomName(@Nullable ITextComponent customName)
-    {
-        this.customName = customName;
     }
     
     @Override
@@ -158,11 +134,6 @@ public abstract class BetterPetTileEntityBase extends LockableTileEntity impleme
         this.inventory = NonNullList.<ItemStack>withSize(this.getSizeInventory(), ItemStack.EMPTY);
         
         ItemStackHelper.loadAllItems(compound, this.inventory);
-        
-        if (compound.contains("CustomName", 8))
-        {
-            this.customName = ITextComponent.Serializer.fromJson(compound.getString("CustomName"));
-        }
     }
     
     @Override
@@ -171,11 +142,6 @@ public abstract class BetterPetTileEntityBase extends LockableTileEntity impleme
         super.write(compound);
         
         ItemStackHelper.saveAllItems(compound, this.inventory);
-        
-        if (this.hasCustomName())
-        {
-            compound.putString("CustomName", ITextComponent.Serializer.toJson(customName));
-        }
         
         return compound;
     }

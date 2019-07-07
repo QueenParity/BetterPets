@@ -44,7 +44,7 @@ public class WaterFilterBlock extends PetHorizontalBlock
                         String itemName = heldItem.getRegistryName().toString();
                         if(itemName.equals("minecraft:bucket"))
                         {
-                            waterFilter.removeFluid(1000);
+                            waterFilter.extractFluid(1000, false);
                             if(!player.abilities.isCreativeMode)
                             {
                                 heldItemStack.shrink(1);
@@ -62,7 +62,7 @@ public class WaterFilterBlock extends PetHorizontalBlock
                         }
                         else
                         {
-                            if(waterFilter.addFluid(1000) == 0.0F)
+                            if(waterFilter.receiveFluid(1000, false) == 0)
                             {
                                 if(!player.abilities.isCreativeMode)
                                 {

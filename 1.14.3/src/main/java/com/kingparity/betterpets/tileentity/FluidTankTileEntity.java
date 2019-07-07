@@ -15,19 +15,32 @@ import javax.annotation.Nullable;
 
 public class FluidTankTileEntity extends TileEntity
 {
-    private float capacity;       // 12 buckets
-    
-    private float fluidAmount = 0.0F;
+    private int capacity;
+    private int maxReceive;
+    private int maxExtract;
+    private int fluidAmount = 0;
     
     public FluidTankTileEntity(TileEntityType<?> tileEntityType)
     {
-        this(tileEntityType, 12000.0F);
+        this(tileEntityType, 12000);
     }
     
-    public FluidTankTileEntity(TileEntityType<?> tileEntityType, float capacity)
+    public FluidTankTileEntity(TileEntityType<?> tileEntityType, int capacity)
+    {
+        this(tileEntityType, capacity, capacity);
+    }
+    
+    public FluidTankTileEntity(TileEntityType<?> tileEntityType, int capacity, int maxTransfer)
+    {
+        this(tileEntityType, capacity, maxTransfer, maxTransfer);
+    }
+    
+    public FluidTankTileEntity(TileEntityType<?> tileEntityType, int capacity, int maxReceive, int maxExtract)
     {
         super(tileEntityType);
         this.capacity = capacity;
+        this.maxReceive = maxReceive;
+        this.maxExtract = maxExtract;
     }
     
     public void fillTank()
@@ -38,50 +51,80 @@ public class FluidTankTileEntity extends TileEntity
     
     public void emptyTank()
     {
-        fluidAmount = 0.0F;
+        fluidAmount = 0;
         syncToClient();
     }
     
-    public float addFluid(float amount)
+    public int receiveFluid(int maxReceive)
     {
-        float r = (fluidAmount + amount) - capacity;
-        if(fluidAmount + amount <= capacity)
+        return receiveFluid(maxReceive, false);
+    }
+    
+    public int receiveFluid(int maxReceive, boolean simulate)
+    {
+        if(!canReceive())
         {
-            fluidAmount += amount;
+            return 0;
+        }
+        int fluidReceived = Math.min(capacity - fluidAmount, Math.min(this.maxReceive, maxReceive));
+        if(!simulate)
+        {
+            fluidAmount += fluidReceived;
             syncToClient();
-            return 0.0F;
         }
-        else
-        {
-            fillTank();
-            return r;
-        }
+        //System.out.println("hai: " + fluidReceived);
+        return fluidReceived;
     }
     
-    public float removeFluid(float amount)
+    public int extractFluid(int maxExtract)
     {
-        float r = (fluidAmount - amount) * -1;
-        if(fluidAmount >= amount)
+        return extractFluid(maxExtract, true);
+    }
+    
+    public int extractFluid(int maxExtract, boolean simulate)
+    {
+        if(!canExtract())
         {
-            fluidAmount -= amount;
+            return 0;
+        }
+        
+        int fluidExtracted = Math.min(fluidAmount, Math.min(this.maxExtract, maxExtract));
+        if (!simulate)
+        {
+            fluidAmount -= fluidExtracted;
             syncToClient();
-            return 0.0F;
         }
-        else
-        {
-            emptyTank();
-            return r;
-        }
+        return fluidExtracted;
     }
     
-    public float getFluidAmount()
-    {
-        return this.fluidAmount;
-    }
-    
-    public float getCapacity()
+    public int getCapacity()
     {
         return capacity;
+    }
+    
+    public int getMaxReceive()
+    {
+        return maxReceive;
+    }
+    
+    public int getMaxExtract()
+    {
+        return maxExtract;
+    }
+    
+    public int getFluidAmount()
+    {
+        return fluidAmount;
+    }
+    
+    public boolean canExtract()
+    {
+        return this.maxExtract > 0;
+    }
+    
+    public boolean canReceive()
+    {
+        return this.maxReceive > 0;
     }
     
     public boolean hasFluid()
@@ -103,13 +146,13 @@ public class FluidTankTileEntity extends TileEntity
     public void read(CompoundNBT compound)
     {
         super.read(compound);
-        if(compound.contains("FluidAmount", Constants.NBT.TAG_FLOAT))
+        if(compound.contains("FluidAmount", Constants.NBT.TAG_INT))
         {
-            this.fluidAmount = compound.getFloat("FluidAmount");
+            this.fluidAmount = compound.getInt("FluidAmount");
         }
-        if(compound.contains("Capacity", Constants.NBT.TAG_FLOAT))
+        if(compound.contains("Capacity", Constants.NBT.TAG_INT))
         {
-            this.capacity = compound.getFloat("Capacity");
+            this.capacity = compound.getInt("Capacity");
         }
     }
     
@@ -117,8 +160,8 @@ public class FluidTankTileEntity extends TileEntity
     public CompoundNBT write(CompoundNBT compound)
     {
         super.write(compound);
-        compound.putFloat("FluidAmount", fluidAmount);
-        compound.putFloat("Capacity", capacity);
+        compound.putInt("FluidAmount", fluidAmount);
+        compound.putInt("Capacity", capacity);
         return compound;
     }
     

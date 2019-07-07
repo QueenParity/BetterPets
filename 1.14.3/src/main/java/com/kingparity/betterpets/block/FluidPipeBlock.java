@@ -1,114 +1,90 @@
 package com.kingparity.betterpets.block;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.kingparity.betterpets.core.ModTileEntities;
 import com.kingparity.betterpets.tileentity.FluidPipeTileEntity;
-import com.kingparity.betterpets.util.VoxelShapeHelper;
+import com.kingparity.betterpets.tileentity.FluidTankTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class FluidPipeBlock extends PetWaterloggedBlock
 {
-    public static final BooleanProperty NORTH = BlockStateProperties.NORTH;
-    public static final BooleanProperty EAST = BlockStateProperties.EAST;
-    public static final BooleanProperty SOUTH = BlockStateProperties.SOUTH;
-    public static final BooleanProperty WEST = BlockStateProperties.WEST;
-    //public static final BooleanProperty UP = BlockStateProperties.UP;
-    //public static final BooleanProperty DOWN = BlockStateProperties.DOWN;
-    
-    public final ImmutableMap<BlockState, VoxelShape> SHAPES;
+    public static final BooleanProperty north = BooleanProperty.create("north");
+    public static final BooleanProperty east = BooleanProperty.create("east");
+    public static final BooleanProperty south = BooleanProperty.create("south");
+    public static final BooleanProperty west = BooleanProperty.create("west");
+    public static final BooleanProperty up = BooleanProperty.create("up");
+    public static final BooleanProperty down = BooleanProperty.create("down");
     
     public FluidPipeBlock(Properties properties)
     {
         super(properties);
-        this.setDefaultState(this.stateContainer.getBaseState().with(NORTH, false).with(EAST, false).with(SOUTH, false).with(WEST, false)/*.with(UP, false).with(DOWN, false)*/);
-        SHAPES = this.generateShapes(this.getStateContainer().getValidStates());
-    }
-    
-    private ImmutableMap<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states)
-    {
-        final VoxelShape FLUID_PIPE_MIDDLE = Block.makeCuboidShape(5.0, 5.0, 5.0, 11.0, 11.0, 11.0);
-        final VoxelShape FLUID_PIPE_END = Block.makeCuboidShape(11.0, 5.0, 5.0, 16.0, 11.0, 11.0);
-    
-        ImmutableMap.Builder<BlockState, VoxelShape> builder = new ImmutableMap.Builder<>();
-        for(BlockState state : states)
-        {
-            boolean north = state.get(NORTH);
-            boolean east = state.get(EAST);
-            boolean south = state.get(SOUTH);
-            boolean west = state.get(WEST);
-    
-            List<VoxelShape> shapes = new ArrayList<>();
-            shapes.add(FLUID_PIPE_MIDDLE);
-    
-            if(north)
-            {
-                shapes.add(VoxelShapeHelper.rotate(FLUID_PIPE_END, Direction.NORTH));
-            }
-            if(east)
-            {
-                shapes.add(VoxelShapeHelper.rotate(FLUID_PIPE_END, Direction.EAST));
-            }
-            if(south)
-            {
-                shapes.add(VoxelShapeHelper.rotate(FLUID_PIPE_END, Direction.SOUTH));
-            }
-            if(west)
-            {
-                shapes.add(VoxelShapeHelper.rotate(FLUID_PIPE_END, Direction.WEST));
-            }
-    
-            builder.put(state, VoxelShapeHelper.combineAll(shapes));
-        }
-        return builder.build();
-    }
-    
-    @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
-    {
-        return SHAPES.get(state);
-    }
-    
-    @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
-    {
-        return SHAPES.get(state);
+        this.setDefaultState(this.getStateContainer().getBaseState().with(north, false).with(east, false).with(south, false).with(west, false).with(up, false).with(down, false));
     }
     
     @Override
     public BlockState updatePostPlacement(BlockState state, Direction direction, BlockState newState, IWorld world, BlockPos pos, BlockPos newPos)
     {
-        Block northBlock = world.getBlockState(pos.north()).getBlock();
-        Block eastBlock = world.getBlockState(pos.east()).getBlock();
-        Block southBlock = world.getBlockState(pos.south()).getBlock();
-        Block westBlock = world.getBlockState(pos.west()).getBlock();
-        boolean north = northBlock == this || northBlock instanceof WaterCollectorBlock || northBlock instanceof WaterFilterBlock;
-        boolean east = eastBlock == this || eastBlock instanceof WaterCollectorBlock || eastBlock instanceof WaterFilterBlock;
-        boolean south = southBlock == this || southBlock instanceof WaterCollectorBlock || southBlock instanceof WaterFilterBlock;
-        boolean west = westBlock == this || westBlock instanceof WaterCollectorBlock || westBlock instanceof WaterFilterBlock;
-        //boolean up = world.getBlockState(pos.up()).getBlock() == this;
-        //boolean down = world.getBlockState(pos.down()).getBlock() == this;
-        return state.with(NORTH, north).with(EAST, east).with(SOUTH, south).with(WEST, west)/*.with(UP, up).with(DOWN, down)*/;
+        FluidPipeTileEntity te = (FluidPipeTileEntity)world.getTileEntity(pos);
+        boolean u = false;
+        boolean d = false;
+        boolean n = false;
+        boolean s = false;
+        boolean w = false;
+        boolean e = false;
+        for(Direction face : FluidPipeTileEntity.faces)
+        {
+            BlockPos fp = pos.offset(face);
+            TileEntity te2 = world.getTileEntity(fp);
+            if(te2 != null)
+            {
+                if(te2 instanceof FluidTankTileEntity)
+                {
+                    switch(face)
+                    {
+                        case DOWN:
+                            d = true;
+                            break;
+                        case UP:
+                            u = true;
+                            break;
+                        case NORTH:
+                            n = true;
+                            break;
+                        case SOUTH:
+                            s = true;
+                            break;
+                        case WEST:
+                            w = true;
+                            break;
+                        case EAST:
+                            e = true;
+                            break;
+                    }
+                }
+            }
+        }
+        te.setUp(u);
+        te.setDown(d);
+        te.setNorth(n);
+        te.setSouth(s);
+        te.setWest(w);
+        te.setEast(e);
+        return state.with(up, te.isUp()).with(down, te.isDown()).with(north, te.isNorth()).with(south, te.isSouth()).with(west, te.isWest()).with(east, te.isEast());
     }
     
     @Override
@@ -116,29 +92,109 @@ public class FluidPipeBlock extends PetWaterloggedBlock
     {
         World world = context.getWorld();
         BlockPos pos = context.getPos();
-        Block northBlock = world.getBlockState(pos.north()).getBlock();
-        Block eastBlock = world.getBlockState(pos.east()).getBlock();
-        Block southBlock = world.getBlockState(pos.south()).getBlock();
-        Block westBlock = world.getBlockState(pos.west()).getBlock();
-        boolean north = northBlock == this || northBlock instanceof WaterCollectorBlock || northBlock instanceof WaterFilterBlock;
-        boolean east = eastBlock == this || eastBlock instanceof WaterCollectorBlock || eastBlock instanceof WaterFilterBlock;
-        boolean south = southBlock == this || southBlock instanceof WaterCollectorBlock || southBlock instanceof WaterFilterBlock;
-        boolean west = westBlock == this || westBlock instanceof WaterCollectorBlock || westBlock instanceof WaterFilterBlock;
-        //boolean up = world.getBlockState(pos.up()).getBlock() == this;
-        //boolean down = world.getBlockState(pos.down()).getBlock() == this;
-        return super.getStateForPlacement(context).with(NORTH, north).with(EAST, east).with(SOUTH, south).with(WEST, west)/*.with(UP, up).with(DOWN, down)*/;
+        FluidPipeTileEntity te = (FluidPipeTileEntity)world.getTileEntity(pos);
+        boolean u = false;
+        boolean d = false;
+        boolean n = false;
+        boolean s = false;
+        boolean w = false;
+        boolean e = false;
+        for(Direction face : FluidPipeTileEntity.faces)
+        {
+            BlockPos fp = pos.offset(face);
+            TileEntity te2 = world.getTileEntity(fp);
+            if(te2 != null)
+            {
+                if(te2 instanceof FluidTankTileEntity)
+                {
+                    switch(face)
+                    {
+                        case DOWN:
+                            d = true;
+                            break;
+                        case UP:
+                            u = true;
+                            break;
+                        case NORTH:
+                            n = true;
+                            break;
+                        case SOUTH:
+                            s = true;
+                            break;
+                        case WEST:
+                            w = true;
+                            break;
+                        case EAST:
+                            e = true;
+                            break;
+                    }
+                }
+            }
+        }
+        return super.getStateForPlacement(context).with(up, u).with(down, d).with(north, n).with(south, s).with(west, w).with(east, e);
+    }
+    
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack stack)
+    {
+        FluidPipeTileEntity cable = (FluidPipeTileEntity)world.getTileEntity(pos);
+        boolean u = false;
+        boolean d = false;
+        boolean n = false;
+        boolean s = false;
+        boolean w = false;
+        boolean e = false;
+        for(Direction face : FluidPipeTileEntity.faces)
+        {
+            BlockPos fp = pos.offset(face);
+            TileEntity cable2 = world.getTileEntity(fp);
+            if(cable2 != null)
+            {
+                if(cable2 instanceof FluidTankTileEntity)
+                {
+                    switch(face)
+                    {
+                        case DOWN:
+                            d = true;
+                            break;
+                        case UP:
+                            u = true;
+                            break;
+                        case NORTH:
+                            n = true;
+                            break;
+                        case SOUTH:
+                            s = true;
+                            break;
+                        case WEST:
+                            w = true;
+                            break;
+                        case EAST:
+                            e = true;
+                            break;
+                    }
+                }
+            }
+        }
+        cable.setUp(u);
+        cable.setDown(d);
+        cable.setNorth(n);
+        cable.setSouth(s);
+        cable.setWest(w);
+        cable.setEast(e);
+        world.notifyBlockUpdate(pos, state, state.with(up, cable.isUp()).with(down, cable.isDown()).with(north, cable.isNorth()).with(south, cable.isSouth()).with(west, cable.isWest()).with(east, cable.isEast()), 2);
     }
     
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
     {
         super.fillStateContainer(builder);
-        builder.add(NORTH);
-        builder.add(EAST);
-        builder.add(SOUTH);
-        builder.add(WEST);
-        //builder.add(UP);
-        //builder.add(DOWN);
+        builder.add(north);
+        builder.add(east);
+        builder.add(south);
+        builder.add(west);
+        builder.add(up);
+        builder.add(down);
     }
     
     @Override

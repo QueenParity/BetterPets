@@ -6,7 +6,7 @@ import com.kingparity.betterpets.gui.container.WaterFilterContainer;
 import com.kingparity.betterpets.gui.screen.BetterWolfScreen;
 import com.kingparity.betterpets.gui.screen.PetResourcesCrafterScreen;
 import com.kingparity.betterpets.gui.screen.WaterFilterScreen;
-import com.kingparity.betterpets.util.ContainerNames;
+import com.kingparity.betterpets.names.ContainerNames;
 import com.kingparity.betterpets.util.Reference;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;

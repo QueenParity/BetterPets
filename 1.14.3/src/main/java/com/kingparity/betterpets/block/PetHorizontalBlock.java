@@ -2,17 +2,17 @@ package com.kingparity.betterpets.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalBlock;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 
 public abstract class PetHorizontalBlock extends PetBlock
 {
-    public static final DirectionProperty DIRECTION = HorizontalBlock.HORIZONTAL_FACING;
+    public static final DirectionProperty DIRECTION = BlockStateProperties.HORIZONTAL_FACING;
     
     public PetHorizontalBlock(Properties properties)
     {

@@ -1,347 +1,163 @@
 package com.kingparity.betterpets.tileentity;
 
-import com.kingparity.betterpets.block.FluidPipeBlock;
 import com.kingparity.betterpets.core.ModTileEntities;
+import com.kingparity.betterpets.util.FluidHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.ServerWorld;
-import net.minecraft.world.chunk.ChunkManager;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 
-import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
-public class FluidPipeTileEntity extends TileEntity implements ITickableTileEntity
+public class FluidPipeTileEntity extends FluidTankTileEntity implements ITickableTileEntity
 {
-    private float capacity, allowedTransferAmount;
-    private boolean[] disabledConnections;
-    
-    private float fluidAmount = 0.0F;
+    private boolean north = false, east = false, south = false, west = false, up = false, down = false;
     
     public FluidPipeTileEntity()
     {
-        super(ModTileEntities.FLUID_PIPE);
-        capacity = 500.0F;
-        allowedTransferAmount = 20.0F;
-        disabledConnections = new boolean[Direction.values().length];
+        super(ModTileEntities.FLUID_PIPE, 128, 128);
     }
     
-    public static boolean[] getDisabledConnections(FluidPipeTileEntity fluidPipe)
+    public void setNorth(boolean north)
     {
-        return fluidPipe != null ? fluidPipe.getDisabledConnections() : new boolean[Direction.values().length];
+        this.north = north;
+        markDirty();
     }
     
-    public boolean[] getDisabledConnections()
+    public void setEast(boolean east)
     {
-        return disabledConnections;
+        this.east = east;
+        markDirty();
     }
     
-    public boolean isConnectionDisabled(int index)
+    public void setSouth(boolean south)
     {
-        return disabledConnections[index];
+        this.south = south;
+        markDirty();
     }
     
-    public boolean isConnectionDisabled(Direction direction)
+    public void setWest(boolean west)
     {
-        return disabledConnections[direction.getIndex()];
+        this.west = west;
+        markDirty();
     }
     
-    public void setConnectionDisabled(int index, boolean disabled)
+    public void setUp(boolean up)
     {
-        disabledConnections[index] = disabled;
-        syncToClient();
+        this.up = up;
+        markDirty();
     }
     
-    public void setConnectionDisabled(Direction direction, boolean disabled)
+    public void setDown(boolean down)
     {
-        setConnectionDisabled(direction.getIndex(), disabled);
+        this.down = down;
+        markDirty();
     }
     
-    public void fillTank()
+    public boolean isNorth()
     {
-        fluidAmount = capacity;
-        syncToClient();
+        return north;
     }
     
-    public void emptyTank()
+    public boolean isEast()
     {
-        fluidAmount = 0.0F;
-        syncToClient();
+        return east;
     }
     
-    public float addFluid(float amount)
+    public boolean isSouth()
     {
-        float r = (fluidAmount + amount) - capacity;
-        if(fluidAmount + amount <= capacity)
-        {
-            fluidAmount += amount;
-            syncToClient();
-            return 0.0F;
-        }
-        else
-        {
-            fillTank();
-            return r;
-        }
+        return south;
     }
     
-    public float removeFluid(float amount)
+    public boolean isWest()
     {
-        float r = (fluidAmount - amount) * -1;
-        if(fluidAmount >= amount)
-        {
-            fluidAmount -= amount;
-            syncToClient();
-            return 0.0F;
-        }
-        else
-        {
-            emptyTank();
-            return r;
-        }
+        return west;
     }
     
-    public float getCapacity()
+    public boolean isUp()
     {
-        return capacity;
+        return up;
     }
     
-    public float getFluidAmount()
+    public boolean isDown()
     {
-        return fluidAmount;
-    }
-    
-    public ResourceLocation getStill()
-    {
-        return new ResourceLocation("block/water_still");
-    }
-    
-    public ResourceLocation getFlowing()
-    {
-        return new ResourceLocation("block/water_flow");
-    }
-    
-    @Override
-    public void tick()
-    {
-        BlockState state = world.getBlockState(pos);
-        if(state.getBlock() instanceof FluidPipeBlock)
-        {
-            int numConnectedPipes = 0;
-            FluidPipeTileEntity fluidPipeNorth = null, fluidPipeEast = null, fluidPipeSouth = null, fluidPipeWest = null;
-            FluidTankTileEntity fluidTankNorth = null, fluidTankEast = null, fluidTankSouth = null, fluidTankWest = null;
-            if(state.get(FluidPipeBlock.NORTH))
-            {
-                TileEntity tileEntity = world.getTileEntity(pos.offset(Direction.NORTH));
-                if(tileEntity instanceof FluidPipeTileEntity)
-                {
-                    fluidPipeNorth = (FluidPipeTileEntity)tileEntity;
-                }
-                else if(tileEntity instanceof FluidTankTileEntity)
-                {
-                    fluidTankNorth = (FluidTankTileEntity)tileEntity;
-                }
-                numConnectedPipes++;
-            }
-            if(state.get(FluidPipeBlock.EAST))
-            {
-                TileEntity tileEntity = world.getTileEntity(pos.offset(Direction.EAST));
-                if(tileEntity instanceof FluidPipeTileEntity)
-                {
-                    fluidPipeEast = (FluidPipeTileEntity)tileEntity;
-                }
-                else if(tileEntity instanceof FluidTankTileEntity)
-                {
-                    fluidTankEast = (FluidTankTileEntity)tileEntity;
-                }
-                numConnectedPipes++;
-            }
-            if(state.get(FluidPipeBlock.SOUTH))
-            {
-                TileEntity tileEntity = world.getTileEntity(pos.offset(Direction.SOUTH));
-                if(tileEntity instanceof FluidPipeTileEntity)
-                {
-                    fluidPipeSouth = (FluidPipeTileEntity)tileEntity;
-                }
-                else if(tileEntity instanceof FluidTankTileEntity)
-                {
-                    fluidTankSouth = (FluidTankTileEntity)tileEntity;
-                }
-                numConnectedPipes++;
-            }
-            if(state.get(FluidPipeBlock.WEST))
-            {
-                TileEntity tileEntity = world.getTileEntity(pos.offset(Direction.WEST));
-                if(tileEntity instanceof FluidPipeTileEntity)
-                {
-                    fluidPipeWest = (FluidPipeTileEntity)tileEntity;
-                }
-                else if(tileEntity instanceof FluidTankTileEntity)
-                {
-                    fluidTankWest = (FluidTankTileEntity)tileEntity;
-                }
-                numConnectedPipes++;
-            }
-            if(fluidAmount != 0)
-            {
-                float transferAmount;
-                if(fluidAmount >= 20)
-                {
-                    transferAmount = allowedTransferAmount / numConnectedPipes;
-                }
-                else
-                {
-                    transferAmount = fluidAmount / numConnectedPipes;
-                }
-                if(fluidPipeNorth != null || fluidPipeEast != null || fluidPipeSouth != null || fluidPipeWest != null)
-                {
-                    if(fluidPipeNorth != null)
-                    {
-                        if(fluidPipeNorth.getFluidAmount() < fluidAmount && fluidPipeNorth.getFluidAmount() + 10 < fluidAmount)
-                        {
-                            fluidAmount -= transferAmount;
-                            transferAmount += (fluidPipeNorth.addFluid(transferAmount) / 3);
-                        }
-                    }
-                    if(fluidPipeEast != null)
-                    {
-                        if(fluidPipeEast.getFluidAmount() < fluidAmount && fluidPipeEast.getFluidAmount() + 10 < fluidAmount)
-                        {
-                            fluidAmount -= transferAmount;
-                            transferAmount += (fluidPipeEast.addFluid(transferAmount) / 3);
-                        }
-                    }
-                    if(fluidPipeSouth != null)
-                    {
-                        if(fluidPipeSouth.getFluidAmount() < fluidAmount && fluidPipeSouth.getFluidAmount() + 10 < fluidAmount)
-                        {
-                            fluidAmount -= transferAmount;
-                            transferAmount += (fluidPipeSouth.addFluid(transferAmount) / 3);
-                        }
-                    }
-                    if(fluidPipeWest != null)
-                    {
-                        if(fluidPipeWest.getFluidAmount() < fluidAmount && fluidPipeWest.getFluidAmount() + 10 < fluidAmount)
-                        {
-                            fluidAmount -= transferAmount;
-                            transferAmount += (fluidPipeWest.addFluid(transferAmount));
-                        }
-                    }
-                    syncToClient();
-                }
-            }
-    
-            if(fluidTankNorth != null || fluidTankEast != null || fluidTankSouth != null || fluidTankWest != null)
-            {
-                if(fluidAmount != capacity)
-                {
-                    float fluidRemaining = capacity - fluidAmount;
-                    if(fluidRemaining > 20)
-                    {
-                        fluidRemaining = 20;
-                    }
-                    float getEach;
-                    int nonNull = 0;
-                    if(fluidTankNorth != null)
-                    {
-                        nonNull++;
-                    }
-                    if(fluidTankEast != null)
-                    {
-                        nonNull++;
-                    }
-                    if(fluidTankSouth != null)
-                    {
-                        nonNull++;
-                    }
-                    if(fluidTankWest != null)
-                    {
-                        nonNull++;
-                    }
-                    getEach = fluidRemaining / (float)nonNull;
-                    if(fluidTankNorth != null)
-                    {
-                        nonNull--;
-                        float removedFluid = fluidTankNorth.removeFluid(getEach);
-                        addFluid(getEach - removedFluid);
-                        if(removedFluid != 0.0F)
-                        {
-                            getEach += removedFluid / nonNull;
-                        }
-                    }
-                    if(fluidTankEast != null)
-                    {
-                        nonNull--;
-                        float removedFluid = fluidTankEast.removeFluid(getEach);
-                        addFluid(getEach - removedFluid);
-                        if(removedFluid != 0.0F)
-                        {
-                            getEach += removedFluid / nonNull;
-                        }
-                    }
-                    if(fluidTankSouth != null)
-                    {
-                        nonNull--;
-                        float removedFluid = fluidTankSouth.removeFluid(getEach);
-                        addFluid(getEach - removedFluid);
-                        if(removedFluid != 0.0F)
-                        {
-                            getEach += removedFluid / nonNull;
-                        }
-                    }
-                    if(fluidTankWest != null)
-                    {
-                        nonNull--;
-                        float removedFluid = fluidTankWest.removeFluid(getEach);
-                        addFluid(getEach - removedFluid);
-                        if(removedFluid != 0.0F)
-                        {
-                            getEach += removedFluid / nonNull;
-                        }
-                    }
-                    syncToClient();
-                }
-            }
-        }
-        else
-        {
-            System.out.println(state.getBlock().getRegistryName());
-        }
-    }
-    
-    @Override
-    public void read(CompoundNBT compound)
-    {
-        super.read(compound);
-        if(compound.contains("FluidAmount", Constants.NBT.TAG_FLOAT))
-        {
-            this.fluidAmount = compound.getFloat("FluidAmount");
-        }
-        byte[] byteArr = compound.getByteArray("disabledConnections");
-        for(int i = 0; i < byteArr.length; i++)
-        {
-            disabledConnections[i] = byteArr[i] == (byte)1;
-        }
+        return down;
     }
     
     @Override
     public CompoundNBT write(CompoundNBT compound)
     {
         super.write(compound);
-        compound.putFloat("FluidAmount", fluidAmount);
-        byte[] byteArr = new byte[disabledConnections.length];
-        for(int i = 0; i < byteArr.length; i++)
-        {
-            byteArr[i] = (byte)(disabledConnections[i] ? 1 : 0);
-        }
-        compound.putByteArray("disabledConnections", byteArr);
+        compound.putBoolean("North", north);
+        compound.putBoolean("East", east);
+        compound.putBoolean("South", south);
+        compound.putBoolean("West", west);
+        compound.putBoolean("Up", up);
+        compound.putBoolean("Down", down);
         return compound;
+    }
+    
+    @Override
+    public void read(CompoundNBT compound)
+    {
+        super.read(compound);
+        north = compound.getBoolean("North");
+        east = compound.getBoolean("East");
+        south = compound.getBoolean("South");
+        west = compound.getBoolean("West");
+        up = compound.getBoolean("Up");
+        down = compound.getBoolean("Down");
+    }
+    
+    @Override
+    public void tick()
+    {
+        if(this.getFluidAmount() > 0)
+        {
+            extractAnywhereConnected(this);
+            syncToClient();
+        }
+    }
+    
+    public static Direction[] faces = {Direction.UP, Direction.DOWN, Direction.WEST, Direction.SOUTH, Direction.NORTH, Direction.EAST};
+    public static int extractAnywhereConnected(FluidPipeTileEntity conduit)
+    {
+        List<BlockPos> conduits = new ArrayList<BlockPos>();
+        conduits.add(conduit.getPos());
+        vein(conduit.getWorld(), conduits, null);
+        
+        int given = 0;
+        for(BlockPos bpos : conduits)
+        {
+            given += FluidHelper.giveEnergyAllSidesCond(conduit, conduit.getWorld(), bpos);
+        }
+        return given;
+    }
+    public static void vein(IBlockReader world, List<BlockPos> conduits, List<BlockPos> dconduits)
+    {
+        if(dconduits == null) dconduits = new ArrayList<BlockPos>();
+        for(Direction face : faces)
+        {
+            List<BlockPos> tconduits = new ArrayList<BlockPos>();
+            for(BlockPos bp : conduits.toArray(new BlockPos[] {}))
+            {
+                tconduits.add(bp);
+            }
+            for(BlockPos pos : tconduits)
+            {
+                if(world.getTileEntity(pos.offset(face)) instanceof FluidPipeTileEntity && !dconduits.contains(pos.offset(face)))
+                {
+                    conduits.add(pos.offset(face));
+                    dconduits.add(pos.offset(face));
+                    vein(world, conduits, dconduits);
+                }
+            }
+        }
     }
     
     @Override
@@ -350,32 +166,6 @@ public class FluidPipeTileEntity extends TileEntity implements ITickableTileEnti
         return write(new CompoundNBT());
     }
     
-    public void syncToClient()
-    {
-        this.markDirty();
-        if(!world.isRemote)
-        {
-            if(world instanceof ServerWorld)
-            {
-                ServerWorld server = (ServerWorld)world;
-                ChunkPos chunkPos = new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4);
-                ChunkManager manager = (server.getChunkProvider()).chunkManager;
-                if(world.getTileEntity(this.getPos()) instanceof FluidPipeTileEntity)
-                {
-                    if(manager != null)
-                    {
-                        SUpdateTileEntityPacket packet = getUpdatePacket();
-                        if(packet != null)
-                        {
-                            manager.getTrackingPlayers(chunkPos, false).forEach(e -> e.connection.sendPacket(packet));
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-    @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket()
     {
@@ -383,8 +173,22 @@ public class FluidPipeTileEntity extends TileEntity implements ITickableTileEnti
     }
     
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet)
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt)
     {
-        read(packet.getNbtCompound());
+        read(pkt.getNbtCompound());
+        notifyBlockUpdate();
+    }
+    
+    private void notifyBlockUpdate()
+    {
+        final BlockState state = getWorld().getBlockState(getPos());
+        getWorld().notifyBlockUpdate(getPos(), state, state, 3);
+    }
+    
+    @Override
+    public void markDirty()
+    {
+        super.markDirty();
+        notifyBlockUpdate();
     }
 }

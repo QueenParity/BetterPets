@@ -5,7 +5,7 @@ import com.kingparity.betterpets.block.FluidPipeBlock;
 import com.kingparity.betterpets.block.PetResourcesCrafterBlock;
 import com.kingparity.betterpets.block.WaterCollectorBlock;
 import com.kingparity.betterpets.block.WaterFilterBlock;
-import com.kingparity.betterpets.util.BlockNames;
+import com.kingparity.betterpets.names.BlockNames;
 import com.kingparity.betterpets.util.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;

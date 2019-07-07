@@ -1,4 +1,6 @@
-package com.kingparity.betterpets.util;
+package com.kingparity.betterpets.names;
+
+import com.kingparity.betterpets.util.Reference;
 
 public class BlockNames
 {
