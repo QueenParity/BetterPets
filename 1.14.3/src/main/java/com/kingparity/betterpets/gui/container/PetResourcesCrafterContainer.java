@@ -1,8 +1,8 @@
 package com.kingparity.betterpets.gui.container;
 
-import com.kingparity.betterpets.gui.slot.PetResourcesInputSlot;
-import com.kingparity.betterpets.gui.slot.BetterPetResultSlot;
 import com.kingparity.betterpets.core.ModContainers;
+import com.kingparity.betterpets.gui.slot.BetterPetResultSlot;
+import com.kingparity.betterpets.gui.slot.PetResourcesInputSlot;
 import com.kingparity.betterpets.tileentity.PetResourcesCrafterTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;

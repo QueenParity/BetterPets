@@ -29,27 +29,27 @@
         },
 		{
             "when": { "up": "false" },
-            "apply": { "model": "betterpets:block/pipe_glass", "x": -90 }
+            "apply": { "model": "betterpets:block/pipe_edge", "x": -90 }
         },
         {
             "when": { "down": "false" },
-            "apply": { "model": "betterpets:block/pipe_glass", "x": 90 }
+            "apply": { "model": "betterpets:block/pipe_edge", "x": 90 }
         },
         {
             "when": { "north": "false" },
-            "apply": { "model": "betterpets:block/pipe_glass" }
+            "apply": { "model": "betterpets:block/pipe_edge" }
         },
         {
             "when": { "east": "false" },
-            "apply": { "model": "betterpets:block/pipe_glass", "y": 90 }
+            "apply": { "model": "betterpets:block/pipe_edge", "y": 90 }
         },
         {
             "when": { "south": "false" },
-            "apply": { "model": "betterpets:block/pipe_glass", "y": 180 }
+            "apply": { "model": "betterpets:block/pipe_edge", "y": 180 }
         },
         {
             "when": { "west": "false" },
-            "apply": { "model": "betterpets:block/pipe_glass", "y": -90 }
+            "apply": { "model": "betterpets:block/pipe_edge", "y": -90 }
         }
     ]
 }

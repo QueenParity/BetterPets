@@ -1,7 +1,7 @@
 package com.kingparity.betterpets.tileentity;
 
-import com.kingparity.betterpets.gui.container.PetResourcesCrafterContainer;
 import com.kingparity.betterpets.core.ModTileEntities;
+import com.kingparity.betterpets.gui.container.PetResourcesCrafterContainer;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 

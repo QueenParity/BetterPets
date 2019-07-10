@@ -1,7 +1,7 @@
 package com.kingparity.betterpets.client.renderer.tileentity;
 
-import com.kingparity.betterpets.block.FluidPipeBlock;
-import com.kingparity.betterpets.tileentity.FluidPipeTileEntity;
+import com.kingparity.betterpets.block.FluidPumpBlock;
+import com.kingparity.betterpets.tileentity.FluidPumpTileEntity;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -17,13 +17,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.BiomeColors;
 import org.lwjgl.opengl.GL11;
 
-public class FluidPipeTESR extends TileEntityRenderer<FluidPipeTileEntity>
+public class FluidPumpTESR extends TileEntityRenderer<FluidPumpTileEntity>
 {
     @Override
-    public void render(FluidPipeTileEntity fluidPipe, double x, double y, double z, float partialTicks, int destroyStage)
+    public void render(FluidPumpTileEntity fluidPump, double x, double y, double z, float partialTicks, int destroyStage)
     {
-        BlockState state = fluidPipe.getWorld().getBlockState(fluidPipe.getPos());
-        if(!(state.getBlock() instanceof FluidPipeBlock))
+        BlockState state = fluidPump.getWorld().getBlockState(fluidPump.getPos());
+        if(!(state.getBlock() instanceof FluidPumpBlock))
         {
             return;
         }
@@ -36,73 +36,29 @@ public class FluidPipeTESR extends TileEntityRenderer<FluidPipeTileEntity>
             GlStateManager.enableBlend();
             GlStateManager.enableAlphaTest();
             GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-            BlockState fluidPipeState = fluidPipe.getWorld().getBlockState(fluidPipe.getPos());
-            boolean north = fluidPipeState.get(FluidPipeBlock.NORTH);
-            boolean east = fluidPipeState.get(FluidPipeBlock.EAST);
-            boolean south = fluidPipeState.get(FluidPipeBlock.SOUTH);
-            boolean west = fluidPipeState.get(FluidPipeBlock.WEST);
-            boolean up = fluidPipeState.get(FluidPipeBlock.UP);
-            boolean down = fluidPipeState.get(FluidPipeBlock.DOWN);
+            BlockState fluidPumpState = fluidPump.getWorld().getBlockState(fluidPump.getPos());
             
-            double height = 3 * (fluidPipe.getFluidAmount() / (double)fluidPipe.getCapacity());
+            double height = 3 * (fluidPump.getFluidAmount() / (double)fluidPump.getCapacity());
             if(height > 0)
             {
-                drawBox(fluidPipe, 6.51 * 0.0625, 6.51 * 0.0625, 6.51 * 0.0625, (3 - 0.02) * 0.0625, (height - 0.02) * 0.0625, (3 - 0.02) * 0.0625, !north, !east, !south, !west, !up, !down);
+                //drawBox(fluidPump, 6.51 * 0.0625, 6.51 * 0.0625, 6.51 * 0.0625, (3 - 0.02) * 0.0625, (height - 0.02) * 0.0625, (3 - 0.02) * 0.0625, false, true, false, true, true, true);
                 
-                for(Direction direction : Direction.values())
+                GlStateManager.translated(0.5, 0.5, 0.5);
+                Direction rotation = fluidPumpState.get(FluidPumpBlock.FACING);
+                if(rotation.getHorizontalIndex() != -1)
                 {
-                    GlStateManager.pushMatrix();
-                    {
-                        GlStateManager.translated(0.5, 0.5, 0.5);
-                        Direction rotation;
-                        if(north && direction == Direction.NORTH)
-                        {
-                            rotation = Direction.EAST;
-                        }
-                        else if(east && direction == Direction.EAST)
-                        {
-                            rotation = Direction.SOUTH;
-                        }
-                        else if(south && direction == Direction.SOUTH)
-                        {
-                            rotation = Direction.WEST;
-                        }
-                        else if(west && direction == Direction.WEST)
-                        {
-                            rotation = Direction.NORTH;
-                        }
-                        else if(up && direction == Direction.UP)
-                        {
-                            rotation = Direction.UP;
-                        }
-                        else if(down && direction == Direction.DOWN)
-                        {
-                            rotation = Direction.DOWN;
-                        }
-                        else
-                        {
-                            rotation = null;
-                        }
-                        if(rotation != null)
-                        {
-                            if(rotation.getHorizontalIndex() != -1)
-                            {
-                                GlStateManager.rotatef(rotation.getHorizontalIndex() * -90F - 90F, 0, 1, 0);
-                            }
-                            else if(rotation == Direction.DOWN)
-                            {
-                                GlStateManager.rotatef(-90F, 1, 0, 0);
-                            }
-                            else
-                            {
-                                GlStateManager.rotatef(90F, 1, 0, 0);
-                            }
-                            GlStateManager.translated(-0.5, -0.5, -0.5);
-                            drawBox(fluidPipe, 6.51 * 0.0625, 6.51 * 0.0625, 0, (3 - 0.02) * 0.0625, (height - 0.02) * 0.0625, 6.51 * 0.0625, false, true, false, true, true, true);
-                        }
-                    }
-                    GlStateManager.popMatrix();
+                    GlStateManager.rotatef(rotation.getHorizontalIndex() * -90F + 180F, 0, 1, 0);
                 }
+                else if(rotation == Direction.DOWN)
+                {
+                    GlStateManager.rotatef(-90F, 1, 0, 0);
+                }
+                else
+                {
+                    GlStateManager.rotatef(90F, 1, 0, 0);
+                }
+                GlStateManager.translated(-0.5, -0.5, -0.5);
+                drawBox(fluidPump, 6.51 * 0.0625, 6.51 * 0.0625, 0, (3 - 0.02) * 0.0625, (height - 0.02) * 0.0625, 9.49 * 0.0625, false, true, true, true, true, true);
             }
             
             GlStateManager.disableBlend();
@@ -111,18 +67,18 @@ public class FluidPipeTESR extends TileEntityRenderer<FluidPipeTileEntity>
         GlStateManager.popMatrix();
     }
     
-    private void drawBox(FluidPipeTileEntity fluidPipe, double x, double y, double z, double width, double height, double depth, boolean north, boolean east, boolean south, boolean west, boolean up, boolean down)
+    private void drawBox(FluidPumpTileEntity fluidPump, double x, double y, double z, double width, double height, double depth, boolean north, boolean east, boolean south, boolean west, boolean up, boolean down)
     {
-        if(fluidPipe.getFluidAmount() == 0.0F)
+        if(fluidPump.getFluidAmount() == 0.0F)
         {
             return;
         }
         
-        ResourceLocation resource = fluidPipe.getStill();
+        ResourceLocation resource = fluidPump.getStill();
         TextureAtlasSprite sprite = Minecraft.getInstance().getTextureMap().getAtlasSprite(resource.toString());
         if(sprite != null)
         {
-            int i = BiomeColors.getWaterColor(fluidPipe.getWorld(), fluidPipe.getPos());
+            int i = BiomeColors.getWaterColor(fluidPump.getWorld(), fluidPump.getPos());
             float f = (float)(i >> 16 & 255) / 255.0F;
             float f1 = (float)(i >> 8 & 255) / 255.0F;
             float f2 = (float)(i & 255) / 255.0F;
@@ -133,7 +89,7 @@ public class FluidPipeTESR extends TileEntityRenderer<FluidPipeTileEntity>
             double maxV = Math.min(minV + (sprite.getMaxV() - minV) * height, sprite.getMaxV());
             
             Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-            int light = getWorld().getCombinedLight(fluidPipe.getPos(), Blocks.WATER.getDefaultState().getLightValue());
+            int light = getWorld().getCombinedLight(fluidPump.getPos(), Blocks.WATER.getDefaultState().getLightValue());
             int lightX = light >> 0x10 & 0xFFFF;
             int lightY = light & 0xFFFF;
             

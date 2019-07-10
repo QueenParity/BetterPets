@@ -2,7 +2,6 @@ package com.kingparity.betterpets.client.renderer.tileentity;
 
 import com.kingparity.betterpets.block.PetHorizontalBlock;
 import com.kingparity.betterpets.block.WaterFilterBlock;
-import com.kingparity.betterpets.core.ModBlocks;
 import com.kingparity.betterpets.tileentity.WaterFilterTileEntity;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BlockState;

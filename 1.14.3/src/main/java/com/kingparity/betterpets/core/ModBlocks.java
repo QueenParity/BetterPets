@@ -1,10 +1,7 @@
 package com.kingparity.betterpets.core;
 
 import com.kingparity.betterpets.BetterPetMod;
-import com.kingparity.betterpets.block.FluidPipeBlock;
-import com.kingparity.betterpets.block.PetResourcesCrafterBlock;
-import com.kingparity.betterpets.block.WaterCollectorBlock;
-import com.kingparity.betterpets.block.WaterFilterBlock;
+import com.kingparity.betterpets.block.*;
 import com.kingparity.betterpets.names.BlockNames;
 import com.kingparity.betterpets.util.Reference;
 import net.minecraft.block.Block;
@@ -32,6 +29,9 @@ public class ModBlocks
     public static final Block.Properties STONE = Block.Properties.create(STONE_MATERIAL).hardnessAndResistance(1.0F).sound(SoundType.STONE);
     
     private static final List<Block> BLOCKS = new LinkedList<>();
+    
+    @ObjectHolder(BlockNames.PET_RESOURCES_CRAFTER)
+    public static final Block PET_RESOURCES_CRAFTER = null;
     
     @ObjectHolder(BlockNames.WATER_COLLECTOR_OAK)
     public static final Block WATER_COLLECTOR_OAK = null;
@@ -132,8 +132,8 @@ public class ModBlocks
     @ObjectHolder(BlockNames.FLUID_PIPE)
     public static final Block FLUID_PIPE = null;
     
-    @ObjectHolder(BlockNames.PET_RESOURCES_CRAFTER)
-    public static final Block PET_RESOURCES_CRAFTER = null;
+    @ObjectHolder(BlockNames.FLUID_PUMP)
+    public static final Block FLUID_PUMP = null;
     
     @SubscribeEvent
     public static void registerBlocks(final RegistryEvent.Register<Block> event)
@@ -177,6 +177,8 @@ public class ModBlocks
         register(BlockNames.PET_RESOURCES_CRAFTER, new PetResourcesCrafterBlock(STONE));
     
         register(BlockNames.FLUID_PIPE, new FluidPipeBlock(STONE));
+    
+        register(BlockNames.FLUID_PUMP, new FluidPumpBlock(STONE));
         
         BLOCKS.forEach(block -> event.getRegistry().register(block));
     }

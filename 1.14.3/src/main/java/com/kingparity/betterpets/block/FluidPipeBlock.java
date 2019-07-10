@@ -1,10 +1,9 @@
 package com.kingparity.betterpets.block;
 
 import com.kingparity.betterpets.core.ModTileEntities;
+import com.kingparity.betterpets.tileentity.FluidHolderTileEntity;
 import com.kingparity.betterpets.tileentity.FluidPipeTileEntity;
-import com.kingparity.betterpets.tileentity.FluidTankTileEntity;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItemUseContext;
@@ -12,7 +11,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
@@ -23,68 +21,61 @@ import javax.annotation.Nullable;
 
 public class FluidPipeBlock extends PetWaterloggedBlock
 {
-    public static final BooleanProperty north = BooleanProperty.create("north");
-    public static final BooleanProperty east = BooleanProperty.create("east");
-    public static final BooleanProperty south = BooleanProperty.create("south");
-    public static final BooleanProperty west = BooleanProperty.create("west");
-    public static final BooleanProperty up = BooleanProperty.create("up");
-    public static final BooleanProperty down = BooleanProperty.create("down");
+    public static final BooleanProperty NORTH = BooleanProperty.create("north");
+    public static final BooleanProperty EAST = BooleanProperty.create("east");
+    public static final BooleanProperty SOUTH = BooleanProperty.create("south");
+    public static final BooleanProperty WEST = BooleanProperty.create("west");
+    public static final BooleanProperty UP = BooleanProperty.create("up");
+    public static final BooleanProperty DOWN = BooleanProperty.create("down");
     
     public FluidPipeBlock(Properties properties)
     {
         super(properties);
-        this.setDefaultState(this.getStateContainer().getBaseState().with(north, false).with(east, false).with(south, false).with(west, false).with(up, false).with(down, false));
+        this.setDefaultState(this.getStateContainer().getBaseState().with(NORTH, false).with(EAST, false).with(SOUTH, false).with(WEST, false).with(UP, false).with(DOWN, false));
     }
     
     @Override
-    public BlockState updatePostPlacement(BlockState state, Direction direction, BlockState newState, IWorld world, BlockPos pos, BlockPos newPos)
+    public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState newState, IWorld world, BlockPos pos, BlockPos newPos)
     {
-        FluidPipeTileEntity te = (FluidPipeTileEntity)world.getTileEntity(pos);
-        boolean u = false;
-        boolean d = false;
-        boolean n = false;
-        boolean s = false;
-        boolean w = false;
-        boolean e = false;
-        for(Direction face : FluidPipeTileEntity.faces)
+        boolean north = false;
+        boolean east = false;
+        boolean south = false;
+        boolean west = false;
+        boolean up = false;
+        boolean down = false;
+        for(Direction face : Direction.values())
         {
-            BlockPos fp = pos.offset(face);
-            TileEntity te2 = world.getTileEntity(fp);
-            if(te2 != null)
+            BlockPos adjacentPos = pos.offset(face);
+            TileEntity adjacentTileEntity = world.getTileEntity(adjacentPos);
+            if(adjacentTileEntity != null)
             {
-                if(te2 instanceof FluidTankTileEntity)
+                if(adjacentTileEntity instanceof FluidHolderTileEntity)
                 {
                     switch(face)
                     {
-                        case DOWN:
-                            d = true;
-                            break;
-                        case UP:
-                            u = true;
-                            break;
                         case NORTH:
-                            n = true;
-                            break;
-                        case SOUTH:
-                            s = true;
-                            break;
-                        case WEST:
-                            w = true;
+                            north = true;
                             break;
                         case EAST:
-                            e = true;
+                            east = true;
+                            break;
+                        case SOUTH:
+                            south = true;
+                            break;
+                        case WEST:
+                            west = true;
+                            break;
+                        case UP:
+                            up = true;
+                            break;
+                        case DOWN:
+                            down = true;
                             break;
                     }
                 }
             }
         }
-        te.setUp(u);
-        te.setDown(d);
-        te.setNorth(n);
-        te.setSouth(s);
-        te.setWest(w);
-        te.setEast(e);
-        return state.with(up, te.isUp()).with(down, te.isDown()).with(north, te.isNorth()).with(south, te.isSouth()).with(west, te.isWest()).with(east, te.isEast());
+        return state.with(NORTH, north).with(EAST, east).with(SOUTH, south).with(WEST, west).with(UP, up).with(DOWN, down);
     }
     
     @Override
@@ -92,109 +83,102 @@ public class FluidPipeBlock extends PetWaterloggedBlock
     {
         World world = context.getWorld();
         BlockPos pos = context.getPos();
-        FluidPipeTileEntity te = (FluidPipeTileEntity)world.getTileEntity(pos);
-        boolean u = false;
-        boolean d = false;
-        boolean n = false;
-        boolean s = false;
-        boolean w = false;
-        boolean e = false;
-        for(Direction face : FluidPipeTileEntity.faces)
+        boolean north = false;
+        boolean east = false;
+        boolean south = false;
+        boolean west = false;
+        boolean up = false;
+        boolean down = false;
+        for(Direction face : Direction.values())
         {
-            BlockPos fp = pos.offset(face);
-            TileEntity te2 = world.getTileEntity(fp);
-            if(te2 != null)
+            BlockPos adjacentPos = pos.offset(face);
+            TileEntity adjacentTileEntity = world.getTileEntity(adjacentPos);
+            if(adjacentTileEntity != null)
             {
-                if(te2 instanceof FluidTankTileEntity)
+                if(adjacentTileEntity instanceof FluidHolderTileEntity)
                 {
                     switch(face)
                     {
-                        case DOWN:
-                            d = true;
-                            break;
-                        case UP:
-                            u = true;
-                            break;
                         case NORTH:
-                            n = true;
-                            break;
-                        case SOUTH:
-                            s = true;
-                            break;
-                        case WEST:
-                            w = true;
+                            north = true;
                             break;
                         case EAST:
-                            e = true;
+                            east = true;
+                            break;
+                        case SOUTH:
+                            south = true;
+                            break;
+                        case WEST:
+                            west = true;
+                            break;
+                        case UP:
+                            up = true;
+                            break;
+                        case DOWN:
+                            down = true;
                             break;
                     }
                 }
             }
         }
-        return super.getStateForPlacement(context).with(up, u).with(down, d).with(north, n).with(south, s).with(west, w).with(east, e);
+        return super.getStateForPlacement(context).with(NORTH, north).with(EAST, east).with(SOUTH, south).with(WEST, west).with(UP, up).with(DOWN, down);
     }
     
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack stack)
     {
-        FluidPipeTileEntity cable = (FluidPipeTileEntity)world.getTileEntity(pos);
-        boolean u = false;
-        boolean d = false;
-        boolean n = false;
-        boolean s = false;
-        boolean w = false;
-        boolean e = false;
-        for(Direction face : FluidPipeTileEntity.faces)
+        FluidPipeTileEntity pipe = (FluidPipeTileEntity)world.getTileEntity(pos);
+        boolean north = false;
+        boolean east = false;
+        boolean south = false;
+        boolean west = false;
+        boolean up = false;
+        boolean down = false;
+        for(Direction face : Direction.values())
         {
-            BlockPos fp = pos.offset(face);
-            TileEntity cable2 = world.getTileEntity(fp);
-            if(cable2 != null)
+            BlockPos adjacentPos = pos.offset(face);
+            TileEntity adjacentTileEntity = world.getTileEntity(adjacentPos);
+            if(adjacentTileEntity != null)
             {
-                if(cable2 instanceof FluidTankTileEntity)
+                if(adjacentTileEntity instanceof FluidHolderTileEntity)
                 {
                     switch(face)
                     {
-                        case DOWN:
-                            d = true;
-                            break;
-                        case UP:
-                            u = true;
-                            break;
                         case NORTH:
-                            n = true;
-                            break;
-                        case SOUTH:
-                            s = true;
-                            break;
-                        case WEST:
-                            w = true;
+                            north = true;
                             break;
                         case EAST:
-                            e = true;
+                            east = true;
+                            break;
+                        case SOUTH:
+                            south = true;
+                            break;
+                        case WEST:
+                            west = true;
+                            break;
+                        case UP:
+                            up = true;
+                            break;
+                        case DOWN:
+                            down = true;
                             break;
                     }
                 }
             }
         }
-        cable.setUp(u);
-        cable.setDown(d);
-        cable.setNorth(n);
-        cable.setSouth(s);
-        cable.setWest(w);
-        cable.setEast(e);
-        world.notifyBlockUpdate(pos, state, state.with(up, cable.isUp()).with(down, cable.isDown()).with(north, cable.isNorth()).with(south, cable.isSouth()).with(west, cable.isWest()).with(east, cable.isEast()), 2);
+        world.notifyBlockUpdate(pos, state, state.with(NORTH, north).with(EAST, east).with(SOUTH, south).with(WEST, west).with(UP, up).with(DOWN, down), 2);
     }
     
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
     {
         super.fillStateContainer(builder);
-        builder.add(north);
-        builder.add(east);
-        builder.add(south);
-        builder.add(west);
-        builder.add(up);
-        builder.add(down);
+        builder.add(NORTH);
+        builder.add(EAST);
+        builder.add(SOUTH);
+        builder.add(WEST);
+        builder.add(UP);
+        builder.add(DOWN);
     }
     
     @Override
@@ -208,17 +192,5 @@ public class FluidPipeBlock extends PetWaterloggedBlock
     public TileEntity createTileEntity(BlockState state, IBlockReader world)
     {
         return ModTileEntities.FLUID_PIPE.create();
-    }
-    
-    @Override
-    public BlockRenderType getRenderType(BlockState state)
-    {
-        return BlockRenderType.MODEL;
-    }
-    
-    @Override
-    public BlockRenderLayer getRenderLayer()
-    {
-        return BlockRenderLayer.CUTOUT;
     }
 }

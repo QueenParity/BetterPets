@@ -1,9 +1,9 @@
 package com.kingparity.betterpets.gui.container;
 
+import com.kingparity.betterpets.core.ModContainers;
 import com.kingparity.betterpets.gui.slot.BetterPetResultSlot;
 import com.kingparity.betterpets.gui.slot.WaterFilterCanteenSlot;
 import com.kingparity.betterpets.gui.slot.WaterFilterFabricSlot;
-import com.kingparity.betterpets.core.ModContainers;
 import com.kingparity.betterpets.tileentity.WaterFilterTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;

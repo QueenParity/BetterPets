@@ -1,9 +1,9 @@
 package com.kingparity.betterpets.entity;
 
+import com.kingparity.betterpets.core.ModEntities;
 import com.kingparity.betterpets.core.ModItems;
 import com.kingparity.betterpets.entity.goals.*;
 import com.kingparity.betterpets.gui.container.BetterWolfContainer;
-import com.kingparity.betterpets.core.ModEntities;
 import com.kingparity.betterpets.item.PetFoodItem;
 import com.kingparity.betterpets.network.PacketHandler;
 import com.kingparity.betterpets.network.message.MessageAttachChest;

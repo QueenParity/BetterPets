@@ -1,14 +1,13 @@
 package com.kingparity.betterpets.tileentity;
 
 import com.kingparity.betterpets.core.ModTileEntities;
-import com.kingparity.betterpets.util.FluidHelper;
 import net.minecraft.tileentity.ITickableTileEntity;
 
-public class WaterCollectorTileEntity extends FluidTankTileEntity implements ITickableTileEntity
+public class WaterCollectorTileEntity extends FluidHolderTileEntity implements ITickableTileEntity
 {
     public WaterCollectorTileEntity()
     {
-        super(ModTileEntities.WATER_COLLECTOR, 12000, 0, 500);
+        super(ModTileEntities.WATER_COLLECTOR, 12000, 500, 500);
     }
     
     @Override
@@ -35,6 +34,5 @@ public class WaterCollectorTileEntity extends FluidTankTileEntity implements ITi
                 }
             }
         }
-        FluidHelper.giveEnergyAllSides(this, getWorld(), getPos());
     }
 }

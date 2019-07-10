@@ -13,29 +13,29 @@ import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 
-public class FluidTankTileEntity extends TileEntity
+public abstract class FluidHolderTileEntity extends TileEntity
 {
     private int capacity;
     private int maxReceive;
     private int maxExtract;
     private int fluidAmount = 0;
     
-    public FluidTankTileEntity(TileEntityType<?> tileEntityType)
+    public FluidHolderTileEntity(TileEntityType<?> tileEntityType)
     {
         this(tileEntityType, 12000);
     }
     
-    public FluidTankTileEntity(TileEntityType<?> tileEntityType, int capacity)
+    public FluidHolderTileEntity(TileEntityType<?> tileEntityType, int capacity)
     {
         this(tileEntityType, capacity, capacity);
     }
     
-    public FluidTankTileEntity(TileEntityType<?> tileEntityType, int capacity, int maxTransfer)
+    public FluidHolderTileEntity(TileEntityType<?> tileEntityType, int capacity, int maxTransfer)
     {
         this(tileEntityType, capacity, maxTransfer, maxTransfer);
     }
     
-    public FluidTankTileEntity(TileEntityType<?> tileEntityType, int capacity, int maxReceive, int maxExtract)
+    public FluidHolderTileEntity(TileEntityType<?> tileEntityType, int capacity, int maxReceive, int maxExtract)
     {
         super(tileEntityType);
         this.capacity = capacity;
@@ -55,33 +55,22 @@ public class FluidTankTileEntity extends TileEntity
         syncToClient();
     }
     
-    public int receiveFluid(int maxReceive)
-    {
-        return receiveFluid(maxReceive, false);
-    }
-    
-    public int receiveFluid(int maxReceive, boolean simulate)
+    public int receiveFluid(int maxReceive, boolean doDrain)
     {
         if(!canReceive())
         {
             return 0;
         }
         int fluidReceived = Math.min(capacity - fluidAmount, Math.min(this.maxReceive, maxReceive));
-        if(!simulate)
+        if(doDrain)
         {
             fluidAmount += fluidReceived;
             syncToClient();
         }
-        //System.out.println("hai: " + fluidReceived);
         return fluidReceived;
     }
     
-    public int extractFluid(int maxExtract)
-    {
-        return extractFluid(maxExtract, true);
-    }
-    
-    public int extractFluid(int maxExtract, boolean simulate)
+    public int extractFluid(int maxExtract, boolean doDrain)
     {
         if(!canExtract())
         {
@@ -89,7 +78,7 @@ public class FluidTankTileEntity extends TileEntity
         }
         
         int fluidExtracted = Math.min(fluidAmount, Math.min(this.maxExtract, maxExtract));
-        if (!simulate)
+        if (doDrain)
         {
             fluidAmount -= fluidExtracted;
             syncToClient();

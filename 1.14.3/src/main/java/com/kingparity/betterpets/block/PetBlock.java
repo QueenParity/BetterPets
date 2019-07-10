@@ -1,7 +1,6 @@
 package com.kingparity.betterpets.block;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;

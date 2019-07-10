@@ -5,6 +5,7 @@ import com.kingparity.betterpets.client.ClientEvents;
 import com.kingparity.betterpets.client.KeyBinds;
 import com.kingparity.betterpets.client.renderer.entity.BetterWolfRenderer;
 import com.kingparity.betterpets.client.renderer.tileentity.FluidPipeTESR;
+import com.kingparity.betterpets.client.renderer.tileentity.FluidPumpTESR;
 import com.kingparity.betterpets.client.renderer.tileentity.WaterCollectorTESR;
 import com.kingparity.betterpets.client.renderer.tileentity.WaterFilterTESR;
 import com.kingparity.betterpets.entity.BetterWolfEntity;
@@ -12,6 +13,7 @@ import com.kingparity.betterpets.gui.container.BetterWolfContainer;
 import com.kingparity.betterpets.gui.screen.BetterWolfScreen;
 import com.kingparity.betterpets.network.message.MessagePetWindow;
 import com.kingparity.betterpets.tileentity.FluidPipeTileEntity;
+import com.kingparity.betterpets.tileentity.FluidPumpTileEntity;
 import com.kingparity.betterpets.tileentity.WaterCollectorTileEntity;
 import com.kingparity.betterpets.tileentity.WaterFilterTileEntity;
 import com.kingparity.betterpets.util.IPetContainer;
@@ -44,6 +46,7 @@ public class ClientProxy extends CommonProxy
         ClientRegistry.bindTileEntitySpecialRenderer(WaterCollectorTileEntity.class, new WaterCollectorTESR());
         ClientRegistry.bindTileEntitySpecialRenderer(WaterFilterTileEntity.class, new WaterFilterTESR());
         ClientRegistry.bindTileEntitySpecialRenderer(FluidPipeTileEntity.class, new FluidPipeTESR());
+        ClientRegistry.bindTileEntitySpecialRenderer(FluidPumpTileEntity.class, new FluidPumpTESR());
         
         KeyBinds.register();
     }

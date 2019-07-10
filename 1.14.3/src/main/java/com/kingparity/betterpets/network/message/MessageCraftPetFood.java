@@ -1,7 +1,7 @@
 package com.kingparity.betterpets.network.message;
 
-import com.kingparity.betterpets.gui.container.PetResourcesCrafterContainer;
 import com.kingparity.betterpets.core.ModItems;
+import com.kingparity.betterpets.gui.container.PetResourcesCrafterContainer;
 import com.kingparity.betterpets.item.PetFoodItem;
 import com.kingparity.betterpets.tileentity.PetResourcesCrafterTileEntity;
 import net.minecraft.entity.player.PlayerEntity;

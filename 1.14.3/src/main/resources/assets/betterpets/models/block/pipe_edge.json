@@ -1,7 +1,7 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "glass": "minecraft:block/glass"
+        "anvil": "minecraft:block/anvil"
     },
     "display": {
         "gui": {
@@ -33,15 +33,10 @@
     "elements": [
         {
             "name": "north_glass",
-            "from": [ 6.5, 6.5, 5.5 ], 
-            "to": [ 9.5, 9.5, 6.5 ], 
+            "from": [ 6.5, 6.5, 5.6 ], 
+            "to": [ 9.5, 9.5, 6.6 ], 
             "faces": {
-                "north": { "texture": "#glass", "uv": [ 2, 2, 5, 5 ] },
-                "east": { "texture": "#glass", "uv": [ 2, 2, 3, 5 ] },
-                "south": { "texture": "#glass", "uv": [ 2, 2, 5, 5 ], "rotation": 270 },
-                "west": { "texture": "#glass", "uv": [ 2, 2, 3, 5 ] },
-                "up": { "texture": "#glass", "uv": [ 0, 0, 3, 1 ] },
-                "down": { "texture": "#glass", "uv": [ 0, 0, 3, 1 ] }
+                "north": { "texture": "#anvil", "uv": [ 11, 1, 14, 4 ] }
             }
         }
     ]
