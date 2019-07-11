@@ -11,6 +11,5 @@ public class TileEntityNames
     public static final String PET_RESOURCES_CRAFTER = Reference.ID + ":pet_resources_crafter";
     
     public static final String FLUID_PIPE = Reference.ID + ":fluid_pipe";
-    
     public static final String FLUID_PUMP = Reference.ID + ":fluid_pump";
 }

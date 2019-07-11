@@ -80,6 +80,23 @@ public class FluidPumpBlock extends DirectionalBlock
         final VoxelShape[] EAST_SIDE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(9.4, 6.5, 6.5, 10.4, 9.5, 9.5), Direction.SOUTH));
         final VoxelShape[] UP_SIDE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(6.5, 9.4, 6.5, 9.5, 10.4, 9.5), Direction.SOUTH));
         final VoxelShape[] DOWN_SIDE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(6.5, 5.6, 6.5, 9.5, 6.6, 9.5), Direction.SOUTH));
+    
+        final VoxelShape[] CONNECTION_SOUTH_WEST_EDGE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(5.5, 5.5, 5.5, 6.5, 10.5, 6.5), Direction.SOUTH));
+        final VoxelShape[] CONNECTION_SOUTH_EAST_EDGE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(9.5, 5.5, 5.5, 10.5, 10.5, 6.5), Direction.SOUTH));
+        final VoxelShape[] CONNECTION_SOUTH_DOWN_EDGE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(6.5, 5.5, 5.5, 9.5, 6.5, 6.5), Direction.SOUTH));
+        final VoxelShape[] CONNECTION_SOUTH_UP_EDGE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(6.5, 9.5, 5.5, 9.5, 10.5, 6.5), Direction.SOUTH));
+        final VoxelShape[] CONNECTION_NORTH_DOWN_EDGE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(6.5, 5.5, 0, 9.5, 6.5, 1), Direction.SOUTH));
+        final VoxelShape[] CONNECTION_NORTH_UP_EDGE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(6.5, 9.5, 0, 9.5, 10.5, 1), Direction.SOUTH));
+        final VoxelShape[] CONNECTION_WEST_DOWN_EDGE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(5.5, 5.5, 1, 6.5, 6.5, 5.5), Direction.SOUTH));
+        final VoxelShape[] CONNECTION_WEST_UP_EDGE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(5.5, 9.5, 1, 6.5, 10.5, 5.5), Direction.SOUTH));
+        final VoxelShape[] CONNECTION_EAST_UP_EDGE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(9.5, 9.5, 1, 10.5, 10.5, 5.5), Direction.SOUTH));
+        final VoxelShape[] CONNECTION_EAST_DOWN_EDGE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(9.5, 5.5, 1, 10.5, 6.5, 5.5), Direction.SOUTH));
+        final VoxelShape[] CONNECTION_NORTH_WEST_EDGE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(5.5, 5.5, 0, 6.5, 10.5, 1), Direction.SOUTH));
+        final VoxelShape[] CONNECTION_NORTH_EAST_EDGE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(9.5, 5.5, 0, 10.5, 10.5, 1), Direction.SOUTH));
+        final VoxelShape[] CONNECTION_UP_GLASS = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(6.5, 9.4, 1, 9.5, 10.4, 5.5), Direction.SOUTH));
+        final VoxelShape[] CONNECTION_DOWN_GLASS = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(6.5, 5.6, 1, 9.5, 6.6, 5.5), Direction.SOUTH));
+        final VoxelShape[] CONNECTION_WEST_GLASS = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(5.6, 6.5, 1, 6.6, 9.5, 5.5), Direction.SOUTH));
+        final VoxelShape[] CONNECTION_EAST_GLASS = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(9.4, 6.5, 1, 10.4, 9.5, 5.5), Direction.SOUTH));
         
         ImmutableMap.Builder<BlockState, VoxelShape> builder = new ImmutableMap.Builder<>();
         for(BlockState state : states)
@@ -112,6 +129,30 @@ public class FluidPumpBlock extends DirectionalBlock
             shapes.add(EAST_SIDE[direction.getIndex()]);
             shapes.add(UP_SIDE[direction.getIndex()]);
             shapes.add(DOWN_SIDE[direction.getIndex()]);
+    
+            for(Direction connected_pipes : Direction.values())
+            {
+                if(state.get(CONNECTED_PIPES[connected_pipes.getIndex()]))
+                {
+                    shapes.add(CONNECTION_SOUTH_WEST_EDGE[connected_pipes.getIndex()]);
+                    shapes.add(CONNECTION_SOUTH_EAST_EDGE[connected_pipes.getIndex()]);
+                    shapes.add(CONNECTION_SOUTH_DOWN_EDGE[connected_pipes.getIndex()]);
+                    shapes.add(CONNECTION_SOUTH_UP_EDGE[connected_pipes.getIndex()]);
+                    shapes.add(CONNECTION_NORTH_DOWN_EDGE[connected_pipes.getIndex()]);
+                    shapes.add(CONNECTION_NORTH_UP_EDGE[connected_pipes.getIndex()]);
+                    shapes.add(CONNECTION_WEST_DOWN_EDGE[connected_pipes.getIndex()]);
+                    shapes.add(CONNECTION_WEST_UP_EDGE[connected_pipes.getIndex()]);
+                    shapes.add(CONNECTION_EAST_UP_EDGE[connected_pipes.getIndex()]);
+                    shapes.add(CONNECTION_EAST_DOWN_EDGE[connected_pipes.getIndex()]);
+                    shapes.add(CONNECTION_NORTH_WEST_EDGE[connected_pipes.getIndex()]);
+                    shapes.add(CONNECTION_NORTH_EAST_EDGE[connected_pipes.getIndex()]);
+                    shapes.add(CONNECTION_UP_GLASS[connected_pipes.getIndex()]);
+                    shapes.add(CONNECTION_DOWN_GLASS[connected_pipes.getIndex()]);
+                    shapes.add(CONNECTION_WEST_GLASS[connected_pipes.getIndex()]);
+                    shapes.add(CONNECTION_EAST_GLASS[connected_pipes.getIndex()]);
+                }
+            }
+            
             builder.put(state, VoxelShapeHelper.combineAll(shapes));
         }
         return builder.build();
@@ -124,7 +165,7 @@ public class FluidPumpBlock extends DirectionalBlock
     }
     
     @Override
-    public VoxelShape getRenderShape(BlockState state, IBlockReader reader, BlockPos pos)
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context)
     {
         return SHAPES.get(state);
     }
@@ -168,6 +209,10 @@ public class FluidPumpBlock extends DirectionalBlock
                             state = state.with(CONNECTED_PIPES[direction.getIndex()], true);
                         }
                     }
+                }
+                else
+                {
+                    state = state.with(CONNECTED_PIPES[direction.getIndex()], false);
                 }
             }
         }

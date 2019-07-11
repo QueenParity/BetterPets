@@ -7,6 +7,7 @@ import com.kingparity.betterpets.tileentity.WaterCollectorTileEntity;
 import com.kingparity.betterpets.util.VoxelShapeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
@@ -135,6 +136,12 @@ public class WaterCollectorBlock extends PetHorizontalBlock
     }
     
     @Override
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context)
+    {
+        return SHAPES.get(state);
+    }
+    
+    @Override
     public VoxelShape getRenderShape(BlockState state, IBlockReader reader, BlockPos pos)
     {
         return SHAPES.get(state);
@@ -203,5 +210,11 @@ public class WaterCollectorBlock extends PetHorizontalBlock
     public boolean hasTileEntity(BlockState state)
     {
         return true;
+    }
+    
+    @Override
+    public boolean addDestroyEffects(BlockState state, World world, BlockPos pos, ParticleManager manager)
+    {
+        return false;
     }
 }

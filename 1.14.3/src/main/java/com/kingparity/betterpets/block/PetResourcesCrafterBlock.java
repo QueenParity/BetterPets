@@ -29,18 +29,6 @@ import java.util.List;
 
 public class PetResourcesCrafterBlock extends DirectionalBlock// implements IWaterLoggable
 {
-    public static final VoxelShape NS_FRONT = Block.makeCuboidShape(0, 0, 0, 16, 16, 4);
-    public static final VoxelShape NS_MIDDLE = Block.makeCuboidShape(2, 2, 4, 14, 14, 12);
-    public static final VoxelShape NS_BACK = Block.makeCuboidShape(0, 0, 12, 16, 16, 16);
-    
-    public static final VoxelShape EW_FRONT = Block.makeCuboidShape(0, 0, 0, 4, 16, 16);
-    public static final VoxelShape EW_MIDDLE = Block.makeCuboidShape(4, 2, 2, 12, 14, 14);
-    public static final VoxelShape EW_BACK = Block.makeCuboidShape(12, 0, 0, 16, 16, 16);
-    
-    public static final VoxelShape UD_FRONT = Block.makeCuboidShape(0, 0, 0, 16, 4, 16);
-    public static final VoxelShape UD_MIDDLE = Block.makeCuboidShape(2, 4, 2, 14, 12, 14);
-    public static final VoxelShape UD_BACK = Block.makeCuboidShape(0, 12, 0, 16, 16, 16);
-    
     public final ImmutableMap<BlockState, VoxelShape> SHAPES;
     
     public PetResourcesCrafterBlock(Properties properties)
@@ -52,30 +40,18 @@ public class PetResourcesCrafterBlock extends DirectionalBlock// implements IWat
     
     private ImmutableMap<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states)
     {
+        final VoxelShape[] NORTH_FACE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(0, 0, 0, 16, 16, 4), Direction.SOUTH));
+        final VoxelShape[] SOUTH_FACE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(0, 0, 12, 16, 16, 16), Direction.SOUTH));
+        final VoxelShape[] MIDDLE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(2, 2, 4, 14, 14, 12), Direction.SOUTH));
+        
         ImmutableMap.Builder<BlockState, VoxelShape> builder = new ImmutableMap.Builder<>();
         for(BlockState state : states)
         {
+            Direction direction = state.get(FACING);
             List<VoxelShape> shapes = new ArrayList<>();
-    
-            if(state.get(FACING).getAxis() == Direction.Axis.X)
-            {
-                shapes.add(EW_FRONT);
-                shapes.add(EW_MIDDLE);
-                shapes.add(EW_BACK);
-            }
-            else if(state.get(FACING).getAxis() == Direction.Axis.Z)
-            {
-                shapes.add(NS_FRONT);
-                shapes.add(NS_MIDDLE);
-                shapes.add(NS_BACK);
-            }
-            else
-            {
-                shapes.add(UD_FRONT);
-                shapes.add(UD_MIDDLE);
-                shapes.add(UD_BACK);
-            }
-            
+            shapes.add(NORTH_FACE[direction.getIndex()]);
+            shapes.add(SOUTH_FACE[direction.getIndex()]);
+            shapes.add(MIDDLE[direction.getIndex()]);
             builder.put(state, VoxelShapeHelper.combineAll(shapes));
         }
         return builder.build();

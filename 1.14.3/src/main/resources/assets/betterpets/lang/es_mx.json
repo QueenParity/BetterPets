@@ -1,0 +1,60 @@
+{
+	"betterpets.pet_food_info.food_points": "Puntos alimentarios",
+	"betterpets.pet_food_info.saturation_restored": "Saturación restaurada",
+	"betterpets.canteen_info.isFiltered": "Es filtrada",
+	"betterpets.canteen_info.liquidAmount": "Cantidad líquida",
+	"betterpets.canteen_info.maxLiquid": "Líquido máximo",
+	"betterpets.canteen_info.poisonChance": "Oportunidad de veneno",
+	
+	"block.betterpets.oak_water_collector": "Colector de agua de roble",
+	"block.betterpets.spruce_water_collector": "Colector de agua de abeto",
+	"block.betterpets.birch_water_collector": "Colector de agua de abedul",
+	"block.betterpets.jungle_water_collector": "Colector de agua de jungla",
+	"block.betterpets.acacia_water_collector": "Colector de agua de acacia",
+	"block.betterpets.dark_oak_water_collector": "Colector de agua de roble oscuro",
+	"block.betterpets.stone_water_collector": "Colector de agua de piedra",
+	"block.betterpets.granite_water_collector": "Colector de agua de granito",
+	"block.betterpets.diorite_water_collector": "Colector de agua de diorita",
+	"block.betterpets.andesite_water_collector": "Colector de agua de andesita",
+	"block.betterpets.stripped_oak_water_collector": "Colector de agua de roble sin corteza",
+	"block.betterpets.stripped_spruce_water_collector": "Colector de agua de abeto sin corteza",
+	"block.betterpets.stripped_birch_water_collector": "Colector de agua de abedul sin corteza",
+	"block.betterpets.stripped_jungle_water_collector": "Colector de agua de jungla sin corteza",
+	"block.betterpets.stripped_acacia_water_collector": "Colector de agua de acacia sin corteza",
+	"block.betterpets.stripped_dark_oak_water_collector": "Colector de agua de roble oscuro sin corteza",
+	
+	"block.betterpets.oak_water_filter": "Filtro de agua de roble",
+	"block.betterpets.spruce_water_filter": "Filtro de agua de abeto",
+	"block.betterpets.birch_water_filter": "Filtro de agua de abedul",
+	"block.betterpets.jungle_water_filter": "Filtro de agua de jungla",
+	"block.betterpets.acacia_water_filter": "Filtro de agua de acacia",
+	"block.betterpets.dark_oak_water_filter": "Filtro de agua de roble oscuro",
+	"block.betterpets.stone_water_filter": "Filtro de agua de piedra",
+	"block.betterpets.granite_water_filter": "Filtro de agua de granito",
+	"block.betterpets.diorite_water_filter": "Filtro de agua de diorita",
+	"block.betterpets.andesite_water_filter": "Filtro de agua de andesita",
+	"block.betterpets.stripped_oak_water_filter": "Filtro de agua de roble sin corteza",
+	"block.betterpets.stripped_spruce_water_filter": "Filtro de agua de abeto sin corteza",
+	"block.betterpets.stripped_birch_water_filter": "Filtro de agua de abedul sin corteza",
+	"block.betterpets.stripped_jungle_water_filter": "Filtro de agua de jungla sin corteza",
+	"block.betterpets.stripped_acacia_water_filter": "Filtro de agua de acacia sin corteza",
+	"block.betterpets.stripped_dark_oak_water_filter": "Filtro de agua de roble oscuro sin corteza",
+	
+	"block.betterpets.pet_resources_crafter": "Recursos para mascotas artesanos",
+	
+	"block.betterpets.fluid_pipe": "Tubería de fluido",
+	"block.betterpets.fluid_pump": "Bomba de fluidos",
+	
+	"entity.betterpets.better_wolf": "Mejor lobo",
+	
+	"item.betterpets.pet_chest": "Cofre para mascotas",
+	"item.betterpets.pet_birthday_hat": "Sombrero de cumpleaños para mascotas",
+	
+	"item.betterpets.pet_food": "Comida para mascotas",
+	
+	"item.betterpets.canteen": "Cantina",
+	
+	"item.betterpets.water_filter_fabric": "Tejido de filtro de agua",
+	
+	"item.betterpets.better_wolf_spawn_egg": "Generar mejor lobo"
+}

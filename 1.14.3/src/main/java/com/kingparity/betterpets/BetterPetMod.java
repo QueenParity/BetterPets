@@ -1,7 +1,6 @@
 package com.kingparity.betterpets;
 
 import com.google.gson.Gson;
-import com.kingparity.betterpets.common.CommonEvents;
 import com.kingparity.betterpets.core.ModContainers;
 import com.kingparity.betterpets.network.PacketHandler;
 import com.kingparity.betterpets.proxy.ClientProxy;
@@ -37,19 +36,16 @@ public class BetterPetMod
     
     private void onCommonSetup(final FMLCommonSetupEvent event)
     {
-        DeferredWorkQueue.runLater(() -> {
-            PacketHandler.register();
-            MinecraftForge.EVENT_BUS.register(new CommonEvents());
-        });
+        DeferredWorkQueue.runLater(PacketHandler::register);
         
-        LOGGER.debug("Setup method registered");
+        LOGGER.debug("onCommonSetup method registered");
         PROXY.onSetupCommon();
     }
     
     private void onClientSetup(final FMLClientSetupEvent event)
     {
         ModContainers.bindScreens(event);
-        LOGGER.debug("clientRegistries method registered");
+        LOGGER.debug("onClientSetup method registered");
         PROXY.onSetupClient();
     }
 }

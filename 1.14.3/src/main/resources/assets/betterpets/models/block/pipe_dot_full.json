@@ -1,8 +1,7 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "anvil": "minecraft:block/anvil",
-		"particle": "minecraft:block/anvil"
+        "anvil": "minecraft:block/anvil"
     },
     "display": {
         "gui": {
@@ -186,6 +185,54 @@
                 "west": { "texture": "#anvil", "uv": [ 0, 0, 1, 1 ] },
                 "up": { "texture": "#anvil", "uv": [ 0, 0, 3, 1 ] },
                 "down": { "texture": "#anvil", "uv": [ 0, 0, 3, 1 ] }
+            }
+        },
+        {
+            "name": "west_side",
+            "from": [ 5.6, 6.5, 6.5 ], 
+            "to": [ 6.6, 9.5, 9.5 ], 
+            "faces": {
+                "west": { "texture": "#anvil", "uv": [ 11, 1, 14, 4 ] }
+            }
+        },
+        {
+            "name": "south_side",
+            "from": [ 6.5, 6.5, 9.4 ], 
+            "to": [ 9.5, 9.5, 10.4 ], 
+            "faces": {
+                "south": { "texture": "#anvil", "uv": [ 11, 1, 14, 4 ] }
+            }
+        },
+        {
+            "name": "north_side",
+            "from": [ 6.5, 6.5, 5.6 ], 
+            "to": [ 9.5, 9.5, 6.6 ], 
+            "faces": {
+                "north": { "texture": "#anvil", "uv": [ 11, 1, 14, 4 ] }
+            }
+        },
+        {
+            "name": "east_side",
+            "from": [ 9.4, 6.5, 6.5 ], 
+            "to": [ 10.4, 9.5, 9.5 ], 
+            "faces": {
+                "east": { "texture": "#anvil", "uv": [ 11, 1, 14, 4 ] }
+            }
+        },
+        {
+            "name": "up_side",
+            "from": [ 6.5, 9.4, 6.5 ], 
+            "to": [ 9.5, 10.4, 9.5 ], 
+            "faces": {
+                "up": { "texture": "#anvil", "uv": [ 11, 1, 14, 4 ] }
+            }
+        },
+        {
+            "name": "down_side",
+            "from": [ 6.5, 5.6, 6.5 ], 
+            "to": [ 9.5, 6.6, 9.5 ], 
+            "faces": {
+                "down": { "texture": "#anvil", "uv": [ 11, 1, 14, 4 ] }
             }
         }
     ]

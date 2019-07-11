@@ -177,7 +177,6 @@ public class ModBlocks
         register(BlockNames.PET_RESOURCES_CRAFTER, new PetResourcesCrafterBlock(STONE));
     
         register(BlockNames.FLUID_PIPE, new FluidPipeBlock(STONE));
-    
         register(BlockNames.FLUID_PUMP, new FluidPumpBlock(STONE));
         
         BLOCKS.forEach(block -> event.getRegistry().register(block));

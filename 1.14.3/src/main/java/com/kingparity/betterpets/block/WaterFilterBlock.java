@@ -158,7 +158,7 @@ public class WaterFilterBlock extends PetHorizontalBlock
     }
     
     @Override
-    public VoxelShape getRenderShape(BlockState state, IBlockReader reader, BlockPos pos)
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context)
     {
         return SHAPES.get(state);
     }

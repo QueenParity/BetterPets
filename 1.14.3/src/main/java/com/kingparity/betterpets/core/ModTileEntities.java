@@ -77,7 +77,6 @@ public class ModTileEntities
         register(TileEntityNames.PET_RESOURCES_CRAFTER, PetResourcesCrafterTileEntity::new, ModBlocks.PET_RESOURCES_CRAFTER);
         
         register(TileEntityNames.FLUID_PIPE, FluidPipeTileEntity::new, ModBlocks.FLUID_PIPE);
-        
         register(TileEntityNames.FLUID_PUMP, FluidPumpTileEntity::new, ModBlocks.FLUID_PUMP);
         
         TILE_ENTITY_TYPES.forEach(tile_entity_type -> event.getRegistry().register(tile_entity_type));
