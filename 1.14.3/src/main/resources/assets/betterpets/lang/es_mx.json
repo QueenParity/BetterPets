@@ -1,10 +1,16 @@
 {
-	"betterpets.pet_food_info.food_points": "Puntos alimentarios",
-	"betterpets.pet_food_info.saturation_restored": "Saturación restaurada",
-	"betterpets.canteen_info.isFiltered": "Es filtrada",
-	"betterpets.canteen_info.liquidAmount": "Cantidad líquida",
-	"betterpets.canteen_info.maxLiquid": "Líquido máximo",
-	"betterpets.canteen_info.poisonChance": "Oportunidad de veneno",
+	"itemGroup.betterpets": "Mejor mascotas",
+	
+	"item.betterpets.pet_chest": "Cofre para mascotas",
+	"item.betterpets.pet_birthday_hat": "Sombrero de cumpleaños para mascotas",
+	
+	"item.betterpets.pet_food": "Comida para mascotas",
+	
+	"item.betterpets.canteen": "Cantina",
+	
+	"item.betterpets.water_filter_fabric": "Tejido de filtro de agua",
+	
+	"item.betterpets.better_wolf_spawn_egg": "Generar mejor lobo",
 	
 	"block.betterpets.oak_water_collector": "Colector de agua de roble",
 	"block.betterpets.spruce_water_collector": "Colector de agua de abeto",
@@ -45,16 +51,15 @@
 	"block.betterpets.fluid_pipe": "Tubería de fluido",
 	"block.betterpets.fluid_pump": "Bomba de fluidos",
 	
-	"entity.betterpets.better_wolf": "Mejor lobo",
+	"betterpets.pet_food_info.food_points": "Puntos alimentarios",
+	"betterpets.pet_food_info.saturation_restored": "Saturación restaurada",
+	"betterpets.canteen_info.isFiltered": "Es filtrada",
+	"betterpets.canteen_info.liquidAmount": "Cantidad líquida",
+	"betterpets.canteen_info.maxLiquid": "Líquido máximo",
+	"betterpets.canteen_info.poisonChance": "Oportunidad de veneno",
 	
-	"item.betterpets.pet_chest": "Cofre para mascotas",
-	"item.betterpets.pet_birthday_hat": "Sombrero de cumpleaños para mascotas",
+	"container.pet_resources_crafter": "Recursos para mascotas artesanos",
+	"container.water_filter": "Filtro de agua",
 	
-	"item.betterpets.pet_food": "Comida para mascotas",
-	
-	"item.betterpets.canteen": "Cantina",
-	
-	"item.betterpets.water_filter_fabric": "Tejido de filtro de agua",
-	
-	"item.betterpets.better_wolf_spawn_egg": "Generar mejor lobo"
+	"entity.betterpets.better_wolf": "Mejor lobo"
 }

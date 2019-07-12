@@ -1,14 +1,44 @@
 {
-    "forge_marker": 1,
-    "defaults": {
-        "model": "betterpets:acacia_water_filter"
-    },
-    "variants": {
-        "facing": {
-            "north": { "y": 0   },
-            "east":  { "y": 90  },
-            "south": { "y": 180 },
-            "west":  { "y": 270 }
+    "multipart": [
+        {
+            "when": { "facing": "north" },
+            "apply": [
+				{ "model": "betterpets:block/acacia_water_filter" },
+				{
+					"when": { "active": "false" },
+					"apply": { "model": "betterpets:block/water_filter_seperator" }
+				}
+			]
+        },
+        {
+            "when": { "facing": "east" },
+            "apply": [
+				{ "model": "betterpets:block/acacia_water_filter", "y": 90 },
+				{
+					"when": { "active": "false" },
+					"apply": { "model": "betterpets:block/water_filter_seperator", "y": 90 }
+				}
+			]
+        },
+        {
+            "when": { "facing": "south" },
+            "apply": [
+				{ "model": "betterpets:block/acacia_water_filter", "y": 180 },
+				{
+					"when": { "active": "false" },
+					"apply": { "model": "betterpets:block/water_filter_seperator", "y": 180 }
+				}
+			]
+        },
+        {
+            "when": { "facing": "west" },
+            "apply": [
+				{ "model": "betterpets:block/acacia_water_filter", "y": 270 },
+				{
+					"when": { "active": "false" },
+					"apply": { "model": "betterpets:block/water_filter_seperator", "y": 270 }
+				}
+			]
         }
-    }
+    ]
 }

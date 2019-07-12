@@ -149,18 +149,18 @@ public abstract class BetterPetTileEntityBase extends LockableTileEntity impleme
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt)
     {
-        this.read(pkt.getNbtCompound());
+        read(pkt.getNbtCompound());
     }
     
     @Override
     public SUpdateTileEntityPacket getUpdatePacket()
     {
-        return new SUpdateTileEntityPacket(pos, inventory.size(), this.write(new CompoundNBT()));
+        return new SUpdateTileEntityPacket(getPos(), 0, getUpdateTag());
     }
     
     @Override
     public CompoundNBT getUpdateTag()
     {
-        return this.write(new CompoundNBT());
+        return write(new CompoundNBT());
     }
 }

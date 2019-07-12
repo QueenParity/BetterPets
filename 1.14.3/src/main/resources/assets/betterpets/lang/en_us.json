@@ -10,7 +10,7 @@
 	
 	"item.betterpets.water_filter_fabric": "Water Filter Fabric",
 	
-	"item.betterpets.better_wolf_spawn_egg": "Better Wolf Spawn Egg"
+	"item.betterpets.better_wolf_spawn_egg": "Better Wolf Spawn Egg",
 	
 	"block.betterpets.oak_water_collector": "Oak Water Collector",
 	"block.betterpets.spruce_water_collector": "Spruce Water Collector",
@@ -58,7 +58,8 @@
 	"betterpets.canteen_info.maxLiquid": "Max Liquid",
 	"betterpets.canteen_info.poisonChance": "Poison Chance",
 	
-	"container.pet_resources_crafter": "Pet Resources Crafter"
+	"container.pet_resources_crafter": "Pet Resources Crafter",
+	"container.water_filter": "Water Filter",
 	
 	"entity.betterpets.better_wolf": "Better Wolf"
 }

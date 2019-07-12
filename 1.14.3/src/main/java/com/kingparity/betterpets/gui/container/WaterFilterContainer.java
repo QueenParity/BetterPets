@@ -2,17 +2,19 @@ package com.kingparity.betterpets.gui.container;
 
 import com.kingparity.betterpets.core.ModContainers;
 import com.kingparity.betterpets.gui.slot.BetterPetResultSlot;
-import com.kingparity.betterpets.gui.slot.WaterFilterCanteenSlot;
 import com.kingparity.betterpets.gui.slot.WaterFilterFabricSlot;
+import com.kingparity.betterpets.gui.slot.WaterFilterFuelSlot;
 import com.kingparity.betterpets.tileentity.WaterFilterTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.FurnaceFuelSlot;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.AbstractFurnaceTileEntity;
 import net.minecraft.util.math.BlockPos;
 
 public class WaterFilterContainer extends Container
@@ -22,20 +24,19 @@ public class WaterFilterContainer extends Container
     
     public WaterFilterContainer(int windowId, PlayerInventory playerInventory, PacketBuffer extraData)
     {
-        this(windowId, playerInventory, new Inventory(5000), extraData.readBlockPos());
+        this(windowId, playerInventory, new Inventory(WaterFilterTileEntity.slotNum), extraData.readBlockPos());
     }
     
     public WaterFilterContainer(int windowId, PlayerInventory playerInventory, IInventory inventory, BlockPos pos)
     {
         super(ModContainers.WATER_FILTER, windowId);
-        assertInventorySize(inventory, 5000);
+        assertInventorySize(inventory, WaterFilterTileEntity.slotNum);
         this.inventory = inventory;
         this.pos = pos;
         inventory.openInventory(playerInventory.player);
     
-        this.addSlot(new WaterFilterCanteenSlot(inventory, 0, 56, 17));
-        this.addSlot(new WaterFilterFabricSlot(inventory, 1, 56, 53));
-        this.addSlot(new BetterPetResultSlot(inventory, 2, 116, 35));
+        this.addSlot(new WaterFilterFabricSlot(inventory, 0, 92, 35));
+        this.addSlot(new WaterFilterFuelSlot(inventory, 1, 29, 48));
         
         for(int k = 0; k < 3; ++k)
         {
@@ -67,61 +68,25 @@ public class WaterFilterContainer extends Container
     @Override
     public ItemStack transferStackInSlot(PlayerEntity player, int index)
     {
-        ItemStack stack = ItemStack.EMPTY;
+        ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.inventorySlots.get(index);
         if(slot != null && slot.getHasStack())
         {
-            ItemStack slotStack = slot.getStack();
-            stack = slotStack.copy();
-            if(index == 0 || index == 1 || index == 2)
+            ItemStack itemstack1 = slot.getStack();
+            itemstack = itemstack1.copy();
+            if(index < WaterFilterTileEntity.slotNum)
             {
-                if(!this.mergeItemStack(slotStack, 5000, 39, true))
+                if(!this.mergeItemStack(itemstack1, WaterFilterTileEntity.slotNum, this.inventorySlots.size(), true))
                 {
                     return ItemStack.EMPTY;
                 }
             }
-            else if(index > 2)
-            {
-                WaterFilterTileEntity tileEntity = (WaterFilterTileEntity)player.world.getTileEntity(pos);
-                /*if(tileEntity.isItemValidForSlot(2, slotStack))
-                {
-                    if(!this.mergeItemStack(slotStack, 2, 5000, false))
-                    {
-                        return ItemStack.EMPTY;
-                    }
-                }
-                else if(tileEntity.isItemValidForSlot(1, slotStack))
-                {
-                    if(!this.mergeItemStack(slotStack, 1, 5000 - 1, false))
-                    {
-                        return ItemStack.EMPTY;
-                    }
-                }
-                else if(tileEntity.isItemValidForSlot(0, slotStack))
-                {
-                    if(!this.mergeItemStack(slotStack, 0, 5000 - 2, false))
-                    {
-                        return ItemStack.EMPTY;
-                    }
-                }
-                else */if(index >= 5000 && index < 30)
-                {
-                    if(!this.mergeItemStack(slotStack, 30, 39, false))
-                    {
-                        return ItemStack.EMPTY;
-                    }
-                }
-                else if(index >= 30 && index < 39 && !this.mergeItemStack(slotStack, 5000, 30, false))
-                {
-                    return ItemStack.EMPTY;
-                }
-            }
-            else if(!this.mergeItemStack(slotStack, 5000, 39, false))
+            else if(!this.mergeItemStack(itemstack1, 0, WaterFilterTileEntity.slotNum, false))
             {
                 return ItemStack.EMPTY;
             }
             
-            if(slotStack.isEmpty())
+            if(itemstack1.isEmpty())
             {
                 slot.putStack(ItemStack.EMPTY);
             }
@@ -130,15 +95,15 @@ public class WaterFilterContainer extends Container
                 slot.onSlotChanged();
             }
             
-            if(slotStack.getCount() == stack.getCount())
+            if(itemstack1.getCount() == itemstack.getCount())
             {
                 return ItemStack.EMPTY;
             }
             
-            slot.onTake(player, slotStack);
+            slot.onTake(player, itemstack1);
         }
         
-        return stack;
+        return itemstack;
     }
     
     /**

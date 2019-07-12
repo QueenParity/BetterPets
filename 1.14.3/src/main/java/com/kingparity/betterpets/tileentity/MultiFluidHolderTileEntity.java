@@ -1,15 +1,10 @@
 package com.kingparity.betterpets.tileentity;
 
-import com.kingparity.betterpets.block.WaterFilterBlock;
-import com.kingparity.betterpets.core.ModItems;
-import com.kingparity.betterpets.core.ModTileEntities;
-import com.kingparity.betterpets.gui.container.WaterFilterContainer;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.ServerWorld;
@@ -18,22 +13,40 @@ import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 
-public class WaterFilterTileEntity extends BetterPetTileEntityBase implements ITickableTileEntity
+public abstract class MultiFluidHolderTileEntity extends TileEntity
 {
-    public static int slotNum = 2;
-    
     private int capacity;
     private int maxReceive;
     private int maxExtract;
     private final int[] fluidAmount;
     
-    public WaterFilterTileEntity()
+    public MultiFluidHolderTileEntity(TileEntityType<?> tileEntityType)
     {
-        super(ModTileEntities.WATER_FILTER, "water_filter", slotNum);
-        this.capacity = 12000;
-        this.maxReceive = 500;
-        this.maxExtract = 500;
-        this.fluidAmount = new int[2];
+        this(tileEntityType, 2);
+    }
+    
+    public MultiFluidHolderTileEntity(TileEntityType<?> tileEntityType, int tankNum)
+    {
+        this(tileEntityType, 12000, tankNum);
+    }
+    
+    public MultiFluidHolderTileEntity(TileEntityType<?> tileEntityType, int capacity, int tankNum)
+    {
+        this(tileEntityType, capacity, capacity, tankNum);
+    }
+    
+    public MultiFluidHolderTileEntity(TileEntityType<?> tileEntityType, int capacity, int maxTransfer, int tankNum)
+    {
+        this(tileEntityType, capacity, maxTransfer, maxTransfer, tankNum);
+    }
+    
+    public MultiFluidHolderTileEntity(TileEntityType<?> tileEntityType, int capacity, int maxReceive, int maxExtract, int tankNum)
+    {
+        super(tileEntityType);
+        this.capacity = capacity;
+        this.maxReceive = maxReceive;
+        this.maxExtract = maxExtract;
+        this.fluidAmount = new int[tankNum];
         for(int i : fluidAmount)
         {
             this.fluidAmount[i] = 0;
@@ -58,7 +71,7 @@ public class WaterFilterTileEntity extends BetterPetTileEntityBase implements IT
         {
             return 0;
         }
-        int fluidReceived = Math.min((capacity / 2) - fluidAmount[tankId], Math.min(this.maxReceive, maxReceive));
+        int fluidReceived = Math.min(capacity - fluidAmount[tankId], Math.min(this.maxReceive, maxReceive));
         if(doDrain)
         {
             fluidAmount[tankId] += fluidReceived;
@@ -151,13 +164,6 @@ public class WaterFilterTileEntity extends BetterPetTileEntityBase implements IT
     }
     
     @Override
-    public void tick()
-    {
-        this.world.setBlockState(this.pos, this.world.getBlockState(this.pos).with(WaterFilterBlock.ACTIVE, this.getStackInSlot(0).getItem() == ModItems.WATER_FILTER_FABRIC), 3);
-        this.markDirty();
-    }
-    
-    @Override
     public void read(CompoundNBT compound)
     {
         super.read(compound);
@@ -220,11 +226,5 @@ public class WaterFilterTileEntity extends BetterPetTileEntityBase implements IT
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet)
     {
         read(packet.getNbtCompound());
-    }
-    
-    @Override
-    protected Container createMenu(int id, PlayerInventory inventory)
-    {
-        return new WaterFilterContainer(id, inventory, this, this.pos);
     }
 }
