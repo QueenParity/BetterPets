@@ -49,6 +49,7 @@ public class FluidPipeTileEntity extends TickableFluidHolderTileEntity
                     this.extractFluid(filter.receiveFluid(Math.min(this.getMaxExtract(), this.getFluidAmount()), true, 1), true);
                 }
             }
+            syncToClient();
         }
     }
 }

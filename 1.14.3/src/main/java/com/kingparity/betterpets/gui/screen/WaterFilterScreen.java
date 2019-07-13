@@ -11,6 +11,11 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 public class WaterFilterScreen extends ContainerScreen<WaterFilterContainer>
 {
@@ -19,6 +24,7 @@ public class WaterFilterScreen extends ContainerScreen<WaterFilterContainer>
     public WaterFilterScreen(WaterFilterContainer container, PlayerInventory playerInventory, ITextComponent title)
     {
         super(container, playerInventory, title);
+        this.ySize = 175;
     }
     
     @Override
@@ -26,6 +32,38 @@ public class WaterFilterScreen extends ContainerScreen<WaterFilterContainer>
     {
         this.renderBackground();
         super.render(mouseX, mouseY, partialTicks);
+    
+        int startX = (this.width - this.xSize) / 2;
+        int startY = (this.height - this.ySize) / 2;
+    
+        TileEntity tileEntity = this.playerInventory.player.world.getTileEntity(this.getContainer().getPos());
+        WaterFilterTileEntity waterFilter = tileEntity instanceof WaterFilterTileEntity ? (WaterFilterTileEntity)tileEntity : null;
+        if(waterFilter != null)
+        {
+            if(this.isMouseWithinRegion(startX + 53, startY + 18, 16, 59, mouseX, mouseY))
+            {
+                if(waterFilter.getFluidAmount(0) > 0)
+                {
+                    this.renderTooltip(Arrays.asList(new TranslationTextComponent("block.minecraft.water").getFormattedText(), TextFormatting.GRAY.toString() + waterFilter.getFluidAmount(0) + "/" + (waterFilter.getCapacity() / 2) + " mB"), mouseX, mouseY);
+                }
+                else
+                {
+                    this.renderTooltip(Collections.singletonList("No Fluid"), mouseX, mouseY);
+                }
+            }
+            else if(this.isMouseWithinRegion(startX + 131, startY + 18, 16, 59, mouseX, mouseY))
+            {
+                if(waterFilter.getFluidAmount(1) > 0)
+                {
+                    this.renderTooltip(Arrays.asList(new TranslationTextComponent(String.format("block.%s.filtered_water", Reference.ID)).getFormattedText(), TextFormatting.GRAY.toString() + waterFilter.getFluidAmount(1) + "/" + (waterFilter.getCapacity() / 2) + " mB"), mouseX, mouseY);
+                }
+                else
+                {
+                    this.renderTooltip(Collections.singletonList(new TranslationTextComponent(String.format("%s.water_filter_info.no_fluid", Reference.ID)).getFormattedText()), mouseX, mouseY);
+                }
+            }
+        }
+        
         this.renderHoveredToolTip(mouseX, mouseY);
     }
     
@@ -56,8 +94,8 @@ public class WaterFilterScreen extends ContainerScreen<WaterFilterContainer>
         WaterFilterTileEntity waterFilter = tileEntity instanceof WaterFilterTileEntity ? (WaterFilterTileEntity)tileEntity : null;
         if(waterFilter != null)
         {
-            this.drawWaterTank(waterFilter, startX + 53, startY + 14, waterFilter.getFluidAmount(1) / (double)(waterFilter.getCapacity() / 2), false);
-            this.drawWaterTank(waterFilter, startX + 131, startY + 14, waterFilter.getFluidAmount(0) / (double)(waterFilter.getCapacity() / 2), true);
+            this.drawWaterTank(waterFilter, startX + 53, startY + 18, waterFilter.getFluidAmount(1) / (double)(waterFilter.getCapacity() / 2), false);
+            this.drawWaterTank(waterFilter, startX + 131, startY + 18, waterFilter.getFluidAmount(0) / (double)(waterFilter.getCapacity() / 2), true);
         }
         else if(tileEntity != null)
         {
@@ -73,13 +111,18 @@ public class WaterFilterScreen extends ContainerScreen<WaterFilterContainer>
     {
         if(isFiltered)
         {
-            FluidUtils.drawFluidTankInGUI(waterFilter, x, y, level, 59, 4159204);
+            FluidUtils.drawFluidTankInGUI(waterFilter, x, y, level, 59, 51455);
         }
         else
         {
-            FluidUtils.drawFluidTankInGUI(waterFilter, x, y, level, 59, 5628096);
+            FluidUtils.drawFluidTankInGUI(waterFilter, x, y, level, 59, 4159204);
         }
         Minecraft.getInstance().getTextureManager().bindTexture(GUI_TEXTURES);
         this.blit(x, y, 176, 18, 16, 59);
+    }
+    
+    private boolean isMouseWithinRegion(int x, int y, int width, int height, int mouseX, int mouseY)
+    {
+        return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
     }
 }

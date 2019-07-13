@@ -47,6 +47,7 @@ public class FluidPumpTileEntity extends TickableFluidHolderTileEntity
             }
             
             this.extractFluid(holder.receiveFluid(Math.min(this.getMaxExtract(), this.getFluidAmount()), true), true);
+            syncToClient();
         }
         else
         {

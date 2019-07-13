@@ -51,15 +51,18 @@
 	"block.betterpets.fluid_pipe": "Tubería de fluido",
 	"block.betterpets.fluid_pump": "Bomba de fluidos",
 	
+	"block.betterpets.filtered_water": "Agua filtrada",
+	
 	"betterpets.pet_food_info.food_points": "Puntos alimentarios",
 	"betterpets.pet_food_info.saturation_restored": "Saturación restaurada",
 	"betterpets.canteen_info.isFiltered": "Es filtrada",
 	"betterpets.canteen_info.liquidAmount": "Cantidad líquida",
 	"betterpets.canteen_info.maxLiquid": "Líquido máximo",
 	"betterpets.canteen_info.poisonChance": "Oportunidad de veneno",
+	"betterpets.water_filter_info.no_fluid": "Sin líquido",
 	
-	"container.pet_resources_crafter": "Recursos para mascotas artesanos",
-	"container.water_filter": "Filtro de agua",
+	"container.betterpets.pet_resources_crafter": "Recursos para mascotas artesanos",
+	"container.betterpets.water_filter": "Filtro de agua",
 	
 	"entity.betterpets.better_wolf": "Mejor lobo"
 }

@@ -4,25 +4,22 @@ import com.kingparity.betterpets.block.WaterFilterBlock;
 import com.kingparity.betterpets.core.ModItems;
 import com.kingparity.betterpets.core.ModTileEntities;
 import com.kingparity.betterpets.gui.container.WaterFilterContainer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.tileentity.ChestTileEntity;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.ServerWorld;
-import net.minecraft.world.chunk.ChunkManager;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
-import javax.annotation.Nullable;
-
-public class WaterFilterTileEntity extends BetterPetTileEntityBase implements ITickableTileEntity
+public class WaterFilterTileEntity extends BasicLootTileEntity implements ITickableTileEntity
 {
-    public int transferCooldown = 0;
+    private int transferCooldown = 0;
     
-    public static int slotNum = 2;
+    public static final int inventorySize = 2;
     
     private int capacity;
     private int maxReceive;
@@ -31,7 +28,7 @@ public class WaterFilterTileEntity extends BetterPetTileEntityBase implements IT
     
     public WaterFilterTileEntity()
     {
-        super(ModTileEntities.WATER_FILTER, "water_filter", slotNum);
+        super(ModTileEntities.WATER_FILTER, "water_filter");
         this.capacity = 12000;
         this.maxReceive = 500;
         this.maxExtract = 500;
@@ -42,16 +39,16 @@ public class WaterFilterTileEntity extends BetterPetTileEntityBase implements IT
         }
     }
     
-    public void fillTank(int tankId)
+    @Override
+    public int getSizeInventory()
     {
-        fluidAmount[tankId] = capacity;
-        syncToClient();
+        return inventorySize;
     }
     
-    public void emptyTank(int tankId)
+    @Override
+    protected Container createMenu(int id, PlayerInventory inventory)
     {
-        fluidAmount[tankId] = 0;
-        syncToClient();
+        return new WaterFilterContainer(id, inventory, this, this.pos);
     }
     
     public int receiveFluid(int maxReceive, boolean doDrain, int tankId)
@@ -201,52 +198,5 @@ public class WaterFilterTileEntity extends BetterPetTileEntityBase implements IT
         compound.putInt("Capacity", capacity);
         compound.putInt("TransferCooldown", this.transferCooldown);
         return compound;
-    }
-    
-    @Override
-    public CompoundNBT getUpdateTag()
-    {
-        return write(new CompoundNBT());
-    }
-    
-    public void syncToClient()
-    {
-        this.markDirty();
-        if(!world.isRemote)
-        {
-            if(world instanceof ServerWorld)
-            {
-                ServerWorld server = (ServerWorld)world;
-                ChunkPos chunkPos = new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4);
-                ChunkManager manager = (server.getChunkProvider()).chunkManager;
-                if(manager != null)
-                {
-                    SUpdateTileEntityPacket packet = getUpdatePacket();
-                    if(packet != null)
-                    {
-                        manager.getTrackingPlayers(chunkPos, false).forEach(e -> e.connection.sendPacket(packet));
-                    }
-                }
-            }
-        }
-    }
-    
-    @Nullable
-    @Override
-    public SUpdateTileEntityPacket getUpdatePacket()
-    {
-        return new SUpdateTileEntityPacket(getPos(), 0, getUpdateTag());
-    }
-    
-    @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet)
-    {
-        read(packet.getNbtCompound());
-    }
-    
-    @Override
-    protected Container createMenu(int id, PlayerInventory inventory)
-    {
-        return new WaterFilterContainer(id, inventory, this, this.pos);
     }
 }

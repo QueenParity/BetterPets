@@ -176,13 +176,13 @@ public class WaterCollectorBlock extends PetHorizontalBlock
                         }
                         else
                         {
-                            if(waterCollector.receiveFluid(1000, true) == 0)
+                            if(waterCollector.receiveFluid(1000, true) != 0)
                             {
                                 if(!player.abilities.isCreativeMode)
                                 {
                                     player.setHeldItem(hand, new ItemStack(Items.BUCKET));
                                 }
-                                
+    
                                 world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                             }
                         }

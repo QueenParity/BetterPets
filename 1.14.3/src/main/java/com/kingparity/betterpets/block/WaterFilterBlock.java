@@ -30,6 +30,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class WaterFilterBlock extends PetHorizontalBlock
 {
@@ -200,10 +201,19 @@ public class WaterFilterBlock extends PetHorizontalBlock
     }
     
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
+    public void tick(BlockState state, World world, BlockPos pos, Random random)
     {
-        super.fillStateContainer(builder);
-        builder.add(ACTIVE);
+        TileEntity tileEntity = world.getTileEntity(pos);
+        if(tileEntity instanceof WaterFilterTileEntity)
+        {
+            ((WaterFilterTileEntity)tileEntity).onScheduleTick();
+        }
+    }
+    
+    @Override
+    public boolean hasTileEntity(BlockState state)
+    {
+        return true;
     }
     
     @Override
@@ -213,8 +223,9 @@ public class WaterFilterBlock extends PetHorizontalBlock
     }
     
     @Override
-    public boolean hasTileEntity(BlockState state)
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
     {
-        return true;
+        super.fillStateContainer(builder);
+        builder.add(ACTIVE);
     }
 }

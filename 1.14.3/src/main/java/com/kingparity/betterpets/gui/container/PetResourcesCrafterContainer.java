@@ -21,13 +21,13 @@ public class PetResourcesCrafterContainer extends Container
     
     public PetResourcesCrafterContainer(int windowId, PlayerInventory playerInventory, PacketBuffer extraData)
     {
-        this(windowId, playerInventory, new Inventory(PetResourcesCrafterTileEntity.slotNum), extraData.readBlockPos());
+        this(windowId, playerInventory, new Inventory(PetResourcesCrafterTileEntity.inventorySize), extraData.readBlockPos());
     }
     
     public PetResourcesCrafterContainer(int windowId, PlayerInventory playerInventory, IInventory inventory, BlockPos pos)
     {
         super(ModContainers.PET_RESOURCES_CRAFTER, windowId);
-        assertInventorySize(inventory, PetResourcesCrafterTileEntity.slotNum);
+        assertInventorySize(inventory, PetResourcesCrafterTileEntity.inventorySize);
         this.inventory = inventory;
         this.pos = pos;
         inventory.openInventory(playerInventory.player);
@@ -78,14 +78,14 @@ public class PetResourcesCrafterContainer extends Container
         {
             ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy();
-            if(index < PetResourcesCrafterTileEntity.slotNum)
+            if(index < PetResourcesCrafterTileEntity.inventorySize)
             {
-                if(!this.mergeItemStack(itemstack1, PetResourcesCrafterTileEntity.slotNum, 45, true))
+                if(!this.mergeItemStack(itemstack1, PetResourcesCrafterTileEntity.inventorySize, 45, true))
                 {
                     return ItemStack.EMPTY;
                 }
             }
-            else if(!this.mergeItemStack(itemstack1, 0, PetResourcesCrafterTileEntity.slotNum, false))
+            else if(!this.mergeItemStack(itemstack1, 0, PetResourcesCrafterTileEntity.inventorySize, false))
             {
                 return ItemStack.EMPTY;
             }

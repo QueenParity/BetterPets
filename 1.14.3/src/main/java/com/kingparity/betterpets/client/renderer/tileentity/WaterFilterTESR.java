@@ -98,11 +98,11 @@ public class WaterFilterTESR extends TileEntityRenderer<WaterFilterTileEntity>
             int i;
             if(isFiltered)
             {
-                i = BiomeColors.getWaterColor(waterFilter.getWorld(), waterFilter.getPos()); //int: 4159204 hex: 3F76E4 Red: 63.0 Green: 118.0 Blue: 228.0
+                i = 51455; //int: 51455 hex: DEDEDE Red: 0.0 Green: 200.0 Blue: 255.0
             }
             else
             {
-                i = 5628096; //int: 562809, hex: 55E0C0 Red: 85 Green: 224 Blue: 192
+                i = BiomeColors.getWaterColor(waterFilter.getWorld(), waterFilter.getPos()); //int: 4159204 hex: 3F76E4 Red: 63.0 Green: 118.0 Blue: 228.0
             }
             //RGB to int/hex converter: https://www.shodor.org/stella2java/rgbint.html
             float f = (float)(i >> 16 & 255) / 255.0F;

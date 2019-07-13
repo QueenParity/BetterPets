@@ -51,15 +51,18 @@
 	"block.betterpets.fluid_pipe": "Fluid Pipe",
 	"block.betterpets.fluid_pump": "Fluid Pump",
 	
+	"block.betterpets.filtered_water": "Filtered Water",
+	
 	"betterpets.pet_food_info.food_points": "Food Points",
 	"betterpets.pet_food_info.saturation_restored": "Saturation Restored",
 	"betterpets.canteen_info.isFiltered": "Is Filtered",
 	"betterpets.canteen_info.liquidAmount": "Liquid Amount",
 	"betterpets.canteen_info.maxLiquid": "Max Liquid",
 	"betterpets.canteen_info.poisonChance": "Poison Chance",
+	"betterpets.water_filter_info.no_fluid": "No Fluid",
 	
-	"container.pet_resources_crafter": "Pet Resources Crafter",
-	"container.water_filter": "Water Filter",
+	"container.betterpets.pet_resources_crafter": "Pet Resources Crafter",
+	"container.betterpets.water_filter": "Water Filter",
 	
 	"entity.betterpets.better_wolf": "Better Wolf"
 }
