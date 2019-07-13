@@ -19,18 +19,16 @@ public class FluidPumpTileEntity extends TickableFluidHolderTileEntity
         if(state.getBlock() instanceof FluidPumpBlock)
         {
             TileEntity tileEntity = getWorld().getTileEntity(getPos().offset(state.get(FluidPumpBlock.FACING).getOpposite()));
-            if(tileEntity == null)
+            if(tileEntity instanceof WaterCollectorTileEntity)
             {
-                return;
+                WaterCollectorTileEntity waterCollector = (WaterCollectorTileEntity)tileEntity;
+                this.receiveFluid(waterCollector.extractFluid(Math.min(this.getMaxReceive(), this.getCapacity() - this.getFluidAmount()), true), true);
             }
-        
-            WaterCollectorTileEntity waterCollector = tileEntity instanceof WaterCollectorTileEntity ? (WaterCollectorTileEntity)tileEntity : null;
-            if(waterCollector == null)
+            else if(tileEntity instanceof WaterFilterTileEntity)
             {
-                return;
+                WaterFilterTileEntity waterFilter = (WaterFilterTileEntity)tileEntity;
+                this.receiveFluid(waterFilter.extractFluid(Math.min(this.getMaxReceive(), this.getCapacity() - this.getFluidAmount()), true, 0), true);
             }
-            
-            this.receiveFluid(waterCollector.extractFluid(Math.min(this.getMaxReceive(), this.getCapacity() - this.getFluidAmount()), true), true);
             
             TileEntity tileEntityFront = getWorld().getTileEntity(getPos().offset(state.get(FluidPumpBlock.FACING)));
             FluidHolderTileEntity holder = tileEntityFront instanceof FluidHolderTileEntity ? (FluidHolderTileEntity)tileEntityFront : null;
