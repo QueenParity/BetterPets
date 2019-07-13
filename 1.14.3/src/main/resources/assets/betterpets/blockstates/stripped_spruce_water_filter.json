@@ -2,43 +2,35 @@
     "multipart": [
         {
             "when": { "facing": "north" },
-            "apply": [
-				{ "model": "betterpets:block/stripped_spruce_water_filter" },
-				{
-					"when": { "active": "false" },
-					"apply": { "model": "betterpets:block/water_filter_seperator" }
-				}
-			]
+            "apply": { "model": "betterpets:block/stripped_spruce_water_filter" }
         },
         {
             "when": { "facing": "east" },
-            "apply": [
-				{ "model": "betterpets:block/stripped_spruce_water_filter", "y": 90 },
-				{
-					"when": { "active": "false" },
-					"apply": { "model": "betterpets:block/water_filter_seperator", "y": 90 }
-				}
-			]
+            "apply": { "model": "betterpets:block/stripped_spruce_water_filter", "y": 90 }
         },
         {
             "when": { "facing": "south" },
-            "apply": [
-				{ "model": "betterpets:block/stripped_spruce_water_filter", "y": 180 },
-				{
-					"when": { "active": "false" },
-					"apply": { "model": "betterpets:block/water_filter_seperator", "y": 180 }
-				}
-			]
+            "apply": { "model": "betterpets:block/stripped_spruce_water_filter", "y": 180 }
         },
         {
             "when": { "facing": "west" },
-            "apply": [
-				{ "model": "betterpets:block/stripped_spruce_water_filter", "y": 270 },
-				{
-					"when": { "active": "false" },
-					"apply": { "model": "betterpets:block/water_filter_seperator", "y": 270 }
-				}
-			]
+            "apply": { "model": "betterpets:block/stripped_spruce_water_filter", "y": 270 }
+        },
+		{
+            "when": { "facing": "north", "active": "false" },
+			"apply": { "model": "betterpets:block/water_filter_seperator" }
+        },
+        {
+            "when": { "facing": "east", "active": "false" },
+			"apply": { "model": "betterpets:block/water_filter_seperator", "y": 90 }
+        },
+        {
+            "when": { "facing": "south", "active": "false" },
+			"apply": { "model": "betterpets:block/water_filter_seperator", "y": 180 }
+        },
+        {
+            "when": { "facing": "west", "active": "false" },
+			"apply": { "model": "betterpets:block/water_filter_seperator", "y": 270 }
         }
     ]
 }

@@ -169,7 +169,7 @@ public class WaterFilterBlock extends PetHorizontalBlock
                                     player.dropItem(new ItemStack(Items.WATER_BUCKET), false);
                                 }
                             }
-                        
+                            
                             world.playSound(null, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                         }
                         else
@@ -180,10 +180,14 @@ public class WaterFilterBlock extends PetHorizontalBlock
                                 {
                                     player.setHeldItem(hand, new ItemStack(Items.BUCKET));
                                 }
-                            
+                                
                                 world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                             }
                         }
+                    }
+                    else
+                    {
+                        NetworkHooks.openGui((ServerPlayerEntity)player, (WaterFilterTileEntity)world.getTileEntity(pos), pos);
                     }
                 }
                 else

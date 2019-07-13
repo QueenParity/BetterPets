@@ -53,13 +53,13 @@ public class WaterFilterTESR extends TileEntityRenderer<WaterFilterTileEntity>
                 double heightCleanWater = 13.0 * (waterFilter.getFluidAmount(0) / (double)waterFilter.getCapacity());
                 if(heightCleanWater > 0)
                 {
-                    drawFluid(waterFilter, 2.01 * 0.0625, 7.01 * 0.0625, 2.01 * 0.0625, (12 - 0.02) * 0.0625, (heightCleanWater - 0.02) * 0.0625, (12 - 0.02) * 0.0625, false);
+                    drawFluid(waterFilter, 2.01 * 0.0625, 7.01 * 0.0625, 2.01 * 0.0625, (12 - 0.02) * 0.0625, (heightCleanWater - 0.02) * 0.0625, (12 - 0.02) * 0.0625, true);
                 }
     
                 double heightDirtyWater = 13.0 * (waterFilter.getFluidAmount(1) / (double)waterFilter.getCapacity());
                 if(heightDirtyWater > 0)
                 {
-                    drawFluid(waterFilter, 2.01 * 0.0625, 14.01 * 0.0625, 2.01 * 0.0625, (12 - 0.02) * 0.0625, (heightDirtyWater - 0.02) * 0.0625, (12 - 0.02) * 0.0625, true);
+                    drawFluid(waterFilter, 2.01 * 0.0625, 14.01 * 0.0625, 2.01 * 0.0625, (12 - 0.02) * 0.0625, (heightDirtyWater - 0.02) * 0.0625, (12 - 0.02) * 0.0625, false);
                 }
     
                 ItemStack fabric = waterFilter.getStackInSlot(0);

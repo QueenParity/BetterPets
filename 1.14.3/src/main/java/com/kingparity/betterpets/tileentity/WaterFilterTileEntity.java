@@ -20,6 +20,8 @@ import javax.annotation.Nullable;
 
 public class WaterFilterTileEntity extends BetterPetTileEntityBase implements ITickableTileEntity
 {
+    public int transferCooldown = 0;
+    
     public static int slotNum = 2;
     
     private int capacity;
@@ -153,7 +155,22 @@ public class WaterFilterTileEntity extends BetterPetTileEntityBase implements IT
     @Override
     public void tick()
     {
-        this.world.setBlockState(this.pos, this.world.getBlockState(this.pos).with(WaterFilterBlock.ACTIVE, this.getStackInSlot(0).getItem() == ModItems.WATER_FILTER_FABRIC), 3);
+        boolean hasFabric = this.getStackInSlot(0).getItem() == ModItems.WATER_FILTER_FABRIC;
+        if(transferCooldown == 0)
+        {
+            if(hasFabric)
+            {
+                this.extractFluid(this.receiveFluid(Math.min(this.getMaxExtract(), this.getFluidAmount(1)), true, 0), true, 1);
+            }
+            transferCooldown = 9;
+        }
+        else
+        {
+            transferCooldown--;
+        }
+        syncToClient();
+        
+        this.world.setBlockState(this.pos, this.world.getBlockState(this.pos).with(WaterFilterBlock.ACTIVE, hasFabric), 3);
         this.markDirty();
     }
     
@@ -170,6 +187,10 @@ public class WaterFilterTileEntity extends BetterPetTileEntityBase implements IT
         {
             this.capacity = compound.getInt("Capacity");
         }
+        if(compound.contains("TransferCooldown", Constants.NBT.TAG_INT))
+        {
+            this.transferCooldown = compound.getInt("TransferCooldown");
+        }
     }
     
     @Override
@@ -178,6 +199,7 @@ public class WaterFilterTileEntity extends BetterPetTileEntityBase implements IT
         super.write(compound);
         compound.putIntArray("FluidAmount", fluidAmount);
         compound.putInt("Capacity", capacity);
+        compound.putInt("TransferCooldown", this.transferCooldown);
         return compound;
     }
     

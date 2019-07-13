@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import com.kingparity.betterpets.core.ModTileEntities;
 import com.kingparity.betterpets.tileentity.FluidHolderTileEntity;
 import com.kingparity.betterpets.tileentity.FluidPipeTileEntity;
+import com.kingparity.betterpets.tileentity.WaterFilterTileEntity;
 import com.kingparity.betterpets.util.VoxelShapeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -282,7 +283,7 @@ public class FluidPipeBlock extends PetWaterloggedBlock
             TileEntity adjacentTileEntity = world.getTileEntity(adjacentPos);
             if(adjacentTileEntity != null)
             {
-                if(adjacentTileEntity instanceof FluidHolderTileEntity)
+                if(adjacentTileEntity instanceof FluidHolderTileEntity || adjacentTileEntity instanceof WaterFilterTileEntity)
                 {
                     switch(face)
                     {
@@ -328,7 +329,7 @@ public class FluidPipeBlock extends PetWaterloggedBlock
             TileEntity adjacentTileEntity = world.getTileEntity(adjacentPos);
             if(adjacentTileEntity != null)
             {
-                if(adjacentTileEntity instanceof FluidHolderTileEntity)
+                if(adjacentTileEntity instanceof FluidHolderTileEntity || adjacentTileEntity instanceof WaterFilterTileEntity)
                 {
                     switch(face)
                     {
@@ -373,7 +374,7 @@ public class FluidPipeBlock extends PetWaterloggedBlock
             TileEntity adjacentTileEntity = world.getTileEntity(adjacentPos);
             if(adjacentTileEntity != null)
             {
-                if(adjacentTileEntity instanceof FluidHolderTileEntity)
+                if(adjacentTileEntity instanceof FluidHolderTileEntity || adjacentTileEntity instanceof WaterFilterTileEntity)
                 {
                     switch(face)
                     {

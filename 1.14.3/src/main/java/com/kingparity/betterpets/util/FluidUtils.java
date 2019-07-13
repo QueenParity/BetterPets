@@ -2,6 +2,7 @@ package com.kingparity.betterpets.util;
 
 import com.kingparity.betterpets.tileentity.WaterFilterTileEntity;
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -37,6 +38,9 @@ public class FluidUtils
             double tankLevel = percent * height;
             
             Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            int light = waterFilter.getWorld().getCombinedLight(waterFilter.getPos(), Blocks.WATER.getDefaultState().getLightValue());
+            int lightX = light >> 0x10 & 0xFFFF;
+            int lightY = light & 0xFFFF;
             
             GlStateManager.enableBlend();
             
@@ -45,22 +49,22 @@ public class FluidUtils
             {
                 double subHeight = Math.min(16.0, tankLevel - (16.0 * i));
                 double offsetY = height - 16.0 * i - subHeight;
-                drawQuad(x, y + offsetY, 16, subHeight, minU, maxV - deltaV * (subHeight / 16.0), maxU, maxV, red, green, blue, 1.0F);
+                drawQuad(x, y + offsetY, 16, subHeight, minU, maxV - deltaV * (subHeight / 16.0), maxU, maxV, lightX, lightY, red, green, blue, 1.0F);
             }
             
             GlStateManager.disableBlend();
         }
     }
     
-    private static void drawQuad(double x, double y, double width, double height, double minU, double minV, double maxU, double maxV, float red, float green, float blue, float alpha)
+    private static void drawQuad(double x, double y, double width, double height, double minU, double minV, double maxU, double maxV, int lightX, int lightY, float red, float green, float blue, float alpha)
     {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
-        buffer.pos(x, y + height, 0).tex(minU, maxV).color(red, green, blue, alpha).endVertex();
-        buffer.pos(x + width, y + height, 0).tex(maxU, maxV).color(red, green, blue, alpha).endVertex();
-        buffer.pos(x + width, y, 0).tex(maxU, minV).color(red, green, blue, alpha).endVertex();
-        buffer.pos(x, y, 0).tex(minU, minV).color(red, green, blue, alpha).endVertex();
+        buffer.pos(x, y + height, 0).tex(minU, maxV).lightmap(lightX, lightY).color(red, green, blue, alpha).endVertex();
+        buffer.pos(x + width, y + height, 0).tex(maxU, maxV).lightmap(lightX, lightY).color(red, green, blue, alpha).endVertex();
+        buffer.pos(x + width, y, 0).tex(maxU, minV).lightmap(lightX, lightY).color(red, green, blue, alpha).endVertex();
+        buffer.pos(x, y, 0).tex(minU, minV).lightmap(lightX, lightY).color(red, green, blue, alpha).endVertex();
         tessellator.draw();
     }
 }

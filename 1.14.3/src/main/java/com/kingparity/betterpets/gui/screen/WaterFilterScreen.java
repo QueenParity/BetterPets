@@ -38,23 +38,6 @@ public class WaterFilterScreen extends ContainerScreen<WaterFilterContainer>
         String s = this.title.getFormattedText();
         this.font.drawString(s, (float)(this.xSize / 2 - this.font.getStringWidth(s) / 2), 6.0F, 4210752);
         this.font.drawString(this.playerInventory.getDisplayName().getFormattedText(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
-        
-        TileEntity tileEntity = this.playerInventory.player.world.getTileEntity(this.getContainer().getPos());
-        WaterFilterTileEntity waterFilter = tileEntity instanceof WaterFilterTileEntity ? (WaterFilterTileEntity)tileEntity : null;
-        if(waterFilter != null)
-        {
-            int startX = (this.width - this.xSize) / 2;
-            int startY = (this.height - this.ySize) / 2;
-            this.drawWaterTank(waterFilter, startX, startY, waterFilter.getFluidAmount(1) / (waterFilter.getCapacity() / 2), false);
-        }
-        else if(tileEntity != null)
-        {
-            System.out.println(tileEntity.getType().getRegistryName());
-        }
-        else
-        {
-            System.out.println(this.getContainer().getPos());
-        }
     }
     
     /**
@@ -68,6 +51,22 @@ public class WaterFilterScreen extends ContainerScreen<WaterFilterContainer>
         int startX = (this.width - this.xSize) / 2;
         int startY = (this.height - this.ySize) / 2;
         this.blit(startX, startY, 0, 0, this.xSize, this.ySize);
+    
+        TileEntity tileEntity = this.playerInventory.player.world.getTileEntity(this.getContainer().getPos());
+        WaterFilterTileEntity waterFilter = tileEntity instanceof WaterFilterTileEntity ? (WaterFilterTileEntity)tileEntity : null;
+        if(waterFilter != null)
+        {
+            this.drawWaterTank(waterFilter, startX + 53, startY + 14, waterFilter.getFluidAmount(1) / (double)(waterFilter.getCapacity() / 2), false);
+            this.drawWaterTank(waterFilter, startX + 131, startY + 14, waterFilter.getFluidAmount(0) / (double)(waterFilter.getCapacity() / 2), true);
+        }
+        else if(tileEntity != null)
+        {
+            System.out.println(tileEntity.getType().getRegistryName());
+        }
+        else
+        {
+            System.out.println(this.getContainer().getPos());
+        }
     }
     
     private void drawWaterTank(WaterFilterTileEntity waterFilter, int x, int y, double level, boolean isFiltered)

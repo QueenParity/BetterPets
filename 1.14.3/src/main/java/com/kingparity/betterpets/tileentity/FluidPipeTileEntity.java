@@ -36,7 +36,7 @@ public class FluidPipeTileEntity extends TickableFluidHolderTileEntity
                     {
                         continue;
                     }
-                    else if(tileEntity instanceof FluidPumpTileEntity && ((FluidPumpTileEntity)tileEntity).getFluidAmount() > this.getFluidAmount())
+                    else if(tileEntity instanceof FluidPumpTileEntity)
                     {
                         continue;
                     }
@@ -46,12 +46,6 @@ public class FluidPipeTileEntity extends TickableFluidHolderTileEntity
                 else if(tileEntity instanceof WaterFilterTileEntity)
                 {
                     WaterFilterTileEntity filter = (WaterFilterTileEntity)tileEntity;
-                    
-                    if(((WaterFilterTileEntity)tileEntity).getFluidAmount(1) > this.getFluidAmount())
-                    {
-                        continue;
-                    }
-                    
                     this.extractFluid(filter.receiveFluid(Math.min(this.getMaxExtract(), this.getFluidAmount()), true, 1), true);
                 }
             }
