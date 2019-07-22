@@ -1,0 +1,55 @@
+{
+    "multipart": [
+        {
+            "apply": { "model": "betterpets:block/pipe_dot" }
+        },
+        {
+            "when": { "up": "true" },
+            "apply": { "model": "betterpets:block/pipe_connection", "x": -90 }
+        },
+        {
+            "when": { "down": "true" },
+            "apply": { "model": "betterpets:block/pipe_connection", "x": 90 }
+        },
+        {
+            "when": { "north": "true" },
+            "apply": { "model": "betterpets:block/pipe_connection" }
+        },
+        {
+            "when": { "east": "true" },
+            "apply": { "model": "betterpets:block/pipe_connection", "y": 90 }
+        },
+        {
+            "when": { "south": "true" },
+            "apply": { "model": "betterpets:block/pipe_connection", "y": 180 }
+        },
+        {
+            "when": { "west": "true" },
+            "apply": { "model": "betterpets:block/pipe_connection", "y": -90 }
+        },
+		{
+            "when": { "up": "false" },
+            "apply": { "model": "betterpets:block/pipe_edge", "x": -90 }
+        },
+        {
+            "when": { "down": "false" },
+            "apply": { "model": "betterpets:block/pipe_edge", "x": 90 }
+        },
+        {
+            "when": { "north": "false" },
+            "apply": { "model": "betterpets:block/pipe_edge" }
+        },
+        {
+            "when": { "east": "false" },
+            "apply": { "model": "betterpets:block/pipe_edge", "y": 90 }
+        },
+        {
+            "when": { "south": "false" },
+            "apply": { "model": "betterpets:block/pipe_edge", "y": 180 }
+        },
+        {
+            "when": { "west": "false" },
+            "apply": { "model": "betterpets:block/pipe_edge", "y": -90 }
+        }
+    ]
+}

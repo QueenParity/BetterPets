@@ -1,0 +1,52 @@
+{
+    "multipart": [
+        {
+            "when": { "facing": "up" },
+            "apply": { "model": "betterpets:block/fluid_pump", "x": -90 }
+        },
+        {
+            "when": { "facing": "down" },
+            "apply": { "model": "betterpets:block/fluid_pump", "x": 90 }
+        },
+        {
+            "when": { "facing": "north" },
+            "apply": { "model": "betterpets:block/fluid_pump" }
+        },
+        {
+            "when": { "facing": "east" },
+            "apply": { "model": "betterpets:block/fluid_pump", "y": 90 }
+        },
+        {
+            "when": { "facing": "south" },
+            "apply": { "model": "betterpets:block/fluid_pump", "y": 180 }
+        },
+        {
+            "when": { "facing": "west" },
+            "apply": { "model": "betterpets:block/fluid_pump", "y": 270 }
+        },
+        {
+            "when": { "pipe_up": "true" },
+            "apply": { "model": "betterpets:block/pipe_connection", "x": -90 }
+        },
+        {
+            "when": { "pipe_down": "true" },
+            "apply": { "model": "betterpets:block/pipe_connection", "x": 90 }
+        },
+        {
+            "when": { "pipe_north": "true" },
+            "apply": { "model": "betterpets:block/pipe_connection" }
+        },
+        {
+            "when": { "pipe_east": "true" },
+            "apply": { "model": "betterpets:block/pipe_connection", "y": 90 }
+        },
+        {
+            "when": { "pipe_south": "true" },
+            "apply": { "model": "betterpets:block/pipe_connection", "y": 180 }
+        },
+        {
+            "when": { "pipe_west": "true" },
+            "apply": { "model": "betterpets:block/pipe_connection", "y": 270 }
+        }
+    ]
+}

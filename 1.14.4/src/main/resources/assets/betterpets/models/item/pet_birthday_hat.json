@@ -1,0 +1,122 @@
+{
+    "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
+    "textures": {
+        "birthdaycandles": "betterpets:block/birthdaycandles",
+        "wool_colored_light_blue": "minecraft:block/light_blue_wool",
+        "wool_colored_red": "minecraft:block/red_wool"
+    },
+    "display": {
+        "gui": {
+            "rotation": [ 30, 225, 0 ],
+            "translation": [ 0, 3, 0 ],
+            "scale": [ 1, 1, 1 ]
+        },
+        "ground": {
+            "rotation": [ 0, 0, 0 ],
+            "translation": [ 0, 3, 0 ],
+            "scale": [ 0.25, 0.25, 0.25 ]
+        },
+        "fixed": {
+            "rotation": [ 0, 0, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 0.5, 0.5, 0.5 ]
+        },
+        "firstperson_righthand": {
+            "rotation": [ 0, 45, 0 ],
+            "translation": [ -2, 5.5, 4 ],
+            "scale": [ 0.4, 0.4, 0.4 ]
+        },
+        "thirdperson_righthand": {
+            "rotation": [ 75, 45, 0 ],
+            "translation": [ 0, 2.5, 4.7 ],
+            "scale": [ 0.7, 0.7, 0.7 ]
+        }
+    },
+    "elements": [
+        {
+            "name": "Cube",
+            "from": [ 4.5, 0, 4.5 ], 
+            "to": [ 11.5, 3, 11.5 ], 
+            "faces": {
+                "north": { "texture": "#wool_colored_red", "uv": [ 9, 7, 16, 10 ] },
+                "east": { "texture": "#wool_colored_red", "uv": [ 2, 7, 9, 10 ] },
+                "south": { "texture": "#wool_colored_red", "uv": [ 7, 7, 14, 10 ] },
+                "west": { "texture": "#wool_colored_red", "uv": [ 0, 7, 7, 10 ] },
+                "up": { "texture": "#wool_colored_red", "uv": [ 9, 0, 16, 7 ], "rotation": 180 },
+                "down": { "texture": "#wool_colored_red", "uv": [ 0, 0, 7, 7 ] }
+            }
+        },
+        {
+            "name": "Cube",
+            "from": [ 5, 3, 5 ], 
+            "to": [ 11, 4, 11 ], 
+            "faces": {
+                "north": { "texture": "#wool_colored_light_blue", "uv": [ 10, 6, 16, 7 ] },
+                "east": { "texture": "#wool_colored_light_blue", "uv": [ 4, 6, 10, 7 ] },
+                "south": { "texture": "#wool_colored_light_blue", "uv": [ 6, 6, 12, 7 ] },
+                "west": { "texture": "#wool_colored_light_blue", "uv": [ 0, 6, 6, 7 ] },
+                "up": { "texture": "#wool_colored_light_blue", "uv": [ 10, 0, 16, 6 ], "rotation": 180 }
+            }
+        },
+        {
+            "name": "Cube",
+            "from": [ 5.5, 4, 5.5 ], 
+            "to": [ 6.5, 7, 6.5 ], 
+            "faces": {
+                "north": { "texture": "#birthdaycandles", "uv": [ 9, 1, 10, 4 ] },
+                "east": { "texture": "#birthdaycandles", "uv": [ 8, 1, 9, 4 ] },
+                "south": { "texture": "#birthdaycandles", "uv": [ 11, 1, 12, 4 ] },
+                "west": { "texture": "#birthdaycandles", "uv": [ 10, 1, 11, 4 ] },
+                "up": { "texture": "#birthdaycandles", "uv": [ 9, 0, 10, 1 ] }
+            }
+        },
+        {
+            "name": "Cube",
+            "from": [ 9.5, 4, 5.5 ], 
+            "to": [ 10.5, 7, 6.5 ], 
+            "faces": {
+                "north": { "texture": "#birthdaycandles", "uv": [ 5, 1, 6, 4 ] },
+                "east": { "texture": "#birthdaycandles", "uv": [ 4, 1, 5, 4 ] },
+                "south": { "texture": "#birthdaycandles", "uv": [ 7, 1, 8, 4 ] },
+                "west": { "texture": "#birthdaycandles", "uv": [ 6, 1, 7, 4 ] },
+                "up": { "texture": "#birthdaycandles", "uv": [ 5, 0, 6, 1 ] }
+            }
+        },
+        {
+            "name": "Cube",
+            "from": [ 9.5, 4, 9.5 ], 
+            "to": [ 10.5, 7, 10.5 ], 
+            "faces": {
+                "north": { "texture": "#birthdaycandles", "uv": [ 1, 1, 2, 4 ] },
+                "east": { "texture": "#birthdaycandles", "uv": [ 0, 1, 1, 4 ] },
+                "south": { "texture": "#birthdaycandles", "uv": [ 3, 1, 4, 4 ] },
+                "west": { "texture": "#birthdaycandles", "uv": [ 2, 1, 3, 4 ] },
+                "up": { "texture": "#birthdaycandles", "uv": [ 1, 0, 2, 1 ] }
+            }
+        },
+        {
+            "name": "Cube",
+            "from": [ 5.5, 4, 9.5 ], 
+            "to": [ 6.5, 7, 10.5 ], 
+            "faces": {
+                "north": { "texture": "#birthdaycandles", "uv": [ 7, 5, 8, 8 ] },
+                "east": { "texture": "#birthdaycandles", "uv": [ 6, 5, 7, 8 ] },
+                "south": { "texture": "#birthdaycandles", "uv": [ 9, 5, 10, 8 ] },
+                "west": { "texture": "#birthdaycandles", "uv": [ 8, 5, 9, 8 ] },
+                "up": { "texture": "#birthdaycandles", "uv": [ 7, 4, 8, 5 ] }
+            }
+        },
+        {
+            "name": "Cube",
+            "from": [ 7.5, 4, 7.5 ], 
+            "to": [ 8.5, 7, 8.5 ], 
+            "faces": {
+                "north": { "texture": "#birthdaycandles", "uv": [ 3, 5, 4, 8 ] },
+                "east": { "texture": "#birthdaycandles", "uv": [ 2, 5, 3, 8 ] },
+                "south": { "texture": "#birthdaycandles", "uv": [ 5, 5, 6, 8 ] },
+                "west": { "texture": "#birthdaycandles", "uv": [ 4, 5, 5, 8 ] },
+                "up": { "texture": "#birthdaycandles", "uv": [ 3, 4, 4, 5 ] }
+            }
+        }
+    ]
+}

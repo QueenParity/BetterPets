@@ -1,0 +1,26 @@
+modLoader="javafml" #mandatory
+loaderVersion="[28,)"
+
+[[mods]]
+modId="betterpets"
+version="${file.jarVersion}"
+displayName="Better Pets"
+updateJSONURL="http://myurl.me/"
+displayURL="http://example.com/"
+logoFile="examplemod.png"
+credits="The Forge and FML guys, for making forge"
+authors="KingIceCream"
+description="Adds in better, more advanced pets"
+
+[[dependencies.betterpets]] #optional
+    modId="forge"
+    mandatory=true
+    versionRange="[28,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.betterpets]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.14.4]"
+    ordering="NONE"
+    side="BOTH"

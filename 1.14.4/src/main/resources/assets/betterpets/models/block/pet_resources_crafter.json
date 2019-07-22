@@ -1,0 +1,83 @@
+{
+    "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
+    "textures": {
+        "pet_food_maker_end_side": "betterpets:block/pet_food_maker_end_side",
+        "pet_food_maker_end_up": "betterpets:block/pet_food_maker_end_up",
+        "pet_food_maker_middle_side": "betterpets:block/pet_food_maker_middle_side",
+        "pet_food_maker_end_front": "betterpets:block/pet_food_maker_end_front",
+        "pet_food_maker_end_back": "betterpets:block/pet_food_maker_end_back",
+        "pet_food_maker_middle_up": "betterpets:block/pet_food_maker_middle_up",
+		"particle": "minecraft:block/iron_block"
+    },
+    "display": {
+        "gui": {
+            "rotation": [ 30, 45, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 0.625, 0.625, 0.625 ]
+        },
+        "ground": {
+            "rotation": [ 0, 0, 0 ],
+            "translation": [ 0, 3, 0 ],
+            "scale": [ 0.25, 0.25, 0.25 ]
+        },
+        "fixed": {
+            "rotation": [ 0, 180, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 1, 1, 1 ]
+        },
+        "head": {
+            "rotation": [ 0, 180, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 1, 1, 1 ]
+        },
+        "firstperson_righthand": {
+            "rotation": [ 0, 315, 0 ],
+            "translation": [ 0, 2.5, 0 ],
+            "scale": [ 0.4, 0.4, 0.4 ]
+        },
+        "thirdperson_righthand": {
+            "rotation": [ 75, 315, 0 ],
+            "translation": [ 0, 2.5, 0 ],
+            "scale": [ 0.375, 0.375, 0.375 ]
+        }
+    },
+    "elements": [
+        {
+            "name": "north_face",
+            "from": [ 0, 0, 0 ], 
+            "to": [ 16, 16, 4 ], 
+            "faces": {
+                "north": { "texture": "#pet_food_maker_end_front", "uv": [ 0, 0, 16, 16 ] },
+                "east": { "texture": "#pet_food_maker_end_side", "uv": [ 0, 0, 4, 16 ] },
+                "south": { "texture": "#pet_food_maker_end_back", "uv": [ 0, 0, 16, 16 ] },
+                "west": { "texture": "#pet_food_maker_end_side", "uv": [ 0, 0, 4, 16 ] },
+                "up": { "texture": "#pet_food_maker_end_up", "uv": [ 0, 0, 16, 4 ] },
+                "down": { "texture": "#pet_food_maker_end_up", "uv": [ 0, 0, 16, 4 ] }
+            }
+        },
+        {
+            "name": "south_face",
+            "from": [ 0, 0, 12 ], 
+            "to": [ 16, 16, 16 ], 
+            "faces": {
+                "north": { "texture": "#pet_food_maker_end_back", "uv": [ 0, 0, 16, 16 ] },
+                "east": { "texture": "#pet_food_maker_end_side", "uv": [ 0, 0, 4, 16 ] },
+                "south": { "texture": "#pet_food_maker_end_front", "uv": [ 0, 0, 16, 16 ] },
+                "west": { "texture": "#pet_food_maker_end_side", "uv": [ 0, 0, 4, 16 ] },
+                "up": { "texture": "#pet_food_maker_end_up", "uv": [ 0, 0, 16, 4 ] },
+                "down": { "texture": "#pet_food_maker_end_up", "uv": [ 0, 0, 16, 4 ] }
+            }
+        },
+        {
+            "name": "middle",
+            "from": [ 2, 2, 4 ], 
+            "to": [ 14, 14, 12 ], 
+            "faces": {
+                "east": { "texture": "#pet_food_maker_middle_side", "uv": [ 0, 0, 8, 12 ] },
+                "west": { "texture": "#pet_food_maker_middle_side", "uv": [ 0, 0, 8, 12 ] },
+                "up": { "texture": "#pet_food_maker_middle_up", "uv": [ 0, 0, 12, 8 ] },
+                "down": { "texture": "#pet_food_maker_middle_up", "uv": [ 0, 0, 12, 8 ] }
+            }
+        }
+    ]
+}
