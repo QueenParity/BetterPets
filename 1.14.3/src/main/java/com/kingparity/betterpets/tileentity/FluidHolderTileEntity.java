@@ -19,6 +19,7 @@ public abstract class FluidHolderTileEntity extends TileEntity
     private int maxReceive;
     private int maxExtract;
     private int fluidAmount = 0;
+    private boolean isFiltered;
     
     public FluidHolderTileEntity(TileEntityType<?> tileEntityType)
     {
@@ -55,12 +56,13 @@ public abstract class FluidHolderTileEntity extends TileEntity
         syncToClient();
     }
     
-    public int receiveFluid(int maxReceive, boolean doDrain)
+    public int receiveFluid(int maxReceive, boolean doDrain, boolean isFiltered)
     {
-        if(!canReceive())
+        if(!canReceive() || (this.isFiltered != isFiltered && this.fluidAmount > 0))
         {
             return 0;
         }
+        this.isFiltered = isFiltered;
         int fluidReceived = Math.min(capacity - fluidAmount, Math.min(this.maxReceive, maxReceive));
         if(doDrain)
         {
@@ -70,13 +72,13 @@ public abstract class FluidHolderTileEntity extends TileEntity
         return fluidReceived;
     }
     
-    public int extractFluid(int maxExtract, boolean doDrain)
+    public int extractFluid(int maxExtract, boolean doDrain, boolean isFiltered)
     {
-        if(!canExtract())
+        if(!canExtract() || (this.isFiltered != isFiltered && this.fluidAmount > 0))
         {
             return 0;
         }
-        
+        this.isFiltered = isFiltered;
         int fluidExtracted = Math.min(fluidAmount, Math.min(this.maxExtract, maxExtract));
         if (doDrain)
         {
@@ -131,6 +133,11 @@ public abstract class FluidHolderTileEntity extends TileEntity
         return new ResourceLocation("block/water_flow");
     }
     
+    public boolean isFiltered()
+    {
+        return isFiltered;
+    }
+    
     @Override
     public void read(CompoundNBT compound)
     {
@@ -143,6 +150,10 @@ public abstract class FluidHolderTileEntity extends TileEntity
         {
             this.capacity = compound.getInt("Capacity");
         }
+        if(compound.contains("IsFiltered", Constants.NBT.TAG_INT))
+        {
+            this.isFiltered = compound.getInt("IsFiltered") == 1;
+        }
     }
     
     @Override
@@ -151,6 +162,7 @@ public abstract class FluidHolderTileEntity extends TileEntity
         super.write(compound);
         compound.putInt("FluidAmount", fluidAmount);
         compound.putInt("Capacity", capacity);
+        compound.putInt("IsFiltered", isFiltered ? 1 : 0);
         return compound;
     }
     

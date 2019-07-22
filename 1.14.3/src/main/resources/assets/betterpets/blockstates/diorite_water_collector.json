@@ -1,7 +1,7 @@
 {
     "forge_marker": 1,
     "defaults": {
-        "model": "betterpets:diorite_water_collector"
+        "model": "betterpets:block/diorite_water_collector"
     },
     "variants": {
         "facing": {

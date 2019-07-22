@@ -2,6 +2,7 @@ package com.kingparity.betterpets.client.renderer.entity;
 
 import com.kingparity.betterpets.client.layer.BetterWolfAccessoriesLayer;
 import com.kingparity.betterpets.client.layer.BetterWolfCollarLayer;
+import com.kingparity.betterpets.client.layer.BetterWolfEyesLayer;
 import com.kingparity.betterpets.client.model.BetterWolfModel;
 import com.kingparity.betterpets.entity.BetterWolfEntity;
 import com.kingparity.betterpets.util.Reference;
@@ -22,8 +23,8 @@ public class BetterWolfRenderer extends MobRenderer<BetterWolfEntity, BetterWolf
     public BetterWolfRenderer(EntityRendererManager renderManagerIn)
     {
         super(renderManagerIn, new BetterWolfModel<>(), 0.5F);
-        //this.addLayer(new BetterWolfCollarLayer
         this.addLayer(new BetterWolfCollarLayer(this));
+        this.addLayer(new BetterWolfEyesLayer(this));
         this.addLayer(new BetterWolfAccessoriesLayer<>(this));
     }
     
@@ -57,7 +58,7 @@ public class BetterWolfRenderer extends MobRenderer<BetterWolfEntity, BetterWolf
     @Override
     protected ResourceLocation getEntityTexture(BetterWolfEntity betterWolf)
     {
-        if(betterWolf.isTamed())
+        /*if(betterWolf.isTamed())
         {
             if(betterWolf.isSleeping())
             {
@@ -71,6 +72,7 @@ public class BetterWolfRenderer extends MobRenderer<BetterWolfEntity, BetterWolf
         else
         {
             return new ResourceLocation(Reference.ID + ":textures/entity/better_wolf_" + betterWolf.getTexture() + ".png");
-        }
+        }*/
+        return new ResourceLocation(Reference.ID + ":textures/entity/wolf/better_wolf_" + betterWolf.getTexture() + ".png");
     }
 }

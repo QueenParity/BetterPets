@@ -1,41 +1,38 @@
 package com.kingparity.betterpets.network.message;
 
-import com.kingparity.betterpets.BetterPetMod;
+import com.kingparity.betterpets.entity.BetterWolfEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-import java.util.UUID;
 import java.util.function.Supplier;
 
 public class MessageMovementSpeed
 {
-    private UUID uuid;
+    private int entityId;
     private int movementSpeed = 0;
     
-    public MessageMovementSpeed(UUID uuid, int movementSpeed)
+    public MessageMovementSpeed(int entityId, int movementSpeed)
     {
-        this.uuid = uuid;
+        this.entityId = entityId;
         this.movementSpeed = movementSpeed;
     }
     
     //fromBytes
     public static void encode(MessageMovementSpeed pkt, PacketBuffer buf)
     {
-        buf.writeUniqueId(pkt.uuid);
-        buf.writeInt(pkt.movementSpeed);
+        buf.writeVarInt(pkt.entityId);
+        buf.writeVarInt(pkt.movementSpeed);
     }
     
     //toBytes
     public static MessageMovementSpeed decode(PacketBuffer buf)
     {
-        UUID uuid = buf.readUniqueId();
-        int movementSpeed = buf.readInt();
-        return new MessageMovementSpeed(uuid, movementSpeed);
-    }
-    
-    public void handleServerSide()
-    {
-        BetterPetMod.PROXY.getStatsByUUID(uuid).movementSpeed = movementSpeed;
+        int entityId = buf.readVarInt();
+        int movementSpeed = buf.readVarInt();
+        return new MessageMovementSpeed(entityId, movementSpeed);
     }
     
     //onMessage
@@ -43,7 +40,19 @@ public class MessageMovementSpeed
     {
         public static void handle(final MessageMovementSpeed pkt, Supplier<NetworkEvent.Context> ctx)
         {
-            ctx.get().enqueueWork(() -> pkt.handleServerSide());
+            ctx.get().enqueueWork(() -> {
+                PlayerEntity player = ctx.get().getSender();
+                World world = player.world;
+                Entity entity = world.getEntityByID(pkt.entityId);
+                if(entity instanceof BetterWolfEntity)
+                {
+                    ((BetterWolfEntity)entity).getPetThirstStats().movementSpeed = pkt.movementSpeed;
+                }
+                else
+                {
+                    System.out.println(entity != null ? entity.getPosition() : "uhhhh");
+                }
+            });
             ctx.get().setPacketHandled(true);
         }
     }

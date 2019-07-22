@@ -47,7 +47,7 @@ public class FluidPipeTESR extends TileEntityRenderer<FluidPipeTileEntity>
             double height = 3 * (fluidPipe.getFluidAmount() / (double)fluidPipe.getCapacity());
             if(height > 0)
             {
-                drawBox(fluidPipe, 6.51 * 0.0625, 6.51 * 0.0625, 6.51 * 0.0625, (3 - 0.02) * 0.0625, (height - 0.02) * 0.0625, (3 - 0.02) * 0.0625, !north, !east, !south, !west, !up, !down);
+                drawBox(fluidPipe, 6.51 * 0.0625, 6.51 * 0.0625, 6.51 * 0.0625, (3 - 0.02) * 0.0625, (height - 0.02) * 0.0625, (3 - 0.02) * 0.0625, !north, !east, !south, !west, !up, !down, fluidPipe.isFiltered());
                 
                 for(Direction direction : Direction.values())
                 {
@@ -98,7 +98,7 @@ public class FluidPipeTESR extends TileEntityRenderer<FluidPipeTileEntity>
                                 GlStateManager.rotatef(90F, 1, 0, 0);
                             }
                             GlStateManager.translated(-0.5, -0.5, -0.5);
-                            drawBox(fluidPipe, 6.51 * 0.0625, 6.51 * 0.0625, 0, (3 - 0.02) * 0.0625, (height - 0.02) * 0.0625, 6.51 * 0.0625, false, true, false, true, true, true);
+                            drawBox(fluidPipe, 6.51 * 0.0625, 6.51 * 0.0625, 0, (3 - 0.02) * 0.0625, (height - 0.02) * 0.0625, 6.51 * 0.0625, false, true, false, true, true, true, fluidPipe.isFiltered());
                         }
                     }
                     GlStateManager.popMatrix();
@@ -111,7 +111,7 @@ public class FluidPipeTESR extends TileEntityRenderer<FluidPipeTileEntity>
         GlStateManager.popMatrix();
     }
     
-    private void drawBox(FluidPipeTileEntity fluidPipe, double x, double y, double z, double width, double height, double depth, boolean north, boolean east, boolean south, boolean west, boolean up, boolean down)
+    private void drawBox(FluidPipeTileEntity fluidPipe, double x, double y, double z, double width, double height, double depth, boolean north, boolean east, boolean south, boolean west, boolean up, boolean down, boolean isFiltered)
     {
         if(fluidPipe.getFluidAmount() == 0.0F)
         {
@@ -122,7 +122,15 @@ public class FluidPipeTESR extends TileEntityRenderer<FluidPipeTileEntity>
         TextureAtlasSprite sprite = Minecraft.getInstance().getTextureMap().getAtlasSprite(resource.toString());
         if(sprite != null)
         {
-            int i = BiomeColors.getWaterColor(fluidPipe.getWorld(), fluidPipe.getPos());
+            int i;
+            if(isFiltered)
+            {
+                i = 51455; //int: 51455 hex: DEDEDE Red: 0.0 Green: 200.0 Blue: 255.0
+            }
+            else
+            {
+                i = BiomeColors.getWaterColor(fluidPipe.getWorld(), fluidPipe.getPos()); //int: 4159204 hex: 3F76E4 Red: 63.0 Green: 118.0 Blue: 228.0
+            }
             float f = (float)(i >> 16 & 255) / 255.0F;
             float f1 = (float)(i >> 8 & 255) / 255.0F;
             float f2 = (float)(i & 255) / 255.0F;

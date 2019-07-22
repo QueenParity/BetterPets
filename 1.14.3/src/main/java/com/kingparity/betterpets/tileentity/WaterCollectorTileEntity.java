@@ -28,7 +28,7 @@ public class WaterCollectorTileEntity extends FluidHolderTileEntity implements I
                             {
                                 temperature += 1.0F;
                             }
-                            this.receiveFluid(Math.round(500 * temperature), true);
+                            this.receiveFluid(Math.round(500 * temperature), true, false);
                         }
                     }
                 }

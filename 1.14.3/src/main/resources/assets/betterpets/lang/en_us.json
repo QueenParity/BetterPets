@@ -61,6 +61,11 @@
 	"betterpets.canteen_info.poisonChance": "Poison Chance",
 	"betterpets.water_filter_info.no_fluid": "No Fluid",
 	
+	"drink.none": "No Drink",
+	"drink.betterpets.fresh_water": "Fresh Water",
+	"drink.betterpets.milk": "Milk",
+	"drink.betterpets.chocolate_milk": "Chocolate Milk",
+	
 	"container.betterpets.pet_resources_crafter": "Pet Resources Crafter",
 	"container.betterpets.water_filter": "Water Filter",
 	

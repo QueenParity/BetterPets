@@ -7,14 +7,15 @@ import com.kingparity.betterpets.tileentity.WaterFilterTileEntity;
 import com.kingparity.betterpets.util.VoxelShapeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.BucketItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.state.BooleanProperty;
+import net.minecraft.item.*;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -25,6 +26,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -35,12 +37,13 @@ import java.util.Random;
 public class WaterFilterBlock extends PetHorizontalBlock
 {
     public final ImmutableMap<BlockState, VoxelShape> SHAPES;
-    public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
+    //public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
+    public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
     
     public WaterFilterBlock(Properties properties)
     {
         super(properties);
-        this.setDefaultState(this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH).with(ACTIVE, false));
+        this.setDefaultState(this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH)/*.with(ACTIVE, false)*/.with(HALF, DoubleBlockHalf.LOWER));
         SHAPES = this.generateShapes(this.getStateContainer().getValidStates());
     }
     
@@ -50,76 +53,110 @@ public class WaterFilterBlock extends PetHorizontalBlock
         final VoxelShape[] NORTH_EAST_LEG = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(13.5, 0, 0.5, 15.5, 5, 2.5), Direction.SOUTH));
         final VoxelShape[] SOUTH_EAST_LEG = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(13.5, 0, 13.5, 15.5, 5, 15.5), Direction.SOUTH));
         final VoxelShape[] SOUTH_WEST_LEG = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(0.5, 0, 13.5, 2.5, 5, 15.5), Direction.SOUTH));
-        final VoxelShape[] WATER_FILTER_STAND = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(0, 5, 0, 16, 6, 16), Direction.SOUTH));
-        final VoxelShape[] NORTH_UP_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(1, 20, 1, 15, 21, 2), Direction.SOUTH));
-        final VoxelShape[] SOUTH_UP_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(1, 20, 14, 15, 21, 15), Direction.SOUTH));
-        final VoxelShape[] WEST_UP_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(1, 20, 2, 2, 21, 14), Direction.SOUTH));
-        final VoxelShape[] TANK_BASE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(1, 6, 1, 15, 7, 15), Direction.SOUTH));
-        final VoxelShape[] EAST_UP_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(14, 20, 2, 15, 21, 14), Direction.SOUTH));
-        final VoxelShape[] NORTH_WEST_DOWN_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(1, 7, 1, 2, 13, 2), Direction.SOUTH));
-        final VoxelShape[] UP_GLASS = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(2, 20, 2, 14, 21, 14), Direction.SOUTH));
-        final VoxelShape[] SOUTH_WEST_DOWN_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(1, 7, 14, 2, 13, 15), Direction.SOUTH));
-        final VoxelShape[] SOUTH_EAST_DOWN_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(14, 7, 14, 15, 13, 15), Direction.SOUTH));
-        final VoxelShape[] NORTH_EAST_DOWN_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(14, 7, 1, 15, 13, 2), Direction.SOUTH));
-        final VoxelShape[] NORTH_DOWN_GLASS = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(2, 7, 1, 14, 13, 2), Direction.SOUTH));
-        final VoxelShape[] SOUTH_DOWN_GLASS = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(2, 7, 14, 14, 13, 15), Direction.SOUTH));
-        final VoxelShape[] EAST_DOWN_GLASS = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(14, 7, 2, 15, 13, 14), Direction.SOUTH));
-        final VoxelShape[] WEST_DOWN_GLASS = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(1, 7, 2, 2, 13, 14), Direction.SOUTH));
-        final VoxelShape[] EAST_MID_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(14, 13, 2, 15, 14, 14), Direction.SOUTH));
-        final VoxelShape[] WEST_MID_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(1, 13, 2, 2, 14, 14), Direction.SOUTH));
-        final VoxelShape[] SOUTH_MID_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(1, 13, 14, 15, 14, 15), Direction.SOUTH));
-        final VoxelShape[] NORTH_MID_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(1, 13, 1, 15, 14, 2), Direction.SOUTH));
-        final VoxelShape[] EAST_UP_GLASS = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(14, 14, 2, 15, 20, 14), Direction.SOUTH));
-        final VoxelShape[] WEST_UP_GLASS = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(1, 14, 2, 2, 20, 14), Direction.SOUTH));
-        final VoxelShape[] SOUTH_UP_GLASS = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(2, 14, 14, 14, 20, 15), Direction.SOUTH));
-        final VoxelShape[] SOUTH_WEST_UP_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(1, 14, 14, 2, 20, 15), Direction.SOUTH));
-        final VoxelShape[] SOUTH_EAST_UP_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(14, 14, 14, 15, 20, 15), Direction.SOUTH));
-        final VoxelShape[] NORTH_EAST_UP_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(14, 14, 1, 15, 20, 2), Direction.SOUTH));
-        final VoxelShape[] NORTH_UP_GLASS = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(2, 14, 1, 14, 20, 2), Direction.SOUTH));
-        final VoxelShape[] NORTH_WEST_UP_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(1, 14, 1, 2, 20, 2), Direction.SOUTH));
+        final VoxelShape[] WATER_FILTER_STAND = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(0, 5, 0, 16, 7, 16), Direction.SOUTH));
+        final VoxelShape[] NORTH_WEST_DOWN_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(1, 8, 1, 2, 19, 2), Direction.SOUTH));
+        final VoxelShape[] SOUTH_WEST_DOWN_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(1, 8, 14, 2, 19, 15), Direction.SOUTH));
+        final VoxelShape[] NORTH_EAST_DOWN_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(14, 8, 1, 15, 19, 2), Direction.SOUTH));
+        final VoxelShape[] SOUTH_EAST_DOWN_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(14, 8, 14, 15, 19, 15), Direction.SOUTH));
+        final VoxelShape[] WEST_UP_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(1, 29, 2, 2, 30, 14), Direction.SOUTH));
+        final VoxelShape[] BASE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(1, 7, 1, 15, 8, 15), Direction.SOUTH));
+        final VoxelShape[] WEST_DOWN_STONE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(1.4, 8, 2, 2, 18, 14), Direction.SOUTH));
+        final VoxelShape[] EAST_DOWN_STONE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(14, 8, 2, 14.6, 18, 14), Direction.SOUTH));
+        final VoxelShape[] SOUTH_DOWN_STONE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(2, 8, 14, 14, 18, 14.6), Direction.SOUTH));
+        final VoxelShape[] NORTH_DOWN_STONE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(2, 8, 1.4, 14, 18, 2), Direction.SOUTH));
+        final VoxelShape[] EAST_UP_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(14, 29, 2, 15, 30, 14), Direction.SOUTH));
+        final VoxelShape[] NORTH_UP_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(2, 29, 1, 14, 30, 2), Direction.SOUTH));
+        final VoxelShape[] SOUTH_UP_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(2, 29, 14, 14, 30, 15), Direction.SOUTH));
+        final VoxelShape[] UP_STONE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(2, 29, 2, 14, 29.6, 14), Direction.SOUTH));
+        final VoxelShape[] SOUTH_EAST_UP_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(14, 19, 14, 15, 30, 15), Direction.SOUTH));
+        final VoxelShape[] NORTH_WEST_UP_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(1, 19, 1, 2, 30, 2), Direction.SOUTH));
+        final VoxelShape[] SOUTH_WEST_UP_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(1, 19, 14, 2, 30, 15), Direction.SOUTH));
+        final VoxelShape[] NORTH_EAST_UP_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(14, 19, 1, 15, 30, 2), Direction.SOUTH));
+        final VoxelShape[] EAST_UP_STONE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(14, 19, 2, 14.6, 29, 14), Direction.SOUTH));
+        final VoxelShape[] SOUTH_UP_STONE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(2, 19, 14, 14, 29, 14.6), Direction.SOUTH));
+        final VoxelShape[] NORTH_UP_STONE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(2, 19, 1.4, 14, 29, 2), Direction.SOUTH));
+        final VoxelShape[] WEST_UP_STONE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(1.4, 19, 2, 2, 29, 14), Direction.SOUTH));
+        final VoxelShape[] SOUTH_MID_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(2, 18, 14, 14, 19, 15), Direction.SOUTH));
+        final VoxelShape[] EAST_MID_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(14, 18, 2, 15, 19, 14), Direction.SOUTH));
+        final VoxelShape[] NORTH_MID_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(2, 18, 1, 14, 19, 2), Direction.SOUTH));
+        final VoxelShape[] WEST_MID_BEAM = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(1, 18, 2, 2, 19, 14), Direction.SOUTH));
     
-        final VoxelShape[] SEPERATOR = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(2, 13, 2, 14, 14, 14), Direction.SOUTH));
+        final VoxelShape WEST_MID_BEAM2 = Block.makeCuboidShape(1, 18, 2, 2, 19, 14);
+        WEST_MID_BEAM2.withOffset(0, -16, 0);
         
         ImmutableMap.Builder<BlockState, VoxelShape> builder = new ImmutableMap.Builder<>();
         for(BlockState state : states)
         {
             Direction direction = state.get(DIRECTION);
+            boolean top = state.get(HALF) == DoubleBlockHalf.UPPER;
             List<VoxelShape> shapes = new ArrayList<>();
-            shapes.add(NORTH_WEST_LEG[direction.getIndex()]);
-            shapes.add(NORTH_EAST_LEG[direction.getIndex()]);
-            shapes.add(SOUTH_EAST_LEG[direction.getIndex()]);
-            shapes.add(SOUTH_WEST_LEG[direction.getIndex()]);
-            shapes.add(WATER_FILTER_STAND[direction.getIndex()]);
-            shapes.add(NORTH_UP_BEAM[direction.getIndex()]);
-            shapes.add(SOUTH_UP_BEAM[direction.getIndex()]);
-            shapes.add(WEST_UP_BEAM[direction.getIndex()]);
-            shapes.add(TANK_BASE[direction.getIndex()]);
-            shapes.add(EAST_UP_BEAM[direction.getIndex()]);
-            shapes.add(NORTH_WEST_DOWN_BEAM[direction.getIndex()]);
-            shapes.add(UP_GLASS[direction.getIndex()]);
-            shapes.add(SOUTH_WEST_DOWN_BEAM[direction.getIndex()]);
-            shapes.add(SOUTH_EAST_DOWN_BEAM[direction.getIndex()]);
-            shapes.add(NORTH_EAST_DOWN_BEAM[direction.getIndex()]);
-            shapes.add(NORTH_DOWN_GLASS[direction.getIndex()]);
-            shapes.add(SOUTH_DOWN_GLASS[direction.getIndex()]);
-            shapes.add(EAST_DOWN_GLASS[direction.getIndex()]);
-            shapes.add(WEST_DOWN_GLASS[direction.getIndex()]);
-            shapes.add(EAST_MID_BEAM[direction.getIndex()]);
-            shapes.add(WEST_MID_BEAM[direction.getIndex()]);
-            shapes.add(SOUTH_MID_BEAM[direction.getIndex()]);
-            shapes.add(NORTH_MID_BEAM[direction.getIndex()]);
-            shapes.add(EAST_UP_GLASS[direction.getIndex()]);
-            shapes.add(WEST_UP_GLASS[direction.getIndex()]);
-            shapes.add(SOUTH_UP_GLASS[direction.getIndex()]);
-            shapes.add(SOUTH_WEST_UP_BEAM[direction.getIndex()]);
-            shapes.add(SOUTH_EAST_UP_BEAM[direction.getIndex()]);
-            shapes.add(NORTH_EAST_UP_BEAM[direction.getIndex()]);
-            shapes.add(NORTH_UP_GLASS[direction.getIndex()]);
-            shapes.add(NORTH_WEST_UP_BEAM[direction.getIndex()]);
-            
-            if(state.get(ACTIVE))
+            if(top)
             {
-                shapes.add(SEPERATOR[direction.getIndex()]);
+                shapes.add(NORTH_WEST_LEG[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(NORTH_EAST_LEG[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(SOUTH_EAST_LEG[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(SOUTH_WEST_LEG[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(WATER_FILTER_STAND[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(NORTH_WEST_DOWN_BEAM[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(SOUTH_WEST_DOWN_BEAM[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(NORTH_EAST_DOWN_BEAM[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(SOUTH_EAST_DOWN_BEAM[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(WEST_UP_BEAM[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(BASE[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(WEST_DOWN_STONE[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(EAST_DOWN_STONE[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(SOUTH_DOWN_STONE[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(NORTH_DOWN_STONE[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(EAST_UP_BEAM[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(NORTH_UP_BEAM[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(SOUTH_UP_BEAM[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(UP_STONE[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(SOUTH_EAST_UP_BEAM[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(NORTH_WEST_UP_BEAM[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(SOUTH_WEST_UP_BEAM[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(NORTH_EAST_UP_BEAM[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(EAST_UP_STONE[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(SOUTH_UP_STONE[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(NORTH_UP_STONE[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(WEST_UP_STONE[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(SOUTH_MID_BEAM[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(EAST_MID_BEAM[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(NORTH_MID_BEAM[direction.getIndex()].withOffset(0, -16, 0));
+                shapes.add(WEST_MID_BEAM[direction.getIndex()].withOffset(0, -16, 0));
+            }
+            else
+            {
+                shapes.add(NORTH_WEST_LEG[direction.getIndex()]);
+                shapes.add(NORTH_EAST_LEG[direction.getIndex()]);
+                shapes.add(SOUTH_EAST_LEG[direction.getIndex()]);
+                shapes.add(SOUTH_WEST_LEG[direction.getIndex()]);
+                shapes.add(WATER_FILTER_STAND[direction.getIndex()]);
+                shapes.add(NORTH_WEST_DOWN_BEAM[direction.getIndex()]);
+                shapes.add(SOUTH_WEST_DOWN_BEAM[direction.getIndex()]);
+                shapes.add(NORTH_EAST_DOWN_BEAM[direction.getIndex()]);
+                shapes.add(SOUTH_EAST_DOWN_BEAM[direction.getIndex()]);
+                shapes.add(WEST_UP_BEAM[direction.getIndex()]);
+                shapes.add(BASE[direction.getIndex()]);
+                shapes.add(WEST_DOWN_STONE[direction.getIndex()]);
+                shapes.add(EAST_DOWN_STONE[direction.getIndex()]);
+                shapes.add(SOUTH_DOWN_STONE[direction.getIndex()]);
+                shapes.add(NORTH_DOWN_STONE[direction.getIndex()]);
+                shapes.add(EAST_UP_BEAM[direction.getIndex()]);
+                shapes.add(NORTH_UP_BEAM[direction.getIndex()]);
+                shapes.add(SOUTH_UP_BEAM[direction.getIndex()]);
+                shapes.add(UP_STONE[direction.getIndex()]);
+                shapes.add(SOUTH_EAST_UP_BEAM[direction.getIndex()]);
+                shapes.add(NORTH_WEST_UP_BEAM[direction.getIndex()]);
+                shapes.add(SOUTH_WEST_UP_BEAM[direction.getIndex()]);
+                shapes.add(NORTH_EAST_UP_BEAM[direction.getIndex()]);
+                shapes.add(EAST_UP_STONE[direction.getIndex()]);
+                shapes.add(SOUTH_UP_STONE[direction.getIndex()]);
+                shapes.add(NORTH_UP_STONE[direction.getIndex()]);
+                shapes.add(WEST_UP_STONE[direction.getIndex()]);
+                shapes.add(SOUTH_MID_BEAM[direction.getIndex()]);
+                shapes.add(EAST_MID_BEAM[direction.getIndex()]);
+                shapes.add(NORTH_MID_BEAM[direction.getIndex()]);
+                shapes.add(WEST_MID_BEAM[direction.getIndex()]);
             }
             builder.put(state, VoxelShapeHelper.combineAll(shapes));
         }
@@ -136,6 +173,62 @@ public class WaterFilterBlock extends PetHorizontalBlock
     public VoxelShape getCollisionShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context)
     {
         return SHAPES.get(state);
+    }
+    
+    @Override
+    public BlockState getStateForPlacement(BlockItemUseContext context)
+    {
+        BlockPos pos = context.getPos();
+        if(pos.getY() < 255 && context.getWorld().getBlockState(pos.up()).isReplaceable(context))
+        {
+            return this.getDefaultState().with(DIRECTION, context.getNearestLookingDirection()).with(HALF, DoubleBlockHalf.LOWER);
+        }
+        else
+        {
+            return null;
+        }
+    }
+    
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    {
+        world.setBlockState(pos.up(), state.with(HALF, DoubleBlockHalf.UPPER), 3);
+    }
+    
+    @Override
+    public void onBlockHarvested(World world, BlockPos pos, BlockState state, PlayerEntity player)
+    {
+        DoubleBlockHalf half = state.get(HALF);
+        BlockPos blockpos = half == DoubleBlockHalf.LOWER ? pos.up() : pos.down();
+        BlockState blockstate = world.getBlockState(blockpos);
+        if(blockstate.getBlock() == this && blockstate.get(HALF) != half)
+        {
+            world.setBlockState(blockpos, Blocks.AIR.getDefaultState(), 35);
+            world.playEvent(player, 2001, blockpos, Block.getStateId(blockstate));
+            ItemStack itemstack = player.getHeldItemMainhand();
+            if(!world.isRemote && !player.isCreative())
+            {
+                Block.spawnDrops(state, world, pos, null, player, itemstack);
+                Block.spawnDrops(blockstate, world, blockpos, null, player, itemstack);
+            }
+        }
+    
+        super.onBlockHarvested(world, pos, state, player);
+    }
+    
+    @Override
+    public boolean isValidPosition(BlockState state, IWorldReader reader, BlockPos pos)
+    {
+        BlockPos blockpos = pos.down();
+        BlockState blockstate = reader.getBlockState(blockpos);
+        if(state.get(HALF) == DoubleBlockHalf.LOWER)
+        {
+            return Block.hasSolidSide(blockstate, reader, blockpos, Direction.UP);
+        }
+        else
+        {
+            return blockstate.getBlock() == this;
+        }
     }
     
     @Override
@@ -226,6 +319,7 @@ public class WaterFilterBlock extends PetHorizontalBlock
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
     {
         super.fillStateContainer(builder);
-        builder.add(ACTIVE);
+        //builder.add(ACTIVE);
+        builder.add(HALF);
     }
 }

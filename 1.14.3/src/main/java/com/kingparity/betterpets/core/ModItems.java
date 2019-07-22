@@ -2,12 +2,14 @@ package com.kingparity.betterpets.core;
 
 import com.kingparity.betterpets.BetterPetMod;
 import com.kingparity.betterpets.item.CanteenItem;
+import com.kingparity.betterpets.item.DrinkBottleItem;
 import com.kingparity.betterpets.item.PetFoodItem;
 import com.kingparity.betterpets.names.ItemNames;
 import com.kingparity.betterpets.util.Reference;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.SpawnEggItem;
+import net.minecraft.item.TallBlockItem;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -37,6 +39,12 @@ public class ModItems
     @ObjectHolder(ItemNames.BETTER_WOLF_SPAWN_EGG)
     public static final Item BETTER_WOLF_SPAWN_EGG = null;
     
+    @ObjectHolder(ItemNames.OAK_WATER_FILTER)
+    public static final Item OAK_WATER_FILTER = null;
+    
+    @ObjectHolder(ItemNames.DRINK_BOTTLE)
+    public static final Item DRINK_BOTTLE = null;
+    
     private static final List<Item> ITEMS = new LinkedList<>();
     
     public static void add(Item item)
@@ -57,6 +65,10 @@ public class ModItems
         register(ItemNames.WATER_FILTER_FABRIC);
         
         registerSpawnEgg(ItemNames.BETTER_WOLF_SPAWN_EGG, ModEntities.BETTER_WOLF, 14144467, 13545366);
+        
+        register(ItemNames.OAK_WATER_FILTER, new TallBlockItem(ModBlocks.WATER_FILTER_OAK, new Item.Properties().group(BetterPetMod.GROUP)));
+        
+        register(ItemNames.DRINK_BOTTLE, new DrinkBottleItem(new Item.Properties().group(BetterPetMod.GROUP)));
         
         ITEMS.forEach(item -> event.getRegistry().register(item));
     }

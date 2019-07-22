@@ -1,5 +1,6 @@
 package com.kingparity.betterpets.core;
 
+import com.kingparity.betterpets.names.SoundNames;
 import com.kingparity.betterpets.util.Reference;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -14,28 +15,23 @@ import java.util.List;
 @Mod.EventBusSubscriber(modid = Reference.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModSounds
 {
-    @ObjectHolder(Reference.ID + ":tube_pick_up")
-    public static final SoundEvent TUBE_PICK_UP = null;
-    
-    @ObjectHolder(Reference.ID + ":tube_put_down")
-    public static final SoundEvent TUBE_PUT_DOWN = null;
+    @ObjectHolder(SoundNames.BETTER_WOLF_BARK)
+    public static final SoundEvent BETTER_WOLF_BARK = null;
     
     private static final List<SoundEvent> SOUND_EVENTS = new LinkedList<>();
     
     @SubscribeEvent
     public static void registerSoundEvents(final RegistryEvent.Register<SoundEvent> event)
     {
-        register("tube_pick_up");
-        register("tube_put_down");
+        register(SoundNames.BETTER_WOLF_BARK);
         
         SOUND_EVENTS.forEach(soundEvent -> event.getRegistry().register(soundEvent));
     }
     
-    private static SoundEvent register(String name)
+    private static void register(String name)
     {
-        ResourceLocation resource = new ResourceLocation(Reference.ID, name);
-        SoundEvent soundEvent = new SoundEvent(resource).setRegistryName(resource);
-        SOUND_EVENTS.add(soundEvent);
-        return soundEvent;
+        SoundEvent event = new SoundEvent(new ResourceLocation(name));
+        event.setRegistryName(name);
+        SOUND_EVENTS.add(event);
     }
 }

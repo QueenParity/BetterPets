@@ -58,7 +58,7 @@ public class FluidPumpTESR extends TileEntityRenderer<FluidPumpTileEntity>
                     GlStateManager.rotatef(90F, 1, 0, 0);
                 }
                 GlStateManager.translated(-0.5, -0.5, -0.5);
-                drawBox(fluidPump, 6.51 * 0.0625, 6.51 * 0.0625, 0, (3 - 0.02) * 0.0625, (height - 0.02) * 0.0625, 9.49 * 0.0625, false, true, true, true, true, true);
+                drawBox(fluidPump, 6.51 * 0.0625, 6.51 * 0.0625, 0, (3 - 0.02) * 0.0625, (height - 0.02) * 0.0625, 9.49 * 0.0625, false, true, true, true, true, true, fluidPump.isFiltered());
             }
             
             GlStateManager.disableBlend();
@@ -67,7 +67,7 @@ public class FluidPumpTESR extends TileEntityRenderer<FluidPumpTileEntity>
         GlStateManager.popMatrix();
     }
     
-    private void drawBox(FluidPumpTileEntity fluidPump, double x, double y, double z, double width, double height, double depth, boolean north, boolean east, boolean south, boolean west, boolean up, boolean down)
+    private void drawBox(FluidPumpTileEntity fluidPump, double x, double y, double z, double width, double height, double depth, boolean north, boolean east, boolean south, boolean west, boolean up, boolean down, boolean isFiltered)
     {
         if(fluidPump.getFluidAmount() == 0.0F)
         {
@@ -78,7 +78,15 @@ public class FluidPumpTESR extends TileEntityRenderer<FluidPumpTileEntity>
         TextureAtlasSprite sprite = Minecraft.getInstance().getTextureMap().getAtlasSprite(resource.toString());
         if(sprite != null)
         {
-            int i = BiomeColors.getWaterColor(fluidPump.getWorld(), fluidPump.getPos());
+            int i;
+            if(isFiltered)
+            {
+                i = 51455; //int: 51455 hex: DEDEDE Red: 0.0 Green: 200.0 Blue: 255.0
+            }
+            else
+            {
+                i = BiomeColors.getWaterColor(fluidPump.getWorld(), fluidPump.getPos()); //int: 4159204 hex: 3F76E4 Red: 63.0 Green: 118.0 Blue: 228.0
+            }
             float f = (float)(i >> 16 & 255) / 255.0F;
             float f1 = (float)(i >> 8 & 255) / 255.0F;
             float f2 = (float)(i & 255) / 255.0F;

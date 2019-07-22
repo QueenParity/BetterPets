@@ -135,14 +135,14 @@ public class BetterWolfModel<T extends BetterWolfEntity> extends EntityModel<T>
     @Override
     public void setLivingAnimations(T betterWolf, float limbSwing, float limbSwingAmount, float partialTickTime)
     {
-        /*if (betterWolf.isAngry())
+        if(betterWolf.isAngry())
         {
             this.tail.rotateAngleY = 0.0F;
         }
         else
-        {*/
-        this.tail.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-        //}
+        {
+            this.tail.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+        }
         
         if(betterWolf.isLayingDown())
         {

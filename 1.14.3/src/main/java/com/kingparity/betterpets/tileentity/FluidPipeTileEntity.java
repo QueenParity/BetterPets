@@ -40,13 +40,13 @@ public class FluidPipeTileEntity extends TickableFluidHolderTileEntity
                     {
                         continue;
                     }
-                    int amount = holder.receiveFluid(Math.min(this.getMaxExtract(), this.getFluidAmount()), false);
-                    this.extractFluid(holder.receiveFluid((int)(amount * 0.5), true), true);
+                    int amount = holder.receiveFluid(Math.min(this.getMaxExtract(), this.getFluidAmount()), false, this.isFiltered());
+                    this.extractFluid(holder.receiveFluid((int)(amount * 0.5), true, this.isFiltered()), true, this.isFiltered());
                 }
-                else if(tileEntity instanceof WaterFilterTileEntity)
+                else if(tileEntity instanceof WaterFilterTileEntity && !this.isFiltered())
                 {
                     WaterFilterTileEntity filter = (WaterFilterTileEntity)tileEntity;
-                    this.extractFluid(filter.receiveFluid(Math.min(this.getMaxExtract(), this.getFluidAmount()), true, 1), true);
+                    this.extractFluid(filter.receiveFluid(Math.min(this.getMaxExtract(), this.getFluidAmount()), true, 1), true, false);
                 }
             }
             syncToClient();

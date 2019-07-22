@@ -93,20 +93,20 @@
         {
             "name": "water_tank_stand",
             "from": [ 0, 5, 0 ], 
-            "to": [ 16, 6, 16 ], 
+            "to": [ 16, 7, 16 ], 
             "faces": {
-                "north": { "texture": "#top", "uv": [ 0, 0, 16, 1 ] },
-                "east": { "texture": "#top", "uv": [ 0, 0, 16, 1 ] },
-                "south": { "texture": "#top", "uv": [ 0, 0, 16, 1 ] },
-                "west": { "texture": "#top", "uv": [ 0, 0, 16, 1 ] },
+                "north": { "texture": "#top", "uv": [ 0, 0, 16, 2 ] },
+                "east": { "texture": "#top", "uv": [ 0, 0, 16, 2 ] },
+                "south": { "texture": "#top", "uv": [ 0, 0, 16, 2 ] },
+                "west": { "texture": "#top", "uv": [ 0, 0, 16, 2 ] },
                 "up": { "texture": "#top", "uv": [ 0, 0, 16, 16 ] },
                 "down": { "texture": "#top", "uv": [ 0, 0, 16, 16 ] }
             }
         },
         {
             "name": "tank_3",
-            "from": [ 1, 10, 1 ], 
-            "to": [ 15, 11, 2 ], 
+            "from": [ 1, 11, 1 ], 
+            "to": [ 15, 12, 2 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 14, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
@@ -118,8 +118,8 @@
         },
         {
             "name": "tank_4",
-            "from": [ 1, 12, 1 ], 
-            "to": [ 15, 13, 2 ], 
+            "from": [ 1, 13, 1 ], 
+            "to": [ 15, 14, 2 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 14, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
@@ -131,8 +131,8 @@
         },
         {
             "name": "tank_5",
-            "from": [ 1, 14, 1 ], 
-            "to": [ 15, 15, 2 ], 
+            "from": [ 1, 15, 1 ], 
+            "to": [ 15, 16, 2 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 14, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
@@ -144,8 +144,8 @@
         },
         {
             "name": "tank_6",
-            "from": [ 1, 16, 1 ], 
-            "to": [ 15, 17, 2 ], 
+            "from": [ 1, 17, 1 ], 
+            "to": [ 15, 18, 2 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 14, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
@@ -157,8 +157,8 @@
         },
         {
             "name": "tank_7",
-            "from": [ 1, 18, 1 ], 
-            "to": [ 15, 19, 2 ], 
+            "from": [ 1, 19, 1 ], 
+            "to": [ 15, 20, 2 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 14, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
@@ -170,8 +170,8 @@
         },
         {
             "name": "tank_8",
-            "from": [ 1, 20, 1 ], 
-            "to": [ 15, 21, 2 ], 
+            "from": [ 1, 21, 1 ], 
+            "to": [ 15, 22, 2 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 14, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
@@ -183,8 +183,8 @@
         },
         {
             "name": "tank_10",
-            "from": [ 1, 8, 14 ], 
-            "to": [ 15, 9, 15 ], 
+            "from": [ 1, 9, 14 ], 
+            "to": [ 15, 10, 15 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 14, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
@@ -196,8 +196,8 @@
         },
         {
             "name": "tank_11",
-            "from": [ 1, 10, 14 ], 
-            "to": [ 15, 11, 15 ], 
+            "from": [ 1, 11, 14 ], 
+            "to": [ 15, 12, 15 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 14, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
@@ -209,8 +209,8 @@
         },
         {
             "name": "tank_12",
-            "from": [ 1, 12, 14 ], 
-            "to": [ 15, 13, 15 ], 
+            "from": [ 1, 13, 14 ], 
+            "to": [ 15, 14, 15 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 14, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
@@ -222,8 +222,8 @@
         },
         {
             "name": "tank_13",
-            "from": [ 1, 14, 14 ], 
-            "to": [ 15, 15, 15 ], 
+            "from": [ 1, 15, 14 ], 
+            "to": [ 15, 16, 15 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 14, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
@@ -235,8 +235,8 @@
         },
         {
             "name": "tank_14",
-            "from": [ 1, 16, 14 ], 
-            "to": [ 15, 17, 15 ], 
+            "from": [ 1, 17, 14 ], 
+            "to": [ 15, 18, 15 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 14, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
@@ -248,8 +248,8 @@
         },
         {
             "name": "tank_15",
-            "from": [ 1, 18, 14 ], 
-            "to": [ 15, 19, 15 ], 
+            "from": [ 1, 19, 14 ], 
+            "to": [ 15, 20, 15 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 14, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
@@ -261,8 +261,8 @@
         },
         {
             "name": "tank_16",
-            "from": [ 1, 20, 14 ], 
-            "to": [ 15, 21, 15 ], 
+            "from": [ 1, 21, 14 ], 
+            "to": [ 15, 22, 15 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 14, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
@@ -274,8 +274,8 @@
         },
         {
             "name": "tank_18",
-            "from": [ 1, 8, 2 ], 
-            "to": [ 2, 9, 14 ], 
+            "from": [ 1, 9, 2 ], 
+            "to": [ 2, 10, 14 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 12, 1 ] },
@@ -287,8 +287,8 @@
         },
         {
             "name": "tank_19",
-            "from": [ 1, 10, 2 ], 
-            "to": [ 2, 11, 14 ], 
+            "from": [ 1, 11, 2 ], 
+            "to": [ 2, 12, 14 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 12, 1 ] },
@@ -300,8 +300,8 @@
         },
         {
             "name": "tank_20",
-            "from": [ 1, 12, 2 ], 
-            "to": [ 2, 13, 14 ], 
+            "from": [ 1, 13, 2 ], 
+            "to": [ 2, 14, 14 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 12, 1 ] },
@@ -313,8 +313,8 @@
         },
         {
             "name": "tank_21",
-            "from": [ 1, 14, 2 ], 
-            "to": [ 2, 15, 14 ], 
+            "from": [ 1, 15, 2 ], 
+            "to": [ 2, 16, 14 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 12, 1 ] },
@@ -326,8 +326,8 @@
         },
         {
             "name": "tank_22",
-            "from": [ 1, 16, 2 ], 
-            "to": [ 2, 17, 14 ], 
+            "from": [ 1, 17, 2 ], 
+            "to": [ 2, 18, 14 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 12, 1 ] },
@@ -339,8 +339,8 @@
         },
         {
             "name": "tank_23",
-            "from": [ 1, 18, 2 ], 
-            "to": [ 2, 19, 14 ], 
+            "from": [ 1, 19, 2 ], 
+            "to": [ 2, 20, 14 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 12, 1 ] },
@@ -352,8 +352,8 @@
         },
         {
             "name": "tank_24",
-            "from": [ 1, 20, 2 ], 
-            "to": [ 2, 21, 14 ], 
+            "from": [ 1, 21, 2 ], 
+            "to": [ 2, 22, 14 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 12, 1 ] },
@@ -365,8 +365,8 @@
         },
         {
             "name": "tank_25",
-            "from": [ 1, 6, 1 ], 
-            "to": [ 15, 7, 15 ], 
+            "from": [ 1, 7, 1 ], 
+            "to": [ 15, 8, 15 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 14, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 14, 1 ] },
@@ -378,8 +378,8 @@
         },
         {
             "name": "tank_26",
-            "from": [ 14, 8, 2 ], 
-            "to": [ 15, 9, 14 ], 
+            "from": [ 14, 9, 2 ], 
+            "to": [ 15, 10, 14 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 12, 1 ] },
@@ -391,8 +391,8 @@
         },
         {
             "name": "tank_27",
-            "from": [ 14, 10, 2 ], 
-            "to": [ 15, 11, 14 ], 
+            "from": [ 14, 11, 2 ], 
+            "to": [ 15, 12, 14 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 12, 1 ] },
@@ -404,8 +404,8 @@
         },
         {
             "name": "tank_28",
-            "from": [ 14, 12, 2 ], 
-            "to": [ 15, 13, 14 ], 
+            "from": [ 14, 13, 2 ], 
+            "to": [ 15, 14, 14 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 12, 1 ] },
@@ -417,8 +417,8 @@
         },
         {
             "name": "tank_29",
-            "from": [ 14, 14, 2 ], 
-            "to": [ 15, 15, 14 ], 
+            "from": [ 14, 15, 2 ], 
+            "to": [ 15, 16, 14 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 12, 1 ] },
@@ -430,8 +430,8 @@
         },
         {
             "name": "tank_30",
-            "from": [ 14, 16, 2 ], 
-            "to": [ 15, 17, 14 ], 
+            "from": [ 14, 17, 2 ], 
+            "to": [ 15, 18, 14 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 12, 1 ] },
@@ -443,8 +443,8 @@
         },
         {
             "name": "tank_31",
-            "from": [ 14, 18, 2 ], 
-            "to": [ 15, 19, 14 ], 
+            "from": [ 14, 19, 2 ], 
+            "to": [ 15, 20, 14 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 12, 1 ] },
@@ -456,8 +456,8 @@
         },
         {
             "name": "tank_32",
-            "from": [ 14, 20, 2 ], 
-            "to": [ 15, 21, 14 ], 
+            "from": [ 14, 21, 2 ], 
+            "to": [ 15, 22, 14 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 12, 1 ] },
@@ -469,8 +469,8 @@
         },
         {
             "name": "tank_inside_1",
-            "from": [ 1.2, 6, 1.2 ], 
-            "to": [ 14.8, 20, 1.8 ], 
+            "from": [ 1.2, 7, 1.2 ], 
+            "to": [ 14.8, 21, 1.8 ], 
             "faces": {
                 "north": { "texture": "#polished_andesite", "uv": [ 1, 1, 14.6, 15 ] },
                 "east": { "texture": "#polished_andesite", "uv": [ 1, 1, 1.6, 15 ] },
@@ -481,8 +481,8 @@
         },
         {
             "name": "tank_2",
-            "from": [ 1, 8, 1 ], 
-            "to": [ 15, 9, 2 ], 
+            "from": [ 1, 9, 1 ], 
+            "to": [ 15, 10, 2 ], 
             "faces": {
                 "north": { "texture": "#stone", "uv": [ 0, 0, 14, 1 ] },
                 "east": { "texture": "#stone", "uv": [ 0, 0, 1, 1 ] },
@@ -494,8 +494,8 @@
         },
         {
             "name": "tank_inside_2",
-            "from": [ 1.2, 6, 14.2 ], 
-            "to": [ 14.8, 20, 14.8 ], 
+            "from": [ 1.2, 7, 14.2 ], 
+            "to": [ 14.8, 21, 14.8 ], 
             "faces": {
                 "north": { "texture": "#polished_andesite", "uv": [ 1, 1, 14.6, 15 ] },
                 "east": { "texture": "#polished_andesite", "uv": [ 1, 1, 1.6, 15 ] },
@@ -506,8 +506,8 @@
         },
         {
             "name": "tank_inside_3",
-            "from": [ 1.2, 6, 1.8 ], 
-            "to": [ 1.8, 20, 14.2 ], 
+            "from": [ 1.2, 7, 1.8 ], 
+            "to": [ 1.8, 21, 14.2 ], 
             "faces": {
                 "north": { "texture": "#polished_andesite", "uv": [ 1, 1, 1.6, 15 ] },
                 "east": { "texture": "#polished_andesite", "uv": [ 1, 1, 13.4, 15 ] },
@@ -518,8 +518,8 @@
         },
         {
             "name": "tank_inside_4",
-            "from": [ 14.2, 6, 1.8 ], 
-            "to": [ 14.8, 20, 14.2 ], 
+            "from": [ 14.2, 7, 1.8 ], 
+            "to": [ 14.8, 21, 14.2 ], 
             "faces": {
                 "north": { "texture": "#polished_andesite", "uv": [ 1, 1, 1.6, 15 ] },
                 "east": { "texture": "#polished_andesite", "uv": [ 1, 1, 13.4, 15 ] },

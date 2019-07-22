@@ -22,12 +22,12 @@ public class FluidPumpTileEntity extends TickableFluidHolderTileEntity
             if(tileEntity instanceof WaterCollectorTileEntity)
             {
                 WaterCollectorTileEntity waterCollector = (WaterCollectorTileEntity)tileEntity;
-                this.receiveFluid(waterCollector.extractFluid(Math.min(this.getMaxReceive(), this.getCapacity() - this.getFluidAmount()), true), true);
+                this.receiveFluid(waterCollector.extractFluid(Math.min(this.getMaxReceive(), this.getCapacity() - this.getFluidAmount()), true, false), true, false);
             }
             else if(tileEntity instanceof WaterFilterTileEntity)
             {
                 WaterFilterTileEntity waterFilter = (WaterFilterTileEntity)tileEntity;
-                this.receiveFluid(waterFilter.extractFluid(Math.min(this.getMaxReceive(), this.getCapacity() - this.getFluidAmount()), true, 0), true);
+                this.receiveFluid(waterFilter.extractFluid(Math.min(this.getMaxReceive(), this.getCapacity() - this.getFluidAmount()), true, 0), true, true);
             }
             
             TileEntity tileEntityFront = getWorld().getTileEntity(getPos().offset(state.get(FluidPumpBlock.FACING)));
@@ -46,7 +46,7 @@ public class FluidPumpTileEntity extends TickableFluidHolderTileEntity
                 return;
             }
             
-            this.extractFluid(holder.receiveFluid(Math.min(this.getMaxExtract(), this.getFluidAmount()), true), true);
+            this.extractFluid(holder.receiveFluid(Math.min(this.getMaxExtract(), this.getFluidAmount()), true, isFiltered()), true, isFiltered());
             syncToClient();
         }
         else

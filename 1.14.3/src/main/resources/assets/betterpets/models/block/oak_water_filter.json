@@ -1,5 +1,5 @@
 {
-    "parent": "betterpets:block/water_filter",
+    "parent": "betterpets:block/water_filter_bottom",
     "textures": {
         "top": "minecraft:block/oak_log",
         "legs": "minecraft:block/stripped_oak_log"

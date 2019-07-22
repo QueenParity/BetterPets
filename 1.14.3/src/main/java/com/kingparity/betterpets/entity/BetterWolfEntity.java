@@ -7,7 +7,10 @@ import com.kingparity.betterpets.gui.container.BetterWolfContainer;
 import com.kingparity.betterpets.item.PetFoodItem;
 import com.kingparity.betterpets.network.PacketHandler;
 import com.kingparity.betterpets.network.message.MessageAttachChest;
+import com.kingparity.betterpets.network.message.MessageMovementSpeed;
 import com.kingparity.betterpets.network.message.MessageRemoveChest;
+import com.kingparity.betterpets.stats.food.PetFoodStats;
+import com.kingparity.betterpets.stats.thirst.PetThirstStats;
 import com.kingparity.betterpets.util.IAttachableChest;
 import com.kingparity.betterpets.util.InventoryUtil;
 import com.kingparity.betterpets.util.PetInventory;
@@ -36,16 +39,18 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.stats.Stat;
+import net.minecraft.stats.Stats;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -84,10 +89,12 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
     private PetInventory inventory;
     protected BetterWolfLayDownGoal layDownGoal;
     protected BetterWolfSleepGoal sleepGoal;
+    protected PetFoodStats petFoodStats = new PetFoodStats();
+    protected PetThirstStats petThirstStats = new PetThirstStats();
     
-    public BetterWolfEntity(EntityType<? extends BetterWolfEntity> betterWolf, World world)
+    public BetterWolfEntity(EntityType<? extends TameableEntity> type, World world)
     {
-        super(betterWolf, world);
+        super(type, world);
         this.setTamed(false);
     }
     
@@ -98,6 +105,7 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
         this.layDownGoal = new BetterWolfLayDownGoal(this);
         this.sleepGoal = new BetterWolfSleepGoal(this);
         this.goalSelector.addGoal(1, new SwimGoal(this));
+        this.goalSelector.addGoal(1, new BetterWolfFillNeedsGoal(this));
         this.goalSelector.addGoal(2, this.sitGoal);
         this.goalSelector.addGoal(2, this.layDownGoal);
         this.goalSelector.addGoal(2, this.sleepGoal);
@@ -310,8 +318,8 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
     public void writeAdditional(CompoundNBT compound)
     {
         super.writeAdditional(compound);
-        /*compound.putBoolean("Angry", this.isAngry());
-        compound.putByte("CollarColor", (byte)this.getCollarColor().getId());*/
+        compound.putBoolean("Angry", this.isAngry());
+        compound.putByte("CollarColor", (byte)this.getCollarColor().getId());
         
         compound.putBoolean("LayingDown", this.isLayingDown());
         compound.putBoolean("Sleeping", this.isSleeping());
@@ -354,6 +362,9 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
         {
             InventoryUtil.writeInventoryToNBT(compound, "inventory", inventory);
         }
+        
+        this.petFoodStats.write(compound);
+        this.petThirstStats.write(compound);
     }
     
     /**
@@ -363,11 +374,11 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
     public void readAdditional(CompoundNBT compound)
     {
         super.readAdditional(compound);
-        /*this.setAngry(compound.getBoolean("Angry"));
+        this.setAngry(compound.getBoolean("Angry"));
         if(compound.contains("CollarColor", 99))
         {
             this.setCollarColor(DyeColor.byId(compound.getInt("CollarColor")));
-        }*/
+        }
         if(this.layDownGoal != null)
         {
             this.layDownGoal.setLayingDown(compound.getBoolean("LayingDown"));
@@ -423,6 +434,137 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
             this.initInventory();
             InventoryUtil.readInventoryToNBT(compound, "inventory", inventory);
         }
+        
+        this.petFoodStats.read(compound);
+        this.petThirstStats.read(compound);
+    }
+    
+    @Override
+    protected void damageEntity(DamageSource source, float amount)
+    {
+        if(!this.isInvulnerableTo(source))
+        {
+            amount = ForgeHooks.onLivingHurt(this, source, amount);
+            if(amount <= 0)
+            {
+                return;
+            }
+            amount = this.applyArmorCalculations(source, amount);
+            amount = this.applyPotionDamageCalculations(source, amount);
+            float f = amount;
+            amount = Math.max(amount - this.getAbsorptionAmount(), 0.0F);
+            this.setAbsorptionAmount(this.getAbsorptionAmount() - (f - amount));
+            amount = ForgeHooks.onLivingDamage(this, source, amount);
+            float f1 = f - amount;
+            
+            if(amount != 0.0F)
+            {
+                this.addExhaustion(source.getHungerDamage());
+                float f2 = this.getHealth();
+                this.setHealth(this.getHealth() - amount);
+                this.getCombatTracker().trackDamage(source, f2, amount);
+                
+            }
+        }
+    }
+    
+    @Override
+    protected void jump()
+    {
+        super.jump();
+        this.addExhaustion(0.2F);
+    }
+    
+    @Override
+    public void travel(Vec3d vec3d)
+    {
+        super.travel(vec3d);
+        double d0 = this.posX;
+        double d1 = this.posY;
+        double d2 = this.posZ;
+        this.addMovementStat(this.posX - d0, this.posY - d1, this.posZ - d2);
+    }
+    
+    /**
+     * Adds a value to a movement statistic field - like run, walk, swin or climb.
+     */
+    public void addMovementStat(double posX, double posY, double posZ)
+    {
+        if(!this.isPassenger())
+        {
+            if(this.isSwimming())
+            {
+                int i = Math.round(MathHelper.sqrt(posX * posX + posY * posY + posZ * posZ) * 100.0F);
+                if(i > 0)
+                {
+                    this.addExhaustion(0.01F * (float)i * 0.01F);
+                }
+            }
+            else if(this.areEyesInFluid(FluidTags.WATER, true))
+            {
+                int j = Math.round(MathHelper.sqrt(posX * posX + posY * posY + posZ * posZ) * 100.0F);
+                if(j > 0)
+                {
+                    this.addExhaustion(0.01F * (float)j * 0.01F);
+                }
+            }
+            else if(this.isInWater())
+            {
+                int k = Math.round(MathHelper.sqrt(posX * posX + posZ * posZ) * 100.0F);
+                if(k > 0)
+                {
+                    this.addExhaustion(0.01F * (float)k * 0.01F);
+                }
+            }
+            else if(this.onGround)
+            {
+                int l = Math.round(MathHelper.sqrt(posX * posX + posZ * posZ) * 100.0F);
+                if(l > 0)
+                {
+                    this.addExhaustion(0.1F * (float)l * 0.01F);
+                }
+            }
+        }
+    }
+    
+    /**
+     * increases exhaustion level by supplied amount
+     */
+    public void addExhaustion(float exhaustion)
+    {
+        if(!this.isInvisible())
+        {
+            if(!this.world.isRemote)
+            {
+                this.petFoodStats.addExhaustion(exhaustion);
+            }
+        }
+    }
+    
+    public void addStat(ResourceLocation stat)
+    {
+        this.addStat(Stats.CUSTOM.get(stat));
+    }
+    
+    public void addStat(ResourceLocation p_195067_1_, int p_195067_2_)
+    {
+        this.addStat(Stats.CUSTOM.get(p_195067_1_), p_195067_2_);
+    }
+    
+    /**
+     * Add a stat once
+     */
+    public void addStat(Stat<?> stat)
+    {
+        this.addStat(stat, 1);
+    }
+    
+    /**
+     * Adds a value to a statistic field.
+     */
+    public void addStat(Stat<?> stat, int amount)
+    {
+    
     }
     
     @Nullable
@@ -465,9 +607,9 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
         this.dataManager.set(HAS_HAT, hat);
     }
     
-    public void setCollarColor(DyeColor collarcolor)
+    public void setCollarColor(DyeColor collarColor)
     {
-        this.dataManager.set(COLLAR_COLOR, collarcolor.getId());
+        this.dataManager.set(COLLAR_COLOR, collarColor.getId());
     }
     
     public void setVariant(int variant)
@@ -578,6 +720,21 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
         }
     }
     
+    public PetFoodStats getPetFoodStats()
+    {
+        return this.petFoodStats;
+    }
+    
+    public PetThirstStats getPetThirstStats()
+    {
+        return this.petThirstStats;
+    }
+    
+    public boolean shouldHeal()
+    {
+        return this.getHealth() > 0.0F && this.getHealth() < this.getMaxHealth();
+    }
+    
     @Override
     protected SoundEvent getAmbientSound()
     {
@@ -611,9 +768,15 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
      * Returns the volume for the sounds this mob makes.
      */
     @Override
-    protected float getSoundVolume()
+    public float getSoundVolume()
     {
         return 0.4F;
+    }
+    
+    @Override
+    public float getSoundPitch()
+    {
+        return super.getSoundPitch();
     }
     
     /**
@@ -624,19 +787,34 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
     public void livingTick()
     {
         super.livingTick();
-        if(!this.world.isRemote && this.isWet && !this.isShaking && !this.hasPath() && this.onGround)
+        if(!this.world.isRemote)
         {
-            this.isShaking = true;
-            this.timeWolfIsShaking = 0.0F;
-            this.prevTimeWolfIsShaking = 0.0F;
-            this.world.setEntityState(this, (byte)8);
+            if(this.isWet && !this.isShaking && !this.hasPath() && this.onGround)
+            {
+                this.isShaking = true;
+                this.timeWolfIsShaking = 0.0F;
+                this.prevTimeWolfIsShaking = 0.0F;
+                this.world.setEntityState(this, (byte)8);
+            }
+            
+            if(this.getAttackTarget() == null && this.isAngry())
+            {
+                this.setAngry(false);
+            }
         }
         
-        if(!this.world.isRemote && this.getAttackTarget() == null && this.isAngry())
+        if(this.world.getDifficulty() == Difficulty.PEACEFUL && this.world.getGameRules().getBoolean(GameRules.NATURAL_REGENERATION))
         {
-            this.setAngry(false);
+            if(this.getHealth() < this.getMaxHealth() && this.ticksExisted % 20 == 0)
+            {
+                this.heal(1.0F);
+            }
+    
+            if(this.petFoodStats.needFood() && this.ticksExisted % 10 == 0)
+            {
+                this.petFoodStats.setFoodLevel(this.petFoodStats.getFoodLevel() + 1);
+            }
         }
-        
     }
     
     /**
@@ -648,6 +826,16 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
         super.tick();
         if(this.isAlive())
         {
+            if(!this.world.isRemote)
+            {
+                this.petFoodStats.tick(this);
+                this.petThirstStats.tick(this);
+            }
+            else
+            {
+                PacketHandler.sendToServer(new MessageMovementSpeed(this.getEntityId(), this.petThirstStats.getMovementSpeed(this)));
+            }
+            
             this.headRotationCourseOld = this.headRotationCourse;
             if(this.isBegging())
             {
@@ -696,7 +884,6 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
                     }
                 }
             }
-            
         }
     }
     
@@ -796,6 +983,11 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
                 amount = (amount + 1.0F) / 2.0F;
             }
             
+            if(!world.isRemote)
+            {
+                this.petThirstStats.addExhaustion(0.4f);
+            }
+            
             return super.attackEntityFrom(source, amount);
         }
     }
@@ -833,6 +1025,11 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
     {
         ItemStack itemstack = player.getHeldItem(hand);
         Item item = itemstack.getItem();
+        if(!this.world.isRemote)
+        {
+            this.petThirstStats.syncStats(this);
+            this.petFoodStats.syncStats(this);
+        }
         if(this.isTamed())
         {
             if(player.isSneaking())
@@ -850,7 +1047,7 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
                         {
                             return new BetterWolfContainer(windowId, playerInventory, petInventory, (BetterWolfEntity)playerInventory.player.world.getEntityByID(entityId));
                         }
-    
+                        
                         @Override
                         public ITextComponent getDisplayName()
                         {
@@ -875,7 +1072,7 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
                             {
                                 itemstack.shrink(1);
                             }
-    
+                            
                             this.heal((float)item.getFood().getHealing());
                             return true;
                         }
@@ -901,7 +1098,7 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
                         {
                             itemstack.shrink(1);
                         }
-    
+                        
                         return true;
                     }
                 }
@@ -928,7 +1125,7 @@ public class BetterWolfEntity extends TameableEntity implements IAttachableChest
                 //this.sitGoal.setSitting(!this.isSitting());
                 this.isJumping = false;
                 this.navigator.clearPath();
-                this.setAttackTarget((LivingEntity)null);
+                this.setAttackTarget(null);
             }
         }
         else if(item == Items.BONE && !this.isAngry())

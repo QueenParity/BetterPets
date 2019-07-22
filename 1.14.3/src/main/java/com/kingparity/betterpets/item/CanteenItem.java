@@ -1,18 +1,10 @@
 package com.kingparity.betterpets.item;
 
-import com.kingparity.betterpets.BetterPetMod;
-import com.kingparity.betterpets.ThirstStats;
-import com.kingparity.betterpets.core.ModItems;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.UseAction;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -46,7 +38,7 @@ public class CanteenItem extends Item
         }
     }
     
-    @Override
+    /*@Override
     public ItemStack onItemUseFinish(ItemStack canteen, World world, LivingEntity entity)
     {
         int liquidAmount = canteen.getTag().getInt("liquidAmount");
@@ -58,14 +50,14 @@ public class CanteenItem extends Item
                 int thirstReplenish = canteen.getTag().getInt("thirstReplenishAmount");
                 float saturationReplenish = canteen.getTag().getFloat("saturationReplenishAmount");
                 float poisonChance = canteen.getTag().getFloat("poisonChance");
-                ThirstStats stats = BetterPetMod.PROXY.getStatsByUUID(player.getUniqueID());
+                PetThirstStats stats = BetterPetMod.PROXY.getStatsByUUID(player.getUniqueID());
                 stats.addStats(thirstReplenish, saturationReplenish);
                 stats.attemptToPoison(poisonChance);
                 return new ItemStack(ModItems.CANTEEN);
             }
         }
         return canteen;
-    }
+    }*/
     
     @Override
     public int getUseDuration(ItemStack stack)
@@ -79,18 +71,18 @@ public class CanteenItem extends Item
         return UseAction.DRINK;
     }
     
-    @Override
+    /*@Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand)
     {
         int liquidAmount = player.getHeldItem(hand).getTag().getInt("liquidAmount");
         if(liquidAmount > 0)
         {
-            ThirstStats stats = world.isRemote ? BetterPetMod.PROXY.getClientStats() : BetterPetMod.PROXY.getStatsByUUID(player.getUniqueID());
+            PetThirstStats stats = world.isRemote ? BetterPetMod.PROXY.getClientStats() : BetterPetMod.PROXY.getStatsByUUID(player.getUniqueID());
             if(stats.canDrink() || player.abilities.isCreativeMode)
             {
                 player.setActiveHand(hand);
             }
         }
         return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
-    }
+    }*/
 }

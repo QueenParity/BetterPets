@@ -57,7 +57,7 @@ public class ModTileEntities
                 ModBlocks.WATER_COLLECTOR_STRIPPED_DARK_OAK);
         
         register(TileEntityNames.WATER_FILTER, WaterFilterTileEntity::new,
-                ModBlocks.WATER_FILTER_OAK,
+                ModBlocks.WATER_FILTER_OAK/*,
                 ModBlocks.WATER_FILTER_SPRUCE,
                 ModBlocks.WATER_FILTER_BIRCH,
                 ModBlocks.WATER_FILTER_JUNGLE,
@@ -72,7 +72,7 @@ public class ModTileEntities
                 ModBlocks.WATER_FILTER_STRIPPED_BIRCH,
                 ModBlocks.WATER_FILTER_STRIPPED_JUNGLE,
                 ModBlocks.WATER_FILTER_STRIPPED_ACACIA,
-                ModBlocks.WATER_FILTER_STRIPPED_DARK_OAK);
+                ModBlocks.WATER_FILTER_STRIPPED_DARK_OAK*/);
         
         register(TileEntityNames.PET_RESOURCES_CRAFTER, PetResourcesCrafterTileEntity::new, ModBlocks.PET_RESOURCES_CRAFTER);
         

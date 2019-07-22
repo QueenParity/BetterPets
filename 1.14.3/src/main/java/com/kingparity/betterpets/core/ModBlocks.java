@@ -84,7 +84,7 @@ public class ModBlocks
     @ObjectHolder(BlockNames.WATER_FILTER_OAK)
     public static final Block WATER_FILTER_OAK = null;
     
-    @ObjectHolder(BlockNames.WATER_FILTER_SPRUCE)
+    /*@ObjectHolder(BlockNames.WATER_FILTER_SPRUCE)
     public static final Block WATER_FILTER_SPRUCE = null;
     
     @ObjectHolder(BlockNames.WATER_FILTER_BIRCH)
@@ -127,7 +127,7 @@ public class ModBlocks
     public static final Block WATER_FILTER_STRIPPED_ACACIA = null;
     
     @ObjectHolder(BlockNames.WATER_FILTER_STRIPPED_DARK_OAK)
-    public static final Block WATER_FILTER_STRIPPED_DARK_OAK = null;
+    public static final Block WATER_FILTER_STRIPPED_DARK_OAK = null;*/
     
     @ObjectHolder(BlockNames.FLUID_PIPE)
     public static final Block FLUID_PIPE = null;
@@ -157,8 +157,8 @@ public class ModBlocks
         register(BlockNames.WATER_COLLECTOR_STRIPPED_DARK_OAK, new WaterCollectorBlock(WOOD));
     
         //Water Filter
-        register(BlockNames.WATER_FILTER_OAK, new WaterFilterBlock(WOOD));
-        register(BlockNames.WATER_FILTER_SPRUCE, new WaterFilterBlock(WOOD));
+        registerTall(BlockNames.WATER_FILTER_OAK, new WaterFilterBlock(WOOD));
+        /*register(BlockNames.WATER_FILTER_SPRUCE, new WaterFilterBlock(WOOD));
         register(BlockNames.WATER_FILTER_BIRCH, new WaterFilterBlock(WOOD));
         register(BlockNames.WATER_FILTER_JUNGLE, new WaterFilterBlock(WOOD));
         register(BlockNames.WATER_FILTER_ACACIA, new WaterFilterBlock(WOOD));
@@ -172,7 +172,7 @@ public class ModBlocks
         register(BlockNames.WATER_FILTER_STRIPPED_BIRCH, new WaterFilterBlock(WOOD));
         register(BlockNames.WATER_FILTER_STRIPPED_JUNGLE, new WaterFilterBlock(WOOD));
         register(BlockNames.WATER_FILTER_STRIPPED_ACACIA, new WaterFilterBlock(WOOD));
-        register(BlockNames.WATER_FILTER_STRIPPED_DARK_OAK, new WaterFilterBlock(WOOD));
+        register(BlockNames.WATER_FILTER_STRIPPED_DARK_OAK, new WaterFilterBlock(WOOD));*/
     
         register(BlockNames.PET_RESOURCES_CRAFTER, new PetResourcesCrafterBlock(STONE));
     
@@ -185,6 +185,12 @@ public class ModBlocks
     private static void register(String name, Block block)
     {
         register(name, block, new Item.Properties());
+    }
+    
+    private static void registerTall(String name, Block block)
+    {
+        block.setRegistryName(name);
+        BLOCKS.add(block);
     }
     
     private static void register(String name, Block block, Item.Properties properties)

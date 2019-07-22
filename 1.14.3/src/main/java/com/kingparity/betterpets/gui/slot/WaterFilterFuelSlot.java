@@ -1,6 +1,5 @@
 package com.kingparity.betterpets.gui.slot;
 
-import com.kingparity.betterpets.gui.container.WaterFilterContainer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;

@@ -45,7 +45,7 @@ public class WaterCollectorTESR extends TileEntityRenderer<WaterCollectorTileEnt
             double height = 13.0 * (waterCollector.getFluidAmount() / (double)waterCollector.getCapacity());
             if(height > 0)
             {
-                drawFluid(waterCollector, 2.01 * 0.0625, 7.01 * 0.0625, 2.01 * 0.0625, (12 - 0.02) * 0.0625, height * 0.0625, (12 - 0.02) * 0.0625);
+                drawFluid(waterCollector, 2.01 * 0.0625, 8.01 * 0.0625, 2.01 * 0.0625, (12 - 0.02) * 0.0625, height * 0.0625, (12 - 0.02) * 0.0625);
             }
             
             GlStateManager.disableBlend();

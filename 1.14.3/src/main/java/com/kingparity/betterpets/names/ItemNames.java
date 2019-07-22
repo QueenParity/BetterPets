@@ -10,4 +10,6 @@ public class ItemNames
     public static final String CANTEEN = Reference.ID + ":canteen";
     public static final String WATER_FILTER_FABRIC = Reference.ID + ":water_filter_fabric";
     public static final String BETTER_WOLF_SPAWN_EGG = Reference.ID + ":better_wolf_spawn_egg";
+    public static final String OAK_WATER_FILTER = Reference.ID + ":oak_water_filter";
+    public static final String DRINK_BOTTLE = Reference.ID + ":drink_bottle";
 }

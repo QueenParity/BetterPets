@@ -1,18 +1,13 @@
 package com.kingparity.betterpets.tileentity;
 
-import com.kingparity.betterpets.block.WaterFilterBlock;
 import com.kingparity.betterpets.core.ModItems;
 import com.kingparity.betterpets.core.ModTileEntities;
 import com.kingparity.betterpets.gui.container.WaterFilterContainer;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ChestTileEntity;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
 public class WaterFilterTileEntity extends BasicLootTileEntity implements ITickableTileEntity
@@ -167,8 +162,8 @@ public class WaterFilterTileEntity extends BasicLootTileEntity implements ITicka
         }
         syncToClient();
         
-        this.world.setBlockState(this.pos, this.world.getBlockState(this.pos).with(WaterFilterBlock.ACTIVE, hasFabric), 3);
-        this.markDirty();
+        /*this.world.setBlockState(this.pos, this.world.getBlockState(this.pos).with(WaterFilterBlock.ACTIVE, hasFabric), 3);
+        this.markDirty();*/
     }
     
     @Override
