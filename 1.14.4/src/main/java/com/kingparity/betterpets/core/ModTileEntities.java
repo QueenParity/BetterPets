@@ -11,7 +11,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ObjectHolder;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -33,7 +33,7 @@ public class ModTileEntities
     @ObjectHolder(TileEntityNames.FLUID_PUMP)
     public static final TileEntityType<?> FLUID_PUMP = null;
     
-    private static final List<TileEntityType<?>> TILE_ENTITY_TYPES = new LinkedList<>();
+    private static final List<TileEntityType<?>> TILE_ENTITY_TYPES = new ArrayList<>();
     
     @SubscribeEvent
     public static void registerTileEntityTypes(final RegistryEvent.Register<TileEntityType<?>> event)

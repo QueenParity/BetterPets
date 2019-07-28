@@ -21,7 +21,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.network.IContainerFactory;
 import net.minecraftforge.registries.ObjectHolder;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 @Mod.EventBusSubscriber(modid = Reference.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -36,7 +36,7 @@ public class ModContainers
     @ObjectHolder(ContainerNames.BETTER_WOLF)
     public static final ContainerType<BetterWolfContainer> BETTER_WOLF = null;
     
-    private static final List<ContainerType<?>> CONTAINER_TYPES = new LinkedList<>();
+    private static final List<ContainerType<?>> CONTAINER_TYPES = new ArrayList<>();
     
     @SubscribeEvent
     public static void registerContainerTypes(final RegistryEvent.Register<ContainerType<?>> event)

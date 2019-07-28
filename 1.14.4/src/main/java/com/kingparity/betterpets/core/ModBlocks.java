@@ -16,7 +16,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ObjectHolder;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 @Mod.EventBusSubscriber(modid = Reference.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -28,7 +28,7 @@ public class ModBlocks
     public static final Block.Properties WOOD = Block.Properties.create(WOOD_MATERIAL).hardnessAndResistance(0.5F).sound(SoundType.WOOD);
     public static final Block.Properties STONE = Block.Properties.create(STONE_MATERIAL).hardnessAndResistance(1.0F).sound(SoundType.STONE);
     
-    private static final List<Block> BLOCKS = new LinkedList<>();
+    private static final List<Block> BLOCKS = new ArrayList<>();
     
     @ObjectHolder(BlockNames.PET_RESOURCES_CRAFTER)
     public static final Block PET_RESOURCES_CRAFTER = null;
@@ -155,7 +155,7 @@ public class ModBlocks
         register(BlockNames.WATER_COLLECTOR_STRIPPED_JUNGLE, new WaterCollectorBlock(WOOD));
         register(BlockNames.WATER_COLLECTOR_STRIPPED_ACACIA, new WaterCollectorBlock(WOOD));
         register(BlockNames.WATER_COLLECTOR_STRIPPED_DARK_OAK, new WaterCollectorBlock(WOOD));
-    
+        
         //Water Filter
         registerTall(BlockNames.WATER_FILTER_OAK, new WaterFilterBlock(WOOD));
         /*register(BlockNames.WATER_FILTER_SPRUCE, new WaterFilterBlock(WOOD));

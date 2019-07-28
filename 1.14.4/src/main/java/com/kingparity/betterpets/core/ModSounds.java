@@ -9,7 +9,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ObjectHolder;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 @Mod.EventBusSubscriber(modid = Reference.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -18,7 +18,7 @@ public class ModSounds
     @ObjectHolder(SoundNames.BETTER_WOLF_BARK)
     public static final SoundEvent BETTER_WOLF_BARK = null;
     
-    private static final List<SoundEvent> SOUND_EVENTS = new LinkedList<>();
+    private static final List<SoundEvent> SOUND_EVENTS = new ArrayList<>();
     
     @SubscribeEvent
     public static void registerSoundEvents(final RegistryEvent.Register<SoundEvent> event)

@@ -8,7 +8,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ObjectHolder;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 @Mod.EventBusSubscriber(modid = Reference.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -26,7 +26,7 @@ public class ModDrinks
     @ObjectHolder(DrinkNames.CHOCOLATE_MILK)
     public static final Drink CHOCOLATE_MILK = null;
     
-    private static final List<Drink> DRINKS = new LinkedList<>();
+    private static final List<Drink> DRINKS = new ArrayList<>();
     
     @SubscribeEvent
     public static void registerDrinks(final RegistryEvent.Register<Drink> event)

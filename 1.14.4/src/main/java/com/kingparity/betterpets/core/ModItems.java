@@ -15,7 +15,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ObjectHolder;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 @Mod.EventBusSubscriber(modid = Reference.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -45,7 +45,7 @@ public class ModItems
     @ObjectHolder(ItemNames.DRINK_BOTTLE)
     public static final Item DRINK_BOTTLE = null;
     
-    private static final List<Item> ITEMS = new LinkedList<>();
+    private static final List<Item> ITEMS = new ArrayList<>();
     
     public static void add(Item item)
     {
