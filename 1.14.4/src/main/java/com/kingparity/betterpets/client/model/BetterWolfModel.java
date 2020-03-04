@@ -5,62 +5,45 @@ import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.model.ModelBox;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class BetterWolfModel<T extends BetterWolfEntity> extends EntityModel<T>
 {
-    protected RendererModel front_leg_left;
-    protected RendererModel front_leg_right;
-    protected RendererModel back_leg_left;
-    protected RendererModel back_leg_right;
-    protected RendererModel mane;
-    protected RendererModel body;
     protected RendererModel head;
-    /*private final RendererModel nose;
-    private final RendererModel ear_right;
-    private final RendererModel ear_left;*/
+    protected RendererModel body;
+    protected RendererModel legBackRight;
+    protected RendererModel legBackLeft;
+    protected RendererModel legFrontRight;
+    protected RendererModel legFrontLeft;
     protected RendererModel tail;
-    
-    /*protected RendererModel armor_mane;
-    protected RendererModel armor_head;
-    protected RendererModel armor_front_leg_left;
-    protected RendererModel armor_back_leg_left;
-    protected RendererModel armor_front_leg_right;
-    protected RendererModel armor_back_leg_right;
-    protected RendererModel armor_body;
-    protected RendererModel armor_tail;*/
+    protected RendererModel mane;
     
     public BetterWolfModel()
     {
         textureWidth = 256;
         textureHeight = 128;
         
-        front_leg_left = new RendererModel(this);
-        front_leg_left.setRotationPoint(0.5F, 16.0F, -4.0F);
-        front_leg_left.cubeList.add(new ModelBox(front_leg_left, 0, 18, 0.0F, 0.0F, -1.0F, 2, 8, 2, 0.0F, false));
+        legFrontLeft = new RendererModel(this);
+        legFrontLeft.setRotationPoint(0.5F, 16.0F, -4.0F);
+        legFrontLeft.cubeList.add(new ModelBox(legFrontLeft, 0, 18, 0.0F, 0.0F, -1.0F, 2, 8, 2, 0.0F, false));
         
-        front_leg_right = new RendererModel(this);
-        front_leg_right.setRotationPoint(-2.5F, 16.0F, -4.0F);
-        front_leg_right.cubeList.add(new ModelBox(front_leg_right, 0, 18, 0.0F, 0.0F, -1.0F, 2, 8, 2, 0.0F, false));
+        legFrontRight = new RendererModel(this);
+        legFrontRight.setRotationPoint(-2.5F, 16.0F, -4.0F);
+        legFrontRight.cubeList.add(new ModelBox(legFrontRight, 0, 18, 0.0F, 0.0F, -1.0F, 2, 8, 2, 0.0F, false));
         
-        back_leg_left = new RendererModel(this);
-        back_leg_left.setRotationPoint(0.5F, 16.0F, 7.0F);
-        back_leg_left.cubeList.add(new ModelBox(back_leg_left, 0, 18, 0.0F, 0.0F, -1.0F, 2, 8, 2, 0.0F, false));
+        legBackLeft = new RendererModel(this);
+        legBackLeft.setRotationPoint(0.5F, 16.0F, 7.0F);
+        legBackLeft.cubeList.add(new ModelBox(legBackLeft, 0, 18, 0.0F, 0.0F, -1.0F, 2, 8, 2, 0.0F, false));
         
-        back_leg_right = new RendererModel(this);
-        back_leg_right.setRotationPoint(-2.5F, 16.0F, 7.0F);
-        back_leg_right.cubeList.add(new ModelBox(back_leg_right, 0, 18, 0.0F, 0.0F, -1.0F, 2, 8, 2, 0.0F, false));
+        legBackRight = new RendererModel(this);
+        legBackRight.setRotationPoint(-2.5F, 16.0F, 7.0F);
+        legBackRight.cubeList.add(new ModelBox(legBackRight, 0, 18, 0.0F, 0.0F, -1.0F, 2, 8, 2, 0.0F, false));
         
         mane = new RendererModel(this);
         mane.setRotationPoint(-1.0F, 14.0F, -3.0F);
-        //setRotationAngle(mane, 1.5708F, 0.0F, 0.0F);
         mane.cubeList.add(new ModelBox(mane, 21, 0, -3.0F, -3.0F, -3.0F, 8, 6, 7, 0.0F, false));
         
         body = new RendererModel(this);
         body.setRotationPoint(0.0F, 14.0F, 2.0F);
-        //setRotationAngle(body, 1.5708F, 0.0F, 0.0F);
         body.cubeList.add(new ModelBox(body, 18, 14, -3.0F, -2.0F, -3.0F, 6, 9, 6, 0.0F, false));
         
         head = new RendererModel(this);
@@ -73,31 +56,6 @@ public class BetterWolfModel<T extends BetterWolfEntity> extends EntityModel<T>
         tail = new RendererModel(this);
         tail.setRotationPoint(-1.0F, 12.0F, 8.0F);
         tail.cubeList.add(new ModelBox(tail, 9, 18, 0.0F, 0.0F, -1.0F, 2, 8, 2, 0.0F, false));
-        
-        /*body = new RendererModel(this);
-        body.setRotationPoint(0.0F, 14.0F, 2.0F);
-        setRotationAngle(body, 1.5708F, 0.0F, 0.0F);
-        body.cubeList.add(new ModelBox(body, 18, 14, -3.0F, -2.0F, -3.0F, 6, 9, 6, 0.0F, false));
-        
-        head = new RendererModel(this);
-        head.setRotationPoint(-1.0F, 13.5F, -7.0F);
-        head.cubeList.add(new ModelBox(head, 0, 0, -3.0F, -13.5F, -10.0F, 6, 6, 4, 0.0F, false));
-        
-        nose = new RendererModel(this);
-        nose.setRotationPoint(-1.0F, 13.5F, -7.0F);
-        nose.cubeList.add(new ModelBox(nose, 0, 10, -1.5F, -10.5F, -13.0F, 3, 3, 4, 0.0F, false));
-        
-        ear_right = new RendererModel(this);
-        ear_right.setRotationPoint(-1.0F, 13.5F, -7.0F);
-        ear_right.cubeList.add(new ModelBox(ear_right, 16, 14, -3.0F, -15.5F, -7.0F, 2, 2, 1, 0.0F, false));
-        
-        ear_left = new RendererModel(this);
-        ear_left.setRotationPoint(-1.0F, 13.5F, -7.0F);
-        ear_left.cubeList.add(new ModelBox(ear_left, 16, 14, 1.0F, -15.5F, -7.0F, 2, 2, 1, 0.0F, false));
-        
-        tail = new RendererModel(this);
-        tail.setRotationPoint(-1.0F, 12.0F, 8.0F);
-        tail.cubeList.add(new ModelBox(tail, 9, 18, 0.0F, 0.0F, -1.0F, 2, 8, 2, 0.0F, false));*/
     }
     
     /**
@@ -108,24 +66,14 @@ public class BetterWolfModel<T extends BetterWolfEntity> extends EntityModel<T>
     {
         super.render(betterWolf, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
         this.setRotationAngles(betterWolf, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-        front_leg_left.render(scale);
-        front_leg_right.render(scale);
-        back_leg_left.render(scale);
-        back_leg_right.render(scale);
-        mane.render(scale);
-        body.render(scale);
-        head.render(scale);
-        /*nose.render(scale);
-        ear_right.render(scale);
-        ear_left.render(scale);*/
-        tail.render(scale);
-    }
-    
-    public void setRotationAngle(RendererModel RendererModel, float x, float y, float z)
-    {
-        RendererModel.rotateAngleX = x;
-        RendererModel.rotateAngleY = y;
-        RendererModel.rotateAngleZ = z;
+        this.head.renderWithRotation(scale);
+        this.body.render(scale);
+        this.legBackRight.render(scale);
+        this.legBackLeft.render(scale);
+        this.legFrontRight.render(scale);
+        this.legFrontLeft.render(scale);
+        this.tail.renderWithRotation(scale);
+        this.mane.render(scale);
     }
     
     /**
@@ -133,7 +81,7 @@ public class BetterWolfModel<T extends BetterWolfEntity> extends EntityModel<T>
      * and third as in the func_212844_a_ method.
      */
     @Override
-    public void setLivingAnimations(T betterWolf, float limbSwing, float limbSwingAmount, float partialTickTime)
+    public void setLivingAnimations(T betterWolf, float limbSwing, float limbSwingAmount, float partialTick)
     {
         if(betterWolf.isAngry())
         {
@@ -148,105 +96,68 @@ public class BetterWolfModel<T extends BetterWolfEntity> extends EntityModel<T>
         {
             this.body.setRotationPoint(0.0F, 14.0F, 2.0F);
             this.body.rotateAngleX = ((float)Math.PI / 2F);
-            this.body.setRotationPoint(0.0F, 14.0F, -2F);
-            this.body.rotateAngleY = -200;
+            this.body.rotateAngleY = 0;
             this.mane.setRotationPoint(-1.0F, 14.0F, -3.0F);
             this.mane.rotateAngleX = this.body.rotateAngleX;
             this.tail.setRotationPoint(-1.0F, 12.0F, 8.0F);
-            this.back_leg_right.setRotationPoint(-2.5F, 22.0F, 2.0F);
-            this.back_leg_right.rotateAngleX = ((float)Math.PI * 3F / 2F);
-            this.back_leg_left.setRotationPoint(0.5F, 22.0F, 2.0F);
-            this.back_leg_left.rotateAngleX = ((float)Math.PI * 3F / 2F);
-            this.front_leg_right.rotateAngleX = 5.811947F;
-            this.front_leg_right.setRotationPoint(-2.49F, 17.0F, -4.0F);
-            this.front_leg_left.rotateAngleX = 5.811947F;
-            this.front_leg_left.setRotationPoint(0.51F, 17.0F, -4.0F);
-            this.tail.setRotationPoint(5.0F, 12.0F, 2.0F);
-            this.tail.rotateAngleY = -174;
-            this.tail.rotateAngleX = -99.6F;
-            this.head.setRotationPoint(0.5F, 13.5F, -8.0F);
-            this.head.rotateAngleY = 100;
-            this.tail.offsetY = 7.5F * 0.0625F;
-            this.head.offsetY = 7.5F * 0.0625F;
-            this.mane.offsetY = 7.5F * 0.0625F;
-            this.body.offsetY = 7.5F * 0.0625F;
-            
-            this.front_leg_left.isHidden = true;
-            this.front_leg_right.isHidden = true;
-            this.back_leg_left.isHidden = true;
-            this.back_leg_right.isHidden = true;
-            this.head.rotateAngleZ = 100;
-        }
-        else if(betterWolf.isSitting())
-        {
-            this.mane.setRotationPoint(-1.0F, 16.0F, -3.0F);
-            this.mane.rotateAngleX = ((float)Math.PI * 2F / 5F);
-            this.mane.rotateAngleY = 0.0F;
-            this.body.setRotationPoint(0.0F, 18.0F, 0.0F);
-            this.body.rotateAngleX = ((float)Math.PI / 4F);
-            this.body.rotateAngleY = 0;
-            this.tail.setRotationPoint(-1.0F, 21.0F, 6.0F);
             this.tail.rotateAngleY = 0;
-            this.back_leg_right.setRotationPoint(-2.5F, 22.0F, 2.0F);
-            this.back_leg_right.rotateAngleX = ((float)Math.PI * 3F / 2F);
-            this.back_leg_left.setRotationPoint(0.5F, 22.0F, 2.0F);
-            this.back_leg_left.rotateAngleX = ((float)Math.PI * 3F / 2F);
-            this.front_leg_right.rotateAngleX = 5.811947F;
-            this.front_leg_right.setRotationPoint(-2.49F, 17.0F, -4.0F);
-            this.front_leg_left.rotateAngleX = 5.811947F;
-            this.front_leg_left.setRotationPoint(0.51F, 17.0F, -4.0F);
-            
+            this.legBackRight.setRotationPoint(-2.5F, 16.0F, 7.0F);
+            this.legBackLeft.setRotationPoint(0.5F, 16.0F, 7.0F);
+            this.legFrontRight.setRotationPoint(-2.5F, 16.0F, -4.0F);
+            this.legFrontLeft.setRotationPoint(0.5F, 16.0F, -4.0F);
+            this.legBackRight.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+            this.legBackLeft.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
+            this.legFrontRight.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
+            this.legFrontLeft.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+    
             this.head.setRotationPoint(-1.0F, 13.5F, -7.0F);
-            
+    
             this.tail.offsetY = 0;
             this.head.offsetY = 0;
             this.mane.offsetY = 0;
             this.body.offsetY = 0;
-            
-            this.front_leg_left.isHidden = false;
-            this.front_leg_right.isHidden = false;
-            this.back_leg_left.isHidden = false;
-            this.back_leg_right.isHidden = false;
+        }
+        else if(betterWolf.isSitting())
+        {
+            this.mane.setRotationPoint(-1.0F, 16.0F, -3.0F);
+            this.mane.rotateAngleX = 1.2566371F;
+            this.mane.rotateAngleY = 0.0F;
+            this.body.setRotationPoint(0.0F, 18.0F, 0.0F);
+            this.body.rotateAngleX = ((float)Math.PI / 4F);
+            this.tail.setRotationPoint(-1.0F, 21.0F, 6.0F);
+            this.legBackRight.setRotationPoint(-2.5F, 22.0F, 2.0F);
+            this.legBackRight.rotateAngleX = ((float)Math.PI * 1.5F);
+            this.legBackLeft.setRotationPoint(0.5F, 22.0F, 2.0F);
+            this.legBackLeft.rotateAngleX = ((float)Math.PI * 1.5F);
+            this.legFrontRight.rotateAngleX = 5.811947F;
+            this.legFrontRight.setRotationPoint(-2.49F, 17.0F, -4.0F);
+            this.legFrontLeft.rotateAngleX = 5.811947F;
+            this.legFrontLeft.setRotationPoint(0.51F, 17.0F, -4.0F);
         }
         else
         {
             this.body.setRotationPoint(0.0F, 14.0F, 2.0F);
             this.body.rotateAngleX = ((float)Math.PI / 2F);
-            this.body.rotateAngleY = 0;
             this.mane.setRotationPoint(-1.0F, 14.0F, -3.0F);
             this.mane.rotateAngleX = this.body.rotateAngleX;
             this.tail.setRotationPoint(-1.0F, 12.0F, 8.0F);
-            this.tail.rotateAngleY = 0;
-            this.back_leg_right.setRotationPoint(-2.5F, 16.0F, 7.0F);
-            this.back_leg_left.setRotationPoint(0.5F, 16.0F, 7.0F);
-            this.front_leg_right.setRotationPoint(-2.5F, 16.0F, -4.0F);
-            this.front_leg_left.setRotationPoint(0.5F, 16.0F, -4.0F);
-            this.back_leg_right.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-            this.back_leg_left.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
-            this.front_leg_right.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
-            this.front_leg_left.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-            
-            this.head.setRotationPoint(-1.0F, 13.5F, -7.0F);
-            
-            this.tail.offsetY = 0;
-            this.head.offsetY = 0;
-            this.mane.offsetY = 0;
-            this.body.offsetY = 0;
-            
-            this.front_leg_left.isHidden = false;
-            this.front_leg_right.isHidden = false;
-            this.back_leg_left.isHidden = false;
-            this.back_leg_right.isHidden = false;
+            this.legBackRight.setRotationPoint(-2.5F, 16.0F, 7.0F);
+            this.legBackLeft.setRotationPoint(0.5F, 16.0F, 7.0F);
+            this.legFrontRight.setRotationPoint(-2.5F, 16.0F, -4.0F);
+            this.legFrontLeft.setRotationPoint(0.5F, 16.0F, -4.0F);
+            this.legBackRight.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+            this.legBackLeft.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
+            this.legFrontRight.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
+            this.legFrontLeft.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
         }
         
-        this.head.rotateAngleZ = betterWolf.getInterestedAngle(partialTickTime) + betterWolf.getShakeAngle(partialTickTime, 0.0F);
-        this.mane.rotateAngleZ = betterWolf.getShakeAngle(partialTickTime, -0.08F);
-        this.body.rotateAngleZ = betterWolf.getShakeAngle(partialTickTime, -0.16F);
-        this.tail.rotateAngleZ = betterWolf.getShakeAngle(partialTickTime, -0.2F);
-        
-        /*this.nose.rotateAngleZ = this.head.rotateAngleZ;
-        this.ear_left.rotateAngleZ = this.head.rotateAngleZ;
-        this.ear_right.rotateAngleZ = this.head.rotateAngleZ;*/
+        if(!betterWolf.isLayingDown())
+        {
+            this.head.rotateAngleZ = betterWolf.getInterestedAngle(partialTick) + betterWolf.getShakeAngle(partialTick, 0.0F);
+            this.mane.rotateAngleZ = betterWolf.getShakeAngle(partialTick, -0.08F);
+            this.body.rotateAngleZ = betterWolf.getShakeAngle(partialTick, -0.16F);
+            this.tail.rotateAngleZ = betterWolf.getShakeAngle(partialTick, -0.2F);
+        }
     }
     
     /**
@@ -258,28 +169,8 @@ public class BetterWolfModel<T extends BetterWolfEntity> extends EntityModel<T>
     public void setRotationAngles(T betterWolf, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor)
     {
         super.setRotationAngles(betterWolf, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
-        this.head.rotateAngleX = headPitch * 0.017453292F;
-        this.head.rotateAngleY = netHeadYaw * 0.017453292F;
+        this.head.rotateAngleX = headPitch * ((float)Math.PI / 180F);
+        this.head.rotateAngleY = netHeadYaw * ((float)Math.PI / 180F);
         this.tail.rotateAngleX = ageInTicks;
-      /*if(!betterWolf.isLayingDown())
-      {
-         this.head.rotateAngleY = netHeadYaw * 0.017453292F;
-      }*/
-        
-        /*this.nose.rotateAngleX = this.head.rotateAngleX;
-        this.nose.rotateAngleY = this.head.rotateAngleY;
-    
-        this.ear_left.rotateAngleX = this.head.rotateAngleX;
-        this.ear_left.rotateAngleY = this.head.rotateAngleY;
-    
-        this.ear_right.rotateAngleX = this.head.rotateAngleX;
-        this.ear_right.rotateAngleY = this.head.rotateAngleY;*/
-      
-      /*if(!betterWolf.isLayingDown())
-      {
-         this.tail.rotateAngleX = ageInTicks;
-      }*/
     }
-    
-    
 }
