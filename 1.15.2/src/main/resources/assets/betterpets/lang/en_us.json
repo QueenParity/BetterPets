@@ -1,0 +1,73 @@
+{
+	"itemGroup.betterpets": "Better Pets",
+	
+	"item.betterpets.pet_chest": "Pet Chest",
+	"item.betterpets.pet_birthday_hat": "Pet Birthday Hat",
+	
+	"item.betterpets.pet_food": "Pet Food",
+	
+	"item.betterpets.canteen": "Canteen",
+	
+	"item.betterpets.water_filter_fabric": "Water Filter Fabric",
+	
+	"item.betterpets.better_wolf_spawn_egg": "Better Wolf Spawn Egg",
+	
+	"block.betterpets.oak_water_collector": "Oak Water Collector",
+	"block.betterpets.spruce_water_collector": "Spruce Water Collector",
+	"block.betterpets.birch_water_collector": "Birch Water Collector",
+	"block.betterpets.jungle_water_collector": "Jungle Water Collector",
+	"block.betterpets.acacia_water_collector": "Acacia Water Collector",
+	"block.betterpets.dark_oak_water_collector": "Dark Oak Water Collector",
+	"block.betterpets.stone_water_collector": "Stone Water Collector",
+	"block.betterpets.granite_water_collector": "Granite Water Collector",
+	"block.betterpets.diorite_water_collector": "Diorite Water Collector",
+	"block.betterpets.andesite_water_collector": "Andesite Water Collector",
+	"block.betterpets.stripped_oak_water_collector": "Stripped Oak Water Collector",
+	"block.betterpets.stripped_spruce_water_collector": "Stripped Spruce Water Collector",
+	"block.betterpets.stripped_birch_water_collector": "Stripped Birch Water Collector",
+	"block.betterpets.stripped_jungle_water_collector": "Stripped Jungle Water Collector",
+	"block.betterpets.stripped_acacia_water_collector": "Stripped Acacia Water Collector",
+	"block.betterpets.stripped_dark_oak_water_collector": "Stripped Dark Oak Water Collector",
+	
+	"block.betterpets.oak_water_filter": "Oak Water Filter",
+	"block.betterpets.spruce_water_filter": "Spruce Water Filter",
+	"block.betterpets.birch_water_filter": "Birch Water Filter",
+	"block.betterpets.jungle_water_filter": "Jungle Water Filter",
+	"block.betterpets.acacia_water_filter": "Acacia Water Filter",
+	"block.betterpets.dark_oak_water_filter": "Dark Oak Water Filter",
+	"block.betterpets.stone_water_filter": "Stone Water Filter",
+	"block.betterpets.granite_water_filter": "Granite Water Filter",
+	"block.betterpets.diorite_water_filter": "Diorite Water Filter",
+	"block.betterpets.andesite_water_filter": "Andesite Water Filter",
+	"block.betterpets.stripped_oak_water_filter": "Stripped Oak Water Filter",
+	"block.betterpets.stripped_spruce_water_filter": "Stripped Spruce Water Filter",
+	"block.betterpets.stripped_birch_water_filter": "Stripped Birch Water Filter",
+	"block.betterpets.stripped_jungle_water_filter": "Stripped Jungle Water Filter",
+	"block.betterpets.stripped_acacia_water_filter": "Stripped Acacia Water Filter",
+	"block.betterpets.stripped_dark_oak_water_filter": "Stripped Dark Oak Water Filter",
+	
+	"block.betterpets.pet_resources_crafter": "Pet Resources Crafter",
+	
+	"block.betterpets.fluid_pipe": "Fluid Pipe",
+	"block.betterpets.fluid_pump": "Fluid Pump",
+	
+	"block.betterpets.filtered_water": "Filtered Water",
+	
+	"betterpets.pet_food_info.food_points": "Food Points",
+	"betterpets.pet_food_info.saturation_restored": "Saturation Restored",
+	"betterpets.canteen_info.isFiltered": "Is Filtered",
+	"betterpets.canteen_info.liquidAmount": "Liquid Amount",
+	"betterpets.canteen_info.maxLiquid": "Max Liquid",
+	"betterpets.canteen_info.poisonChance": "Poison Chance",
+	"betterpets.water_filter_info.no_fluid": "No Fluid",
+	
+	"drink.none": "No Drink",
+	"drink.betterpets.fresh_water": "Fresh Water",
+	"drink.betterpets.milk": "Milk",
+	"drink.betterpets.chocolate_milk": "Chocolate Milk",
+	
+	"container.betterpets.pet_resources_crafter": "Pet Resources Crafter",
+	"container.betterpets.water_filter": "Water Filter",
+	
+	"entity.betterpets.better_wolf": "Better Wolf"
+}

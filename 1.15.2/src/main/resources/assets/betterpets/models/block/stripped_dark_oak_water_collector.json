@@ -1,0 +1,7 @@
+{
+    "parent": "betterpets:block/water_collector",
+    "textures": {
+        "top": "block/stripped_dark_oak_log",
+        "legs": "block/dark_oak_log"
+    }
+}

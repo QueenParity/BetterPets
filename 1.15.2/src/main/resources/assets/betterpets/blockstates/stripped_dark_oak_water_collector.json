@@ -1,0 +1,20 @@
+{
+    "variants": {
+        "facing=north": {
+            "model": "betterpets:block/stripped_dark_oak_water_collector",
+            "y": 0
+        },
+        "facing=east": {
+            "model": "betterpets:block/stripped_dark_oak_water_collector",
+            "y": 90
+        },
+        "facing=south": {
+            "model": "betterpets:block/stripped_dark_oak_water_collector",
+            "y": 180
+        },
+        "facing=west": {
+            "model": "betterpets:block/stripped_dark_oak_water_collector",
+            "y": 270
+        }
+    }
+}

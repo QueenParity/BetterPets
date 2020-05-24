@@ -1,0 +1,14 @@
+{
+    "type": "betterpets:water_filter",
+    "input": {
+        "fluid": "minecraft:water",
+        "amount": 200
+    },
+    "ingredient": {
+        "item": "betterpets:water_filter_fabric"
+    },
+    "result": {
+        "fluid": "betterpets:filtered_water",
+        "amount": 400
+    }
+}

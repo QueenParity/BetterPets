@@ -1,0 +1,36 @@
+{
+    "multipart": [
+        {
+            "when": { "facing": "north" },
+            "apply": { "model": "betterpets:block/andesite_water_filter" }
+        },
+        {
+            "when": { "facing": "east" },
+            "apply": { "model": "betterpets:block/andesite_water_filter", "y": 90 }
+        },
+        {
+            "when": { "facing": "south" },
+            "apply": { "model": "betterpets:block/andesite_water_filter", "y": 180 }
+        },
+        {
+            "when": { "facing": "west" },
+            "apply": { "model": "betterpets:block/andesite_water_filter", "y": 270 }
+        },
+		{
+            "when": { "facing": "north", "active": "false" },
+			"apply": { "model": "betterpets:block/water_filter_seperator" }
+        },
+        {
+            "when": { "facing": "east", "active": "false" },
+			"apply": { "model": "betterpets:block/water_filter_seperator", "y": 90 }
+        },
+        {
+            "when": { "facing": "south", "active": "false" },
+			"apply": { "model": "betterpets:block/water_filter_seperator", "y": 180 }
+        },
+        {
+            "when": { "facing": "west", "active": "false" },
+			"apply": { "model": "betterpets:block/water_filter_seperator", "y": 270 }
+        }
+    ]
+}
