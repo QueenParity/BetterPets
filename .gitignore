@@ -12,6 +12,7 @@
 /Sounds
 /Textures
 /*.png
+/henlo.json
 
 # eclipse
 /1.1*.*/bin
