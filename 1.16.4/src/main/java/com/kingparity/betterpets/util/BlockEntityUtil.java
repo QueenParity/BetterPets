@@ -11,9 +11,6 @@ import net.minecraft.world.World;
 
 import java.util.stream.Stream;
 
-/**
- * Author: MrCrayfish
- */
 public class BlockEntityUtil
 {
     /**

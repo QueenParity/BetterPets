@@ -9,9 +9,6 @@ import net.minecraft.util.shape.VoxelShapes;
 
 import java.util.Collection;
 
-/**
- * Credit: MrCrayfish's Furniture Mod
- */
 public class VoxelShapeHelper
 {
     public static VoxelShape combineAll(Collection<VoxelShape> shapes)

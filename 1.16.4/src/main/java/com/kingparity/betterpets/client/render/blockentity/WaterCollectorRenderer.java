@@ -131,9 +131,6 @@ public class WaterCollectorRenderer extends BlockEntityRenderer<WaterCollectorBl
         buffer.vertex(matrix, x, y, z + depth).color(red, green, blue, 1.0F).texture(maxU, maxV).light(light).normal(0.0F, 1.0F, 0.0F).next();
     }
     
-    /**
-     * Method Found From MrCrayfish's Vehicle Mod FluidExtractorRenderer.java
-     */
     public static int getCombinedLight(BlockRenderView lightReader, BlockPos pos)
     {
         int i = WorldRenderer.getLightmapCoordinates(lightReader, pos);
