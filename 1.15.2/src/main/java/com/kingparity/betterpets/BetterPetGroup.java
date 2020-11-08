@@ -14,6 +14,6 @@ public class BetterPetGroup extends ItemGroup
     @Override
     public ItemStack createIcon()
     {
-        return new ItemStack(ModBlocks.WATER_COLLECTOR_OAK);
+        return new ItemStack(ModBlocks.WATER_COLLECTOR_OAK.get());
     }
 }

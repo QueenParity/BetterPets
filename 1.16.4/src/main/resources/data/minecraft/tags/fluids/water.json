@@ -1,0 +1,8 @@
+{
+    "replace": false,
+    "values":
+    [
+        "betterpets:filtered_water",
+        "betterpets:flowing_filtered_water"
+    ]
+}

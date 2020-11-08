@@ -210,6 +210,6 @@ public class WaterCollectorBlock extends PetHorizontalBlock
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world)
     {
-        return ModTileEntities.WATER_COLLECTOR.create();
+        return new WaterCollectorTileEntity();
     }
 }

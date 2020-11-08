@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "id": "betterpets",
+  "version": "${version}",
+
+  "name": "BetterPets",
+  "description": "Adds in Better, more advanced pets",
+  "authors": [
+    "KingParity"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+
+  "license": "CC0-1.0",
+  "icon": "assets/betterpets/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.kingparity.betterpets.BetterPets",
+      "com.kingparity.betterpets.core.ModItems",
+      "com.kingparity.betterpets.core.ModBlocks",
+      "com.kingparity.betterpets.core.ModBlockEntityTypes",
+      "com.kingparity.betterpets.core.ModFluids"
+    ],
+    "client": [
+      "com.kingparity.betterpets.ModClient"
+    ]
+  },
+  "mixins": [
+    "betterpets.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": "1.16.x"
+  },
+  "suggests": {
+    "flamingo": "*"
+  }
+}

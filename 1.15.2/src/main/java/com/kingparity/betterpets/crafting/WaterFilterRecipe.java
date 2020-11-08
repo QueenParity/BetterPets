@@ -110,7 +110,7 @@ public class WaterFilterRecipe implements IRecipe<WaterFilterTileEntity>
     @Override
     public IRecipeSerializer<?> getSerializer()
     {
-        return ModRecipeSerializers.WATER_FILTER;
+        return ModRecipeSerializers.WATER_FILTER.get();
     }
 
     @Override

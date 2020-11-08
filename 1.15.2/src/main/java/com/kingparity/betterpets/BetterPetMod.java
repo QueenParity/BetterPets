@@ -1,10 +1,11 @@
 package com.kingparity.betterpets;
 
-import com.kingparity.betterpets.core.ModLootFunctions;
+import com.kingparity.betterpets.core.*;
 import com.kingparity.betterpets.proxy.ClientProxy;
 import com.kingparity.betterpets.proxy.CommonProxy;
 import com.kingparity.betterpets.util.Reference;
 import net.minecraft.item.ItemGroup;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -22,11 +23,19 @@ public class BetterPetMod
 
     public BetterPetMod()
     {
+        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        ModBlocks.BLOCKS.register(eventBus);
+        ModItems.ITEMS.register(eventBus);
+        ModEntities.ENTITY_TYPES.register(eventBus);
+        ModTileEntities.TILE_ENTITY_TYPES.register(eventBus);
+        ModContainers.CONTAINER_TYPES.register(eventBus);
+        ModRecipeSerializers.RECIPE_SERIALIZERS.register(eventBus);
+        ModFluids.FLUIDS.register(eventBus);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onCommonSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientSetup);
     }
-
-    private void onCommonSetup(final FMLCommonSetupEvent event)
+    
+    private void onCommonSetup(FMLCommonSetupEvent event)
     {
         PROXY.onSetupCommon();
         LOGGER.debug("onCommonSetup method registered");
@@ -34,7 +43,7 @@ public class BetterPetMod
         ModLootFunctions.register();
     }
 
-    private void onClientSetup(final FMLClientSetupEvent event)
+    private void onClientSetup(FMLClientSetupEvent event)
     {
         PROXY.onSetupClient();
         LOGGER.debug("onClientSetup method registered");

@@ -3,6 +3,7 @@ package com.kingparity.betterpets.block;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.kingparity.betterpets.core.ModTileEntities;
+import com.kingparity.betterpets.tileentity.WaterFilterTileEntity;
 import com.kingparity.betterpets.util.TileEntityUtil;
 import com.kingparity.betterpets.util.VoxelShapeHelper;
 import net.minecraft.block.Block;
@@ -143,6 +144,6 @@ public class WaterFilterBlock extends PetHorizontalBlock
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world)
     {
-        return ModTileEntities.WATER_FILTER.create();
+        return new WaterFilterTileEntity();
     }
 }

@@ -16,7 +16,7 @@ public class WaterFilterContainer extends Container
 
     public WaterFilterContainer(int windowId, PlayerInventory playerInventory, WaterFilterTileEntity waterFilter)
     {
-        super(ModContainers.WATER_FILTER, windowId);
+        super(ModContainers.WATER_FILTER.get(), windowId);
         this.waterFilter = waterFilter;
 
         this.addSlot(new FuelSlot(waterFilter, 0, 9, 50));

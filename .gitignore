@@ -27,9 +27,19 @@
 /1.1*.*/*.iml
 /1.1*.*/.idea
 
+/1.16.4/.idea/
+/1.16.4/*.iml
+/1.16.4/*.ipr
+/1.16.4/*.iws
+
 # gradle
 /1.1*.*/build
 /1.1*.*/.gradle
+
+/1.16.4/.gradle/
+/1.16.4/build/
+/1.16.4/out/
+/1.16.4/classes/
 
 # other
 /1.1*.*/eclipse
@@ -37,3 +47,7 @@
 
 # Files from Forge MDK
 /1.1*.*/forge*changelog.txt
+
+# fabric
+
+/1.16.4/run/

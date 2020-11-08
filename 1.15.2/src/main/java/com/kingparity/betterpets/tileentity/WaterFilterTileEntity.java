@@ -48,7 +48,7 @@ public class WaterFilterTileEntity extends TileEntitySynced implements IInventor
     private NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
 
     private FluidTank tankWater = new FluidTank(5000, this::isValidFluid);
-    private FluidTank tankFilteredWater = new FluidTank(10000, stack -> stack.getFluid() == ModFluids.FILTERED_WATER);
+    private FluidTank tankFilteredWater = new FluidTank(10000, stack -> stack.getFluid() == ModFluids.FILTERED_WATER.get());
 
     private static final int SLOT_FUEL = 0;
     public static final int SLOT_FABRIC = 1;
@@ -126,7 +126,7 @@ public class WaterFilterTileEntity extends TileEntitySynced implements IInventor
 
     public WaterFilterTileEntity()
     {
-        super(ModTileEntities.WATER_FILTER);
+        super(ModTileEntities.WATER_FILTER.get());
     }
 
     @Override

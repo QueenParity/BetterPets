@@ -10,7 +10,7 @@ public class WaterCollectorTileEntity extends TileFluidHandlerSynced implements 
 {
     public WaterCollectorTileEntity()
     {
-        super(ModTileEntities.WATER_COLLECTOR, 12000, 500, 500);
+        super(ModTileEntities.WATER_COLLECTOR.get(), 12000, 500, 500);
     }
     
     @Override
