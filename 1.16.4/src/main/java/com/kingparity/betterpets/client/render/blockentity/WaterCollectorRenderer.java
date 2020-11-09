@@ -1,24 +1,19 @@
 package com.kingparity.betterpets.client.render.blockentity;
 
 import com.kingparity.betterpets.block.entity.WaterCollectorBlockEntity;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.minecraft.block.HorizontalFacingBlock;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Matrix4f;
@@ -40,12 +35,14 @@ public class WaterCollectorRenderer extends BlockEntityRenderer<WaterCollectorBl
             matrixStack.translate(0.5, 0.5, 0.5);
             matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(direction.getHorizontal() * -90F - 90F));
             matrixStack.translate(-0.5, -0.5, -0.5);
-            float height = (float) (13.0 * (((double)waterCollector.getStack(0).getBuckets()) / ((double)12)));
-            System.out.println("Renderer: " + waterCollector.getStack(0).getFluid());
+            float height = (float) (13 * (((double)waterCollector.getStack(0).getBuckets()) / ((double)13)));
+            //System.out.println(waterCollector.getStack(0).getFluid());
+            //System.out.println(waterCollector.getStack(0).getBuckets());
+            //System.out.println(waterCollector.getStack(0).isEmpty());
+            //waterCollector.getStack(0).isEmpty();
             if(height > 0)
             {
                 drawFluid(waterCollector, matrixStack, vertexConsumers, 2.01F * 0.0625F, 8.01F * 0.0625F, 2.01F * 0.0625F, (12 - 0.02F) * 0.0625F, height * 0.0625F, (12 - 0.02F) * 0.0625F);
-                MinecraftClient.getInstance().getItemRenderer().renderItem(new ItemStack(Items.APPLE), ModelTransformation.Mode.GROUND, light, overlay, matrixStack, vertexConsumers);
             }
         }
         matrixStack.pop();
@@ -68,20 +65,22 @@ public class WaterCollectorRenderer extends BlockEntityRenderer<WaterCollectorBl
         
         //SpriteAtlasTexture sprite = MinecraftClient.getInstance().getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).
         
-        Sprite sprite = MinecraftClient.getInstance().getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).apply(new Identifier("minecraft", "block/water_still"));
+        //Sprite sprite = MinecraftClient.getInstance().getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).apply(new Identifier("minecraft", "block/water_still"));
         //int chunkX = waterCollector.getWorld().getWorldChunk(waterCollector.getPos()).getPos().getRegionX();
         //int chunkY = waterCollector.getWorld().getWorldChunk(waterCollector.getPos()).getPos().getRegionZ();
         
         //waterCollector.getWorld().getExistingChunk(chunkX, chunkY)
         //MinecraftClient.getInstance().getBlockRenderManager().renderFluid(waterCollector.getPos(), (BlockRenderView)waterCollector.getWorld().getExistingChunk(chunkX, chunkY), vertexConsumers.getBuffer(RenderLayer.getTranslucent()), fluid.getDefaultState());
         
+        Sprite sprite = FluidRenderHandlerRegistry.INSTANCE.get(fluid).getFluidSprites(waterCollector.getWorld(), waterCollector.getPos(), fluid.getDefaultState())[0];
+        int waterColor = FluidRenderHandlerRegistry.INSTANCE.get(fluid).getFluidColor(waterCollector.getWorld(), waterCollector.getPos(), fluid.getDefaultState());
         
         float minU = sprite.getMinU();
         float maxU = Math.min(minU + (sprite.getMaxU() - minU) * width, sprite.getMaxU());
         float minV = sprite.getMinV();
         float maxV = Math.min(minV + (sprite.getMaxV() - minV) * height, sprite.getMaxV());
         //int waterColor = fluid.getAttributes().getColor(waterCollector.getWorld(), waterCollector.getPos());
-        int waterColor = 0x00C8FF;
+        //int waterColor = 0x00C8FF;
         float red = (float)(waterColor >> 16 & 255) / 255.0F;
         float green = (float)(waterColor >> 8 & 255) / 255.0F;
         float blue = (float)(waterColor & 255) / 255.0F;

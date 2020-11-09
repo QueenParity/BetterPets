@@ -67,4 +67,6 @@ public interface FluidTank extends Clearable
         
         return false;
     }
+    
+    default void onContentsChanged() {}
 }

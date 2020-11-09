@@ -11,12 +11,12 @@ public class FluidTanks
 {
     public static FluidStack splitStack(List<FluidStack> stacks, int slot, int buckets)
     {
-        return slot >= 0 && slot < stacks.size() && !(stacks.get(slot)).isEmpty() && buckets > 0 ? (stacks.get(slot)).split(buckets) : FluidStack.EMPTY;
+        return slot >= 0 && slot < stacks.size() && !((FluidStack)stacks.get(slot)).isEmpty() && buckets > 0 ? ((FluidStack)stacks.get(slot)).split(buckets) : FluidStack.EMPTY;
     }
     
     public static FluidStack removeStack(List<FluidStack> stacks, int slot)
     {
-        return slot >= 0 && slot < stacks.size() ? stacks.set(slot, FluidStack.EMPTY) : FluidStack.EMPTY;
+        return slot >= 0 && slot < stacks.size() ? (FluidStack)stacks.set(slot, FluidStack.EMPTY) : FluidStack.EMPTY;
     }
     
     public static CompoundTag toTag(CompoundTag tag, DefaultedList<FluidStack> stacks)
@@ -28,9 +28,9 @@ public class FluidTanks
     {
         ListTag listTag = new ListTag();
     
-        for(int i = 0; i < stacks.size(); i++)
+        for(int i = 0; i < stacks.size(); ++i)
         {
-            FluidStack fluidStack = stacks.get(i);
+            FluidStack fluidStack = (FluidStack)stacks.get(i);
             if(!fluidStack.isEmpty())
             {
                 CompoundTag compoundTag = new CompoundTag();
@@ -52,7 +52,7 @@ public class FluidTanks
     {
         ListTag listTag = tag.getList("Fluids", 10);
         
-        for(int i = 0; i < listTag.size(); i++)
+        for(int i = 0; i < listTag.size(); ++i)
         {
             CompoundTag compoundTag = listTag.getCompound(i);
             int j = compoundTag.getByte("Slot") & 255;
@@ -67,7 +67,7 @@ public class FluidTanks
     {
         int i = 0;
         
-        for(int j = 0; j < fluidTank.size(); j++)
+        for(int j = 0; j < fluidTank.size(); ++j)
         {
             FluidStack fluidStack = fluidTank.getStack(j);
             int k = remove(fluidStack, shouldRemove, maxBuckets - i, dryRun);

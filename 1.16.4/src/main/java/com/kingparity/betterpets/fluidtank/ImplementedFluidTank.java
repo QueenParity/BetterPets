@@ -40,6 +40,8 @@ public interface ImplementedFluidTank extends FluidTank
     @Override
     default FluidStack getStack(int slot)
     {
+        this.onContentsChanged();
+        this.markDirty();
         return getFluids().get(slot);
     }
     
@@ -51,14 +53,18 @@ public interface ImplementedFluidTank extends FluidTank
         {
             markDirty();
         }
-        
+    
+        this.onContentsChanged();
         return result;
     }
     
     @Override
     default FluidStack removeStack(int slot)
     {
-        return FluidTanks.removeStack(getFluids(), slot);
+        FluidStack result = FluidTanks.removeStack(getFluids(), slot);
+        this.markDirty();
+        this.onContentsChanged();
+        return result;
     }
     
     @Override
@@ -69,12 +75,16 @@ public interface ImplementedFluidTank extends FluidTank
         {
             stack.setBuckets(getMaxCountPerStack());
         }
+        this.markDirty();
+        this.onContentsChanged();
     }
     
     @Override
     default void clear()
     {
         getFluids().clear();
+        this.markDirty();
+        this.onContentsChanged();
     }
     
     @Override
@@ -87,5 +97,11 @@ public interface ImplementedFluidTank extends FluidTank
     default boolean canPlayerUse(PlayerEntity player)
     {
         return true;
+    }
+    
+    @Override
+    default void onContentsChanged()
+    {
+    
     }
 }

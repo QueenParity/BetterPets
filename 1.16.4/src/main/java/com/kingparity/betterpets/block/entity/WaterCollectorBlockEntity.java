@@ -4,15 +4,14 @@ import com.kingparity.betterpets.core.ModBlockEntityTypes;
 import com.kingparity.betterpets.fluidtank.FluidStack;
 import com.kingparity.betterpets.fluidtank.FluidTanks;
 import com.kingparity.betterpets.fluidtank.ImplementedFluidTank;
-import com.kingparity.betterpets.util.BlockEntityUtil;
+import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.collection.DefaultedList;
 
-public class WaterCollectorBlockEntity extends BlockEntity implements ImplementedFluidTank, Tickable
+public class WaterCollectorBlockEntity extends BlockEntity implements ImplementedFluidTank, BlockEntityClientSerializable//, Tickable
 {
     private final DefaultedList<FluidStack> fluids = DefaultedList.ofSize(2, FluidStack.EMPTY);
     
@@ -21,11 +20,21 @@ public class WaterCollectorBlockEntity extends BlockEntity implements Implemente
         super(ModBlockEntityTypes.WATER_COLLECTOR_BLOCK_ENTITY);
     }
     
-    @Override
-    public FluidStack getStack(int slot)
+    /*@Override
+    public void tick()
     {
-        return getFluids().get(slot);
-    }
+        if(!world.isClient)
+        {
+            this.sync();
+            System.out.println("SERVER: " + this.getStack(0).getFluid());
+            System.out.println("SERVER: " + this.getStack(0).getBuckets());
+        }
+        else
+        {
+            System.out.println("CLIENT: " + this.getStack(0).getFluid());
+            System.out.println("CLIENT: " + this.getStack(0).getBuckets());
+        }
+    }*/
     
     @Override
     public DefaultedList<FluidStack> getFluids()
@@ -48,31 +57,26 @@ public class WaterCollectorBlockEntity extends BlockEntity implements Implemente
     }
     
     @Override
-    public void tick()
+    public void fromClientTag(CompoundTag tag)
     {
-        System.out.println("BE (" + this.getWorld().isClient() + "): " + this.getStack(0).getFluid());
+        super.fromTag(getCachedState(), tag);
+        FluidTanks.fromTag(tag,fluids);
     }
     
-    public void syncFluidToClient()
+    @Override
+    public CompoundTag toClientTag(CompoundTag tag)
     {
-        if(this.world != null && !this.world.isClient)
+        FluidTanks.toTag(tag,fluids);
+        return super.toTag(tag);
+    }
+    
+    @Override
+    public void onContentsChanged()
+    {
+        if(!world.isClient)
         {
-            CompoundTag tag = new CompoundTag();
-            this.toTag(tag);
-            BlockEntityUtil.sendUpdatePacket(this, tag);
+            this.toClientTag(new CompoundTag());
+            this.sync();
         }
-        this.markDirty();
-    }
-    
-    @Override
-    public CompoundTag toInitialChunkDataTag()
-    {
-        return this.toTag(new CompoundTag());
-    }
-    
-    @Override
-    public BlockEntityUpdateS2CPacket toUpdatePacket()
-    {
-        return new BlockEntityUpdateS2CPacket(this.pos, 0, this.toInitialChunkDataTag());
     }
 }

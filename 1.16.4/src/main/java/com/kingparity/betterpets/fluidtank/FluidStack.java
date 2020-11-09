@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 public class FluidStack
 {
     private static final Logger LOGGER = LogManager.getLogger();
+    public static final FluidStack EMPTY = new FluidStack((Fluid)null);
     
     private int buckets;
     private int cooldown;
@@ -18,7 +19,6 @@ public class FluidStack
     private CompoundTag tag;
     private boolean empty;
     
-    public static final FluidStack EMPTY = new FluidStack((Fluid)null);
     
     public FluidStack(Fluid fluid)
     {
@@ -41,7 +41,7 @@ public class FluidStack
     
     private FluidStack(CompoundTag tag)
     {
-        this.fluid = Registry.FLUID.get(new Identifier(tag.getString("id")));
+        this.fluid = (Fluid)Registry.FLUID.get(new Identifier(tag.getString("id")));
         this.buckets = tag.getByte("Buckets");
         if(tag.contains("tag", 10))
         {
@@ -63,6 +63,12 @@ public class FluidStack
             return EMPTY;
         }
     }
+    
+    /*public boolean isEmpty(boolean isClient)
+    {
+        System.out.println(isClient);
+        return this.isEmpty();
+    }*/
     
     public boolean isEmpty()
     {
@@ -91,7 +97,7 @@ public class FluidStack
     
     public Fluid getFluid()
     {
-        return fluid;
+        return this.empty ? Fluids.EMPTY : this.fluid;
     }
     
     public CompoundTag toTag(CompoundTag tag)
@@ -124,6 +130,12 @@ public class FluidStack
             
             return fluidStack;
         }
+    }
+    
+    @Override
+    public String toString()
+    {
+        return "FluidStack{" + "buckets=" + buckets + ", cooldown=" + cooldown + ", fluid=" + fluid + ", tag=" + tag + ", empty=" + empty + '}';
     }
     
     public int getCooldown()
