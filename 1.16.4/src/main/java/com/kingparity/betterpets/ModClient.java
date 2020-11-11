@@ -1,8 +1,12 @@
 package com.kingparity.betterpets;
 
 import com.kingparity.betterpets.client.render.blockentity.WaterCollectorRenderer;
+import com.kingparity.betterpets.client.render.blockentity.WaterFilterRenderer;
 import com.kingparity.betterpets.core.ModBlockEntityTypes;
+import com.kingparity.betterpets.core.ModBlocks;
 import com.kingparity.betterpets.core.ModFluids;
+import com.kingparity.betterpets.names.FluidNames;
+import com.kingparity.betterpets.util.Reference;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
@@ -13,7 +17,6 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.fluid.Fluid;
@@ -32,10 +35,13 @@ public class ModClient implements ClientModInitializer
     @Override
     public void onInitializeClient()
     {
-        setupFluidRendering(ModFluids.STILL_FILTERED_WATER, ModFluids.FLOWING_FILTERED_WATER, new Identifier("minecraft", "water"), 0x00C8FF);
+        setupFluidRendering(ModFluids.STILL_FILTERED_WATER, ModFluids.FLOWING_FILTERED_WATER, new Identifier(Reference.ID, FluidNames.FILTERED_WATER), 0x00C8FF);
         BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), ModFluids.STILL_FILTERED_WATER, ModFluids.FLOWING_FILTERED_WATER);
-    
+        
         BlockEntityRendererRegistry.INSTANCE.register(ModBlockEntityTypes.WATER_COLLECTOR_BLOCK_ENTITY, WaterCollectorRenderer::new);
+        BlockEntityRendererRegistry.INSTANCE.register(ModBlockEntityTypes.WATER_FILTER_BLOCK_ENTITY, WaterFilterRenderer::new);
+        
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WATER_FILTER_OAK, RenderLayer.getCutout());
     }
     
     public static void setupFluidRendering(final Fluid still, final Fluid flowing, final Identifier textureFluidId, final int color)

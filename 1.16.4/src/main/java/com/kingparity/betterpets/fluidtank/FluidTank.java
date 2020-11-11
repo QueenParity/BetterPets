@@ -1,72 +1,123 @@
 package com.kingparity.betterpets.fluidtank;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.util.Clearable;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
-import java.util.Set;
-
-public interface FluidTank extends Clearable
+public class FluidTank
 {
-    int size();
+    private Fluid fluid;
+    private int buckets;
+    private int capacity;
     
-    boolean isEmpty();
-    
-    FluidStack getStack(int slot);
-    
-    FluidStack removeStack(int slot, int buckets);
-    
-    FluidStack removeStack(int slot);
-    
-    void setStack(int slot, FluidStack stack);
-    
-    default int getMaxCountPerStack()
+    public FluidTank(Fluid fluid, int buckets, int capacity)
     {
-        return 64;
+        this.fluid = fluid;
+        this.buckets = buckets;
+        this.capacity = capacity;
     }
     
-    void markDirty();
-    
-    boolean canPlayerUse(PlayerEntity player);
-    
-    default void onOpen(PlayerEntity player) {}
-    
-    default void onClose(PlayerEntity player) {}
-    
-    default boolean isValid(int slot, FluidStack stack)
+    public void fromTag(CompoundTag tag)
     {
-        return true;
+        this.fluid = Registry.FLUID.get(new Identifier(tag.getString("id")));
+        this.buckets = tag.getInt("Buckets");
+        this.capacity = tag.getInt("Capacity");
     }
     
-    default int count(Fluid fluid)
+    public CompoundTag toTag(CompoundTag tag)
     {
-        int i = 0;
+        Identifier identifier = Registry.FLUID.getId(this.fluid);
+        tag.putString("id", identifier == null ? "minecraft:empty" : identifier.toString());
+        tag.putInt("Buckets", this.buckets);
+        tag.putInt("Capacity", this.capacity);
         
-        for(int j = 0; j < this.size(); ++j)
+        return tag;
+    }
+    
+    public int drain(boolean dryRun)
+    {
+        return drain(this.capacity, dryRun);
+    }
+    
+    public int drain(int amount, boolean dryRun)
+    {
+        int amountToDrain = amount;
+        if(this.buckets - amount < 0)
         {
-            FluidStack fluidStack = this.getStack(j);
-            if(fluidStack.getFluid().equals(fluid))
-            {
-                i += fluidStack.getBuckets();
-            }
+            amountToDrain = this.buckets;
         }
         
-        return i;
-    }
-    
-    default boolean containsAny(Set<Fluid> fluids)
-    {
-        for(int i = 0; i < this.size(); ++i)
+        if(!dryRun)
         {
-            FluidStack fluidStack = this.getStack(i);
-            if(fluids.contains(fluidStack.getFluid()) && fluidStack.getBuckets() > 0)
-            {
-                return true;
-            }
+            this.buckets -= amountToDrain;
         }
         
-        return false;
+        onContentsChanged();
+        
+        return amountToDrain;
     }
     
-    default void onContentsChanged() {}
+    public int fill(boolean dryRun)
+    {
+        return fill(this.capacity, dryRun);
+    }
+    
+    public int fill(int amount, boolean dryRun)
+    {
+        int amountToFill = amount;
+        if(this.buckets + amount > this.capacity)
+        {
+            amountToFill = this.capacity - this.buckets;
+        }
+
+        if(!dryRun)
+        {
+            this.buckets += amountToFill;
+        }
+        
+        onContentsChanged();
+        
+        return amountToFill;
+    }
+    
+    public boolean isEmpty()
+    {
+        return this.buckets == 0;
+    }
+    
+    protected void onContentsChanged()
+    {
+    
+    }
+    
+    public void setFluid(Fluid fluid)
+    {
+        this.fluid = fluid;
+    }
+    
+    public void setBuckets(int buckets)
+    {
+        this.buckets = buckets;
+    }
+    
+    public void setCapacity(int capacity)
+    {
+        this.capacity = capacity;
+    }
+    
+    public Fluid getFluid()
+    {
+        return fluid;
+    }
+    
+    public int getBuckets()
+    {
+        return buckets;
+    }
+    
+    public int getCapacity()
+    {
+        return capacity;
+    }
 }

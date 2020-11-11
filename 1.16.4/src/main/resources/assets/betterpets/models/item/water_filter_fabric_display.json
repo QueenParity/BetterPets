@@ -1,0 +1,6 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "betterpets:item/water_filter_fabric_13x13"
+    }
+}

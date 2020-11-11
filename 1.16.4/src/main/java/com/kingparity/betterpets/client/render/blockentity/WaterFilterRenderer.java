@@ -1,61 +1,89 @@
 package com.kingparity.betterpets.client.render.blockentity;
 
-import com.kingparity.betterpets.block.entity.WaterCollectorBlockEntity;
+import com.kingparity.betterpets.block.entity.WaterFilterBlockEntity;
+import com.kingparity.betterpets.core.ModItems;
 import com.kingparity.betterpets.fluidtank.FluidTank;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.minecraft.block.HorizontalFacingBlock;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.world.BlockRenderView;
 
-public class WaterCollectorRenderer extends BlockEntityRenderer<WaterCollectorBlockEntity>
+public class WaterFilterRenderer extends BlockEntityRenderer<WaterFilterBlockEntity>
 {
-    public WaterCollectorRenderer(BlockEntityRenderDispatcher dispatcher)
+    public WaterFilterRenderer(BlockEntityRenderDispatcher dispatcher)
     {
         super(dispatcher);
     }
     
     @Override
-    public void render(WaterCollectorBlockEntity waterCollector, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, int light, int overlay)
+    public void render(WaterFilterBlockEntity waterFilter, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, int light, int overlay)
     {
         matrixStack.push();
         {
-            Direction direction = waterCollector.getCachedState().get(HorizontalFacingBlock.FACING);
+            Direction direction = waterFilter.getCachedState().get(HorizontalFacingBlock.FACING);
             matrixStack.translate(0.5, 0.5, 0.5);
             matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(direction.getHorizontal() * -90F - 90F));
             matrixStack.translate(-0.5, -0.5, -0.5);
-            FluidTank tank = waterCollector.getTankWater();
-            float height = (float) ((tank.getCapacity() / 1000) * (((double)tank.getBuckets()) / ((double)tank.getCapacity())));
-            if(height > 0)
+    
+            matrixStack.translate(9.5 * 0.0625, 2.5 * 0.0625, 8 * 0.0625);
+            ItemStack stack = new ItemStack(ModItems.WATER_FILTER_FABRIC_DISPLAY, 1);
+            MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.FIXED, light, overlay, matrixStack, vertexConsumers);
+        }
+        matrixStack.pop();
+        
+        matrixStack.push();
+        {
+            Direction direction = waterFilter.getCachedState().get(HorizontalFacingBlock.FACING);
+            matrixStack.translate(0.5, 0.5, 0.5);
+            matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(direction.getHorizontal() * -90F - 90F));
+            matrixStack.translate(-0.5, -0.5, -0.5);
+            
+            FluidTank tankWater = waterFilter.getTankWater();
+            float heightTankWater = (float) ((tankWater.getCapacity() / 1000) * (((double)tankWater.getBuckets()) / ((double)tankWater.getCapacity())));
+            
+            FluidTank tankFilteredWater = waterFilter.getTankFilteredWater();
+            float heightTankFilteredWater = (float) ((tankFilteredWater.getCapacity() / 1000) * (((double)tankFilteredWater.getBuckets()) / ((double)tankFilteredWater.getCapacity())));
+            
+            //matrixStack.scale(0.5F, 0.5F, 0.5F);
+            //matrixStack.translate(-9.5 * 0.0625, -2.5 * 0.0625, -8 * 0.0625);
+            if(heightTankWater > 0)
             {
-                drawFluid(waterCollector, matrixStack, vertexConsumers, 2.01F * 0.0625F, 8.01F * 0.0625F, 2.01F * 0.0625F, (12 - 0.02F) * 0.0625F, height * 0.0625F, (12 - 0.02F) * 0.0625F);
+                drawFluid(tankWater.getFluid(), waterFilter, matrixStack, vertexConsumers, 1.01F * 0.0625F, 1.01F * 0.0625F, 1.01F * 0.0625F, (14 - 0.02F) * 0.0625F, heightTankWater * 0.0625F, (7 - 0.02F) * 0.0625F);
+            }
+            
+            if(heightTankFilteredWater > 0)
+            {
+                drawFluid(tankFilteredWater.getFluid(), waterFilter, matrixStack, vertexConsumers, 1.01F * 0.0625F, 1.01F * 0.0625F, 8.01F * 0.0625F, (14 - 0.02F) * 0.0625F, heightTankFilteredWater * 0.0625F, (7 - 0.02F) * 0.0625F);
             }
         }
         matrixStack.pop();
     }
     
-    private void drawFluid(WaterCollectorBlockEntity waterCollector, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, float x, float y, float z, float width, float height, float depth)
+    private void drawFluid(Fluid fluid, WaterFilterBlockEntity waterFilter, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, float x, float y, float z, float width, float height, float depth)
     {
-        Fluid fluid = waterCollector.getTankWater().getFluid();
         if(fluid == Fluids.EMPTY)
         {
             return;
         }
         
-        Sprite sprite = FluidRenderHandlerRegistry.INSTANCE.get(fluid).getFluidSprites(waterCollector.getWorld(), waterCollector.getPos(), fluid.getDefaultState())[0];
-        int waterColor = FluidRenderHandlerRegistry.INSTANCE.get(fluid).getFluidColor(waterCollector.getWorld(), waterCollector.getPos(), fluid.getDefaultState());
+        Sprite sprite = FluidRenderHandlerRegistry.INSTANCE.get(fluid).getFluidSprites(waterFilter.getWorld(), waterFilter.getPos(), fluid.getDefaultState())[0];
+        int waterColor = FluidRenderHandlerRegistry.INSTANCE.get(fluid).getFluidColor(waterFilter.getWorld(), waterFilter.getPos(), fluid.getDefaultState());
         
         float minU = sprite.getMinU();
         float maxU = Math.min(minU + (sprite.getMaxU() - minU) * width, sprite.getMaxU());
@@ -64,7 +92,7 @@ public class WaterCollectorRenderer extends BlockEntityRenderer<WaterCollectorBl
         float red = (float)(waterColor >> 16 & 255) / 255.0F;
         float green = (float)(waterColor >> 8 & 255) / 255.0F;
         float blue = (float)(waterColor & 255) / 255.0F;
-        int light = getCombinedLight(waterCollector.getWorld(), waterCollector.getPos());
+        int light = getCombinedLight(waterFilter.getWorld(), waterFilter.getPos());
         
         VertexConsumer buffer = vertexConsumers.getBuffer(RenderLayer.getTranslucent());
         Matrix4f matrix = matrixStack.peek().getModel();

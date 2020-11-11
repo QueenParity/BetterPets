@@ -2,6 +2,7 @@ package com.kingparity.betterpets.core;
 
 import com.kingparity.betterpets.BetterPets;
 import com.kingparity.betterpets.block.WaterCollectorBlock;
+import com.kingparity.betterpets.block.WaterFilterBlock;
 import com.kingparity.betterpets.names.BlockNames;
 import com.kingparity.betterpets.util.Reference;
 import net.fabricmc.api.ModInitializer;
@@ -36,6 +37,23 @@ public class ModBlocks implements ModInitializer
     public static Block WATER_COLLECTOR_STRIPPED_ACACIA;
     public static Block WATER_COLLECTOR_STRIPPED_DARK_OAK;
     
+    public static Block WATER_FILTER_OAK;
+    public static Block WATER_FILTER_SPRUCE;
+    public static Block WATER_FILTER_BIRCH;
+    public static Block WATER_FILTER_JUNGLE;
+    public static Block WATER_FILTER_ACACIA;
+    public static Block WATER_FILTER_DARK_OAK;
+    public static Block WATER_FILTER_STONE;
+    public static Block WATER_FILTER_GRANITE;
+    public static Block WATER_FILTER_DIORITE;
+    public static Block WATER_FILTER_ANDESITE;
+    public static Block WATER_FILTER_STRIPPED_OAK;
+    public static Block WATER_FILTER_STRIPPED_SPRUCE;
+    public static Block WATER_FILTER_STRIPPED_BIRCH;
+    public static Block WATER_FILTER_STRIPPED_JUNGLE;
+    public static Block WATER_FILTER_STRIPPED_ACACIA;
+    public static Block WATER_FILTER_STRIPPED_DARK_OAK;
+    
     private static <T extends Block> T register(String name, T block)
     {
         Registry.register(Registry.ITEM, new Identifier(Reference.ID, name), new BlockItem(block, new FabricItemSettings().group(BetterPets.GROUP)));
@@ -61,5 +79,22 @@ public class ModBlocks implements ModInitializer
         WATER_COLLECTOR_STRIPPED_JUNGLE = register(BlockNames.WATER_COLLECTOR_STRIPPED_JUNGLE, new WaterCollectorBlock(WOOD));
         WATER_COLLECTOR_STRIPPED_ACACIA = register(BlockNames.WATER_COLLECTOR_STRIPPED_ACACIA, new WaterCollectorBlock(WOOD));
         WATER_COLLECTOR_STRIPPED_DARK_OAK = register(BlockNames.WATER_COLLECTOR_STRIPPED_DARK_OAK, new WaterCollectorBlock(WOOD));
+    
+        WATER_FILTER_OAK = register(BlockNames.WATER_FILTER_OAK, new WaterFilterBlock(WOOD));
+        WATER_FILTER_SPRUCE = register(BlockNames.WATER_FILTER_SPRUCE, new WaterFilterBlock(WOOD));
+        WATER_FILTER_BIRCH = register(BlockNames.WATER_FILTER_BIRCH, new WaterFilterBlock(WOOD));
+        WATER_FILTER_JUNGLE = register(BlockNames.WATER_FILTER_JUNGLE, new WaterFilterBlock(WOOD));
+        WATER_FILTER_ACACIA = register(BlockNames.WATER_FILTER_ACACIA, new WaterFilterBlock(WOOD));
+        WATER_FILTER_DARK_OAK = register(BlockNames.WATER_FILTER_DARK_OAK, new WaterFilterBlock(WOOD));
+        WATER_FILTER_STONE = register(BlockNames.WATER_FILTER_STONE, new WaterFilterBlock(STONE));
+        WATER_FILTER_GRANITE = register(BlockNames.WATER_FILTER_GRANITE, new WaterFilterBlock(STONE));
+        WATER_FILTER_DIORITE = register(BlockNames.WATER_FILTER_DIORITE, new WaterFilterBlock(STONE));
+        WATER_FILTER_ANDESITE = register(BlockNames.WATER_FILTER_ANDESITE, new WaterFilterBlock(STONE));
+        WATER_FILTER_STRIPPED_OAK = register(BlockNames.WATER_FILTER_STRIPPED_OAK, new WaterFilterBlock(WOOD));
+        WATER_FILTER_STRIPPED_SPRUCE = register(BlockNames.WATER_FILTER_STRIPPED_SPRUCE, new WaterFilterBlock(WOOD));
+        WATER_FILTER_STRIPPED_BIRCH = register(BlockNames.WATER_FILTER_STRIPPED_BIRCH, new WaterFilterBlock(WOOD));
+        WATER_FILTER_STRIPPED_JUNGLE = register(BlockNames.WATER_FILTER_STRIPPED_JUNGLE, new WaterFilterBlock(WOOD));
+        WATER_FILTER_STRIPPED_ACACIA = register(BlockNames.WATER_FILTER_STRIPPED_ACACIA, new WaterFilterBlock(WOOD));
+        WATER_FILTER_STRIPPED_DARK_OAK = register(BlockNames.WATER_FILTER_STRIPPED_DARK_OAK, new WaterFilterBlock(WOOD));
     }
 }

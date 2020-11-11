@@ -12,6 +12,7 @@ import net.minecraft.util.registry.Registry;
 public class ModItems implements ModInitializer
 {
     public static Item WATER_FILTER_FABRIC;
+    public static Item WATER_FILTER_FABRIC_DISPLAY;
     
     private static Item register(String name)
     {
@@ -27,5 +28,6 @@ public class ModItems implements ModInitializer
     public void onInitialize()
     {
         WATER_FILTER_FABRIC = register(ItemNames.WATER_FILTER_FABRIC);
+        WATER_FILTER_FABRIC_DISPLAY = register(ItemNames.WATER_FILTER_FABRIC_DISPLAY);
     }
 }

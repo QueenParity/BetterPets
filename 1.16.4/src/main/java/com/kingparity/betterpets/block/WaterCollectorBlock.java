@@ -3,13 +3,11 @@ package com.kingparity.betterpets.block;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.kingparity.betterpets.block.entity.WaterCollectorBlockEntity;
-import com.kingparity.betterpets.fluidtank.FluidStack;
 import com.kingparity.betterpets.util.VoxelShapeHelper;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
@@ -166,21 +164,16 @@ public class WaterCollectorBlock extends HorizontalFacingBlock implements BlockE
         {
             if(!world.isClient)
             {
-                if(blockEntity.getStack(0).getBuckets() < 13)
+                if(blockEntity.getTankWater().getBuckets() < blockEntity.getTankWater().getCapacity())
                 {
                     if(!player.abilities.creativeMode)
                     {
                         player.setStackInHand(hand, new ItemStack(Items.BUCKET));
                     }
-        
-                    if(blockEntity.getStack(0).isEmpty())
-                    {
-                        blockEntity.setStack(0, new FluidStack(Fluids.WATER, 0));
-                    }
-                    blockEntity.getStack(0).increment(1);
+                    
+                    blockEntity.getTankWater().fill(1000, false);
                     world.playSound((PlayerEntity) null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 }
-                blockEntity.sync();
             }
             
             return ActionResult.success(world.isClient);
@@ -189,7 +182,7 @@ public class WaterCollectorBlock extends HorizontalFacingBlock implements BlockE
         {
             if(!world.isClient)
             {
-                if(!blockEntity.getStack(0).isEmpty())
+                if(!blockEntity.getTankWater().isEmpty())
                 {
                     if(!player.abilities.creativeMode)
                     {
@@ -203,14 +196,9 @@ public class WaterCollectorBlock extends HorizontalFacingBlock implements BlockE
                             player.dropItem(new ItemStack(Items.WATER_BUCKET), false);
                         }
                     }
-                    blockEntity.getStack(0).decrement(1);
-                    if(blockEntity.getStack(0).getBuckets() <= 0)
-                    {
-                        blockEntity.removeStack(0);
-                    }
+                    blockEntity.getTankWater().drain(1000, false);
                     world.playSound((PlayerEntity) null, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 }
-                blockEntity.sync();
             }
             
             return ActionResult.success(world.isClient);

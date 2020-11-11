@@ -7,6 +7,7 @@ public class ItemNames
     public static final String PET_FOOD = "pet_food";
     public static final String CANTEEN = "canteen";
     public static final String WATER_FILTER_FABRIC = "water_filter_fabric";
+    public static final String WATER_FILTER_FABRIC_DISPLAY = "water_filter_fabric_display";
     public static final String BETTER_WOLF_SPAWN_EGG = "better_wolf_spawn_egg";
     public static final String OAK_WATER_FILTER = "oak_water_filter";
     public static final String DRINK_BOTTLE = "drink_bottle";
