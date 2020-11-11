@@ -41,9 +41,9 @@ public class WaterFilterRenderer extends BlockEntityRenderer<WaterFilterBlockEnt
             matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(direction.getHorizontal() * -90F - 90F));
             matrixStack.translate(-0.5, -0.5, -0.5);
     
-            matrixStack.translate(9.5 * 0.0625, 2.5 * 0.0625, 8 * 0.0625);
+            matrixStack.translate(9.5 * 0.0625, 6.5 * 0.0625, 8 * 0.0625);
             ItemStack stack = new ItemStack(ModItems.WATER_FILTER_FABRIC_DISPLAY, 1);
-            MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.FIXED, light, overlay, matrixStack, vertexConsumers);
+            MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.NONE, light, overlay, matrixStack, vertexConsumers);
         }
         matrixStack.pop();
         
