@@ -27,19 +27,19 @@
 /1.1*.*/*.iml
 /1.1*.*/.idea
 
-/1.16.4/.idea/
-/1.16.4/*.iml
-/1.16.4/*.ipr
-/1.16.4/*.iws
+/1.16.4-Fabric/.idea/
+/1.16.4-Fabric/*.iml
+/1.16.4-Fabric/*.ipr
+/1.16.4-Fabric/*.iws
 
 # gradle
 /1.1*.*/build
 /1.1*.*/.gradle
 
-/1.16.4/.gradle/
-/1.16.4/build/
-/1.16.4/out/
-/1.16.4/classes/
+/1.16.4-Fabric/.gradle/
+/1.16.4-Fabric/build/
+/1.16.4-Fabric/out/
+/1.16.4-Fabric/classes/
 
 # other
 /1.1*.*/eclipse
@@ -50,4 +50,4 @@
 
 # fabric
 
-/1.16.4/run/
+/1.16.4-Fabric/run/
