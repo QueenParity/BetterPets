@@ -3,16 +3,28 @@ package com.kingparity.betterpets.block;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.kingparity.betterpets.tileentity.WaterFilterTileEntity;
+import com.kingparity.betterpets.util.TileEntityUtil;
 import com.kingparity.betterpets.util.VoxelShapeHelper;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,6 +119,40 @@ public class WaterFilterBlock extends RotatedBlockObject
     public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context)
     {
         return SHAPES.get(state);
+    }
+    
+    @Override
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result)
+    {
+        if(!world.isRemote)
+        {
+            TileEntity tileEntity = world.getTileEntity(pos);
+            if(!FluidUtil.interactWithFluidHandler(player, hand, world, pos, result.getFace()))
+            {
+                if(tileEntity instanceof INamedContainerProvider)
+                {
+                    NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, pos);
+                }
+            }
+            TileEntityUtil.sendUpdatePacket(tileEntity, (ServerPlayerEntity) player);
+            return ActionResultType.SUCCESS;
+        }
+        return ActionResultType.SUCCESS;
+    }
+    
+    @Override
+    public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)
+    {
+        if(state.getBlock() != newState.getBlock())
+        {
+            TileEntity tileentity = world.getTileEntity(pos);
+            if(tileentity instanceof IInventory)
+            {
+                InventoryHelper.dropInventoryItems(world, pos, (IInventory) tileentity);
+                world.updateComparatorOutputLevel(pos, this);
+            }
+            super.onReplaced(state, world, pos, newState, isMoving);
+        }
     }
     
     @Override

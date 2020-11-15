@@ -1,7 +1,7 @@
 package com.kingparity.betterpets.client.render.tileentity;
 
-import com.kingparity.betterpets.block.WaterCollectorBlock;
-import com.kingparity.betterpets.tileentity.WaterCollectorTileEntity;
+import com.kingparity.betterpets.block.FluidPipeBlock;
+import com.kingparity.betterpets.tileentity.FluidPipeTileEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -19,30 +19,30 @@ import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.IBlockDisplayReader;
 import net.minecraftforge.client.ForgeHooksClient;
 
-public class WaterCollectorRenderer extends TileEntityRenderer<WaterCollectorTileEntity>
+public class FluidPipeRenderer extends TileEntityRenderer<FluidPipeTileEntity>
 {
-    public WaterCollectorRenderer(TileEntityRendererDispatcher dispatcher)
+    public FluidPipeRenderer(TileEntityRendererDispatcher dispatcher)
     {
         super(dispatcher);
     }
     
     @Override
-    public void render(WaterCollectorTileEntity tileEntity, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer typeBuffer, int light, int overlay)
+    public void render(FluidPipeTileEntity tileEntity, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer typeBuffer, int light, int overlay)
     {
         matrixStack.push();
         matrixStack.translate(0.5, 0.5, 0.5);
-        Direction direction = tileEntity.getBlockState().get(WaterCollectorBlock.DIRECTION);
+        Direction direction = tileEntity.getBlockState().get(FluidPipeBlock.DIRECTION);
         matrixStack.rotate(Vector3f.YP.rotationDegrees(direction.getHorizontalIndex() * -90F - 90F));
         matrixStack.translate(-0.5, -0.5, -0.5);
-        float height = (float) (14.0 * (tileEntity.getFluidLevel() / (double) tileEntity.getCapacity()));
+        float height = (float) (500.0 * (tileEntity.getFluidLevel() / (double) tileEntity.getCapacity()));
         if(height > 0)
         {
-            this.drawFluid(tileEntity, matrixStack, typeBuffer, 2.01F * 0.0625F, 8.01F * 0.0625F, 2.01F * 0.0625F, (12 - 0.02F) * 0.0625F, height * 0.0625F, (12 - 0.02F) * 0.0625F);
+            this.drawFluid(tileEntity, matrixStack, typeBuffer, 4.01F * 0.0625F, 12.01F * 0.0625F, 4.01F * 0.0625F, (8 - 0.02F) * 0.0625F, height * 0.0625F, (8 - 0.02F) * 0.0625F);
         }
         matrixStack.pop();
     }
     
-    private void drawFluid(WaterCollectorTileEntity te, MatrixStack matrixStack, IRenderTypeBuffer typeBuffer, float x, float y, float z, float width, float height, float depth)
+    private void drawFluid(FluidPipeTileEntity te, MatrixStack matrixStack, IRenderTypeBuffer typeBuffer, float x, float y, float z, float width, float height, float depth)
     {
         Fluid fluid = te.getFluidStackTank().getFluid();
         if(fluid == Fluids.EMPTY) return;

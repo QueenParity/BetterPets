@@ -3,16 +3,24 @@ package com.kingparity.betterpets.block;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.kingparity.betterpets.tileentity.WaterCollectorTileEntity;
+import com.kingparity.betterpets.util.TileEntityUtil;
 import com.kingparity.betterpets.util.VoxelShapeHelper;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,6 +135,18 @@ public class WaterCollectorBlock extends RotatedBlockObject
     public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context)
     {
         return SHAPES.get(state);
+    }
+    
+    @Override
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result)
+    {
+        if(!world.isRemote)
+        {
+            FluidUtil.interactWithFluidHandler(player, hand, world, pos, result.getFace());
+            TileEntityUtil.sendUpdatePacket(world.getTileEntity(pos), (ServerPlayerEntity) player);
+            return ActionResultType.SUCCESS;
+        }
+        return ActionResultType.SUCCESS;
     }
     
     @Override

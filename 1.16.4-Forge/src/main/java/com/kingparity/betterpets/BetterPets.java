@@ -1,8 +1,6 @@
 package com.kingparity.betterpets;
 
-import com.kingparity.betterpets.init.ModBlocks;
-import com.kingparity.betterpets.init.ModItems;
-import com.kingparity.betterpets.init.ModTileEntities;
+import com.kingparity.betterpets.init.*;
 import com.kingparity.betterpets.proxy.ClientProxy;
 import com.kingparity.betterpets.proxy.Proxy;
 import com.kingparity.betterpets.proxy.ServerProxy;
@@ -39,6 +37,8 @@ public class BetterPets
         ModBlocks.BLOCKS.register(bus);
         ModItems.ITEMS.register(bus);
         ModTileEntities.TILE_ENTITY_TYPES.register(bus);
+        ModContainers.CONTAINER_TYPES.register(bus);
+        ModFluids.FLUIDS.register(bus);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onCommonSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientSetup);
     }

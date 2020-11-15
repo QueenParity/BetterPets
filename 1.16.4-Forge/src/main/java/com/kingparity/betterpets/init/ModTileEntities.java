@@ -1,5 +1,7 @@
 package com.kingparity.betterpets.init;
 
+import com.kingparity.betterpets.tileentity.FluidPipeTileEntity;
+import com.kingparity.betterpets.tileentity.FluidPumpTileEntity;
 import com.kingparity.betterpets.tileentity.WaterCollectorTileEntity;
 import com.kingparity.betterpets.tileentity.WaterFilterTileEntity;
 import com.kingparity.betterpets.util.Reference;
@@ -18,12 +20,22 @@ public class ModTileEntities
     
     public static final RegistryObject<TileEntityType<WaterCollectorTileEntity>> WATER_COLLECTOR = register("water_collector", WaterCollectorTileEntity::new, () -> new Block[]
         {
-            ModBlocks.OAK_WATER_COLLECTOR.get()
+            ModBlocks.WATER_COLLECTOR.get()
         });
     
     public static final RegistryObject<TileEntityType<WaterFilterTileEntity>> WATER_FILTER = register("water_filter", WaterFilterTileEntity::new, () -> new Block[]
         {
-            ModBlocks.OAK_WATER_FILTER.get()
+            ModBlocks.WATER_FILTER.get()
+        });
+    
+    public static final RegistryObject<TileEntityType<FluidPipeTileEntity>> FLUID_PIPE = register("fluid_pipe", FluidPipeTileEntity::new, () -> new Block[]
+        {
+            ModBlocks.FLUID_PIPE.get()
+        });
+    
+    public static final RegistryObject<TileEntityType<FluidPumpTileEntity>> FLUID_PUMP = register("fluid_pump", FluidPumpTileEntity::new, () -> new Block[]
+        {
+            ModBlocks.FLUID_PUMP.get()
         });
     
     private static <T extends TileEntity> RegistryObject<TileEntityType<T>> register(String id, Supplier<T> factoryIn, Supplier<Block[]> validBlocksSupplier)

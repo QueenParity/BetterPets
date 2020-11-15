@@ -3,7 +3,9 @@
     "textures": {
         "polished_andesite": "minecraft:block/polished_andesite",
         "stone": "minecraft:block/stone",
-		"particle": "minecraft:block/stone"
+		"particle": "minecraft:block/stone",
+        "top": "minecraft:block/oak_log",
+        "legs": "minecraft:block/stripped_oak_log"
     },
     "display": {
         "gui": {

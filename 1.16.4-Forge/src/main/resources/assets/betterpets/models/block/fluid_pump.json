@@ -1,0 +1,79 @@
+{
+    "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
+    "textures": {
+        "gray_concrete": "minecraft:block/gray_concrete",
+        "black_concrete": "minecraft:block/black_concrete",
+        "white_concrete": "minecraft:block/white_concrete"
+    },
+    "display": {
+        "gui": {
+            "rotation": [ 30, 45, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 0.625, 0.625, 0.625 ]
+        },
+        "ground": {
+            "rotation": [ 0, 0, 0 ],
+            "translation": [ 0, 3, 0 ],
+            "scale": [ 0.25, 0.25, 0.25 ]
+        },
+        "fixed": {
+            "rotation": [ 0, 180, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 0.5, 0.5, 0.5 ]
+        },
+        "head": {
+            "rotation": [ 0, 0, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 1, 1, 1 ]
+        },
+        "firstperson_righthand": {
+            "rotation": [ 0, 315, 0 ],
+            "translation": [ 0, 2.5, 0 ],
+            "scale": [ 0.4, 0.4, 0.4 ]
+        },
+        "thirdperson_righthand": {
+            "rotation": [ 75, 315, 0 ],
+            "translation": [ 0, 2.5, 0 ],
+            "scale": [ 0.375, 0.375, 0.375 ]
+        }
+    },
+    "elements": [
+        {
+            "name": "Suction",
+            "from": [ 3, 3, 13 ],
+            "to": [ 13, 13, 16 ],
+            "faces": {
+                "north": { "texture": "#black_concrete", "uv": [ 0, 0, 10, 10 ] },
+                "east": { "texture": "#black_concrete", "uv": [ 0, 0, 3, 10 ] },
+                "south": { "texture": "#black_concrete", "uv": [ 0, 0, 10, 10 ] },
+                "west": { "texture": "#black_concrete", "uv": [ 0, 0, 3, 10 ] },
+                "up": { "texture": "#black_concrete", "uv": [ 0, 0, 10, 3 ] },
+                "down": { "texture": "#black_concrete", "uv": [ 0, 0, 10, 3 ] }
+            }
+        },
+        {
+            "name": "Pipe",
+            "from": [ 5, 5, 5 ],
+            "to": [ 11, 11, 11 ],
+            "faces": {
+                "north": { "texture": "#white_concrete", "uv": [ 0, 0, 6, 6 ] },
+                "east": { "texture": "#white_concrete", "uv": [ 0, 0, 6, 6 ] },
+                "west": { "texture": "#white_concrete", "uv": [ 0, 0, 6, 6 ] },
+                "up": { "texture": "#white_concrete", "uv": [ 0, 0, 6, 6 ] },
+                "down": { "texture": "#white_concrete", "uv": [ 0, 0, 6, 6 ] }
+            }
+        },
+        {
+            "name": "Ridge",
+            "from": [ 4, 4, 11 ],
+            "to": [ 12, 12, 13 ],
+            "faces": {
+                "north": { "texture": "#gray_concrete", "uv": [ 0, 0, 8, 8 ] },
+                "east": { "texture": "#gray_concrete", "uv": [ 0, 0, 2, 8 ] },
+                "west": { "texture": "#gray_concrete", "uv": [ 0, 0, 2, 8 ] },
+                "up": { "texture": "#gray_concrete", "uv": [ 0, 0, 8, 2 ] },
+                "down": { "texture": "#gray_concrete", "uv": [ 0, 0, 8, 2 ] }
+            }
+        }
+    ]
+}

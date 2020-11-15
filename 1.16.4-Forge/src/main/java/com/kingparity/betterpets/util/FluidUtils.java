@@ -87,11 +87,11 @@ public class FluidUtils
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void drawFluidTankInGUI(FluidStack fluid, double x, double y, double percent, int height)
+    public static void drawFluidTankInGUI(FluidStack fluid, double x, double y, double percent, int height, int color)
     {
         if(fluid == null || fluid.isEmpty())
             return;
-
+        
         TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(fluid.getFluid().getAttributes().getStillTexture());
         if(sprite != null)
         {
@@ -110,22 +110,26 @@ public class FluidUtils
             {
                 double subHeight = Math.min(16.0, tankLevel - (16.0 * i));
                 double offsetY = height - 16.0 * i - subHeight;
-                drawQuad(x, y + offsetY, 16, subHeight, minU, (float) (maxV - deltaV * (subHeight / 16.0)), maxU, maxV);
+                drawQuad(x, y + offsetY, 16, subHeight, minU, (float) (maxV - deltaV * (subHeight / 16.0)), maxU, maxV, color);
             }
             RenderSystem.disableBlend();
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    private static void drawQuad(double x, double y, double width, double height, float minU, float minV, float maxU, float maxV)
+    private static void drawQuad(double x, double y, double width, double height, float minU, float minV, float maxU, float maxV, int color)
     {
+        float red = (float) (color >> 16 & 255) / 255.0F;
+        float green = (float) (color >> 8 & 255) / 255.0F;
+        float blue = (float) (color & 255) / 255.0F;
+        
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        buffer.pos(x, y + height, 0).tex(minU, maxV).endVertex();
-        buffer.pos(x + width, y + height, 0).tex(maxU, maxV).endVertex();
-        buffer.pos(x + width, y, 0).tex(maxU, minV).endVertex();
-        buffer.pos(x, y, 0).tex(minU, minV).endVertex();
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX);
+        buffer.pos(x, y + height, 0).color(red, green, blue, 1.0F).tex(minU, maxV).normal(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(x + width, y + height, 0).color(red, green, blue, 1.0F).tex(maxU, maxV).normal(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(x + width, y, 0).color(red, green, blue, 1.0F).tex(maxU, minV).normal(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(x, y, 0).color(red, green, blue, 1.0F).tex(minU, minV).normal(0.0F, 1.0F, 0.0F).endVertex();
         tessellator.draw();
     }
 }

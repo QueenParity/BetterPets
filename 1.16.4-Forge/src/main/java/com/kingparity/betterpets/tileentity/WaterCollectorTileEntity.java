@@ -8,11 +8,9 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class WaterCollectorTileEntity extends TileFluidHandlerSynced implements ITickableTileEntity
 {
-    
-    
     public WaterCollectorTileEntity()
     {
-        super(ModTileEntities.WATER_COLLECTOR.get(), 14000);
+        super(ModTileEntities.WATER_COLLECTOR.get(), 14000, stack -> stack.getFluid() == Fluids.WATER);
     }
     
     @Override
