@@ -49,7 +49,7 @@ public class TileFluidHandlerSynced extends TileFluidHandler
     
     public int getCapacity()
     {
-        return 14000;
+        return this.tank.getCapacity();
     }
     
     public int getFluidLevel()

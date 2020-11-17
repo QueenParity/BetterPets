@@ -34,7 +34,7 @@ public class FluidPipeRenderer extends TileEntityRenderer<FluidPipeTileEntity>
         Direction direction = tileEntity.getBlockState().get(FluidPipeBlock.DIRECTION);
         matrixStack.rotate(Vector3f.YP.rotationDegrees(direction.getHorizontalIndex() * -90F - 90F));
         matrixStack.translate(-0.5, -0.5, -0.5);
-        float height = (float) (500.0 * (tileEntity.getFluidLevel() / (double) tileEntity.getCapacity()));
+        float height = (float) (20.0 * (tileEntity.getFluidLevel() / (double) tileEntity.getCapacity()));
         if(height > 0)
         {
             this.drawFluid(tileEntity, matrixStack, typeBuffer, 4.01F * 0.0625F, 12.01F * 0.0625F, 4.01F * 0.0625F, (8 - 0.02F) * 0.0625F, height * 0.0625F, (8 - 0.02F) * 0.0625F);

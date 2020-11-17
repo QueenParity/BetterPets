@@ -53,16 +53,16 @@ public class FluidPumpBlock extends Block
     
     private ImmutableMap<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states)
     {
-        final VoxelShape[] SUCTION = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(4, 4, 13, 12, 12, 16), Direction.SOUTH));
-        final VoxelShape[] RIDGE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(5, 5, 11, 11, 11, 13), Direction.SOUTH));
-        final VoxelShape NODE = Block.makeCuboidShape(6, 6, 6, 10, 10, 11);
-    
-        final VoxelShape SUCTION_UP = Block.makeCuboidShape(4, 0, 4, 12, 3, 12);
-        final VoxelShape SUCTION_DOWN = Block.makeCuboidShape(4, 13, 4, 12, 16, 12);
-    
-        final VoxelShape RIDGE_UP = Block.makeCuboidShape(5, 0, 5, 11, 2, 11);
-        final VoxelShape RIDGE_DOWN = Block.makeCuboidShape(5, 11, 5, 11, 3, 11);
-    
+        final VoxelShape[] SUCTION = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(3, 3, 13, 13, 13, 16), Direction.SOUTH));
+        final VoxelShape[] RIDGE = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(4, 4, 11, 12, 12, 13), Direction.SOUTH));
+        final VoxelShape NODE = Block.makeCuboidShape(5, 5, 5, 11, 11, 11);
+        
+        final VoxelShape SUCTION_UP = Block.makeCuboidShape(3, 0, 3, 13, 3, 13);
+        final VoxelShape SUCTION_DOWN = Block.makeCuboidShape(3, 13, 3, 13, 16, 13);
+        
+        final VoxelShape RIDGE_UP = Block.makeCuboidShape(4, 3, 4, 12, 5, 12);
+        final VoxelShape RIDGE_DOWN = Block.makeCuboidShape(4, 11, 4, 12, 13, 12);
+        
         final VoxelShape PIPE_UP = Block.makeCuboidShape(6, 11, 6, 10, 16, 10);
         final VoxelShape PIPE_DOWN = Block.makeCuboidShape(6, 0, 6, 10, 5, 10);
         final VoxelShape PIPE_HORIZONTAL = Block.makeCuboidShape(11, 6, 6, 16, 10, 10);

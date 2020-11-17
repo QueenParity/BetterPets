@@ -2,7 +2,6 @@ package com.kingparity.betterpets.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.kingparity.betterpets.init.ModBlocks;
 import com.kingparity.betterpets.tileentity.FluidPipeTileEntity;
 import com.kingparity.betterpets.util.VoxelShapeHelper;
 import net.minecraft.block.AbstractBlock;
@@ -20,6 +19,8 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,17 +115,17 @@ public class FluidPipeBlock extends Block
     @Override
     public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState neighborState, IWorld world, BlockPos pos, BlockPos neighborPos)
     {
-        return this.getPipeState(state, world, pos, state.get(DIRECTION));
+        return this.getPipeState(state, world, pos);
     }
     
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context)
     {
         BlockState state = super.getStateForPlacement(context).with(DIRECTION, context.getFace().getOpposite());
-        return this.getPipeState(state, context.getWorld(), context.getPos(), context.getFace().getOpposite());
+        return this.getPipeState(state, context.getWorld(), context.getPos());
     }
     
-    protected BlockState getPipeState(BlockState state, IWorld world, BlockPos pos, Direction originalFacing)
+    protected BlockState getPipeState(BlockState state, IWorld world, BlockPos pos)
     {
         for(Direction facing : Direction.values())
         {
@@ -132,13 +133,13 @@ public class FluidPipeBlock extends Block
             
             BlockPos adjacentPos = pos.offset(facing);
             BlockState adjacentState = world.getBlockState(adjacentPos);
-            if(adjacentState.getBlock() == ModBlocks.FLUID_PIPE.get())
+            if(adjacentState.hasTileEntity())
             {
-                state = state.with(CONNECTED_PIPES[facing.getIndex()], true);
-            }
-            else if(adjacentState.getBlock() == ModBlocks.FLUID_PUMP.get())
-            {
-                state = state.with(CONNECTED_PIPES[facing.getIndex()], true);
+                IFluidHandler fluidHandler = world.getTileEntity(adjacentPos).getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()).orElse(null);
+                if(fluidHandler != null)
+                {
+                    state = state.with(CONNECTED_PIPES[facing.getIndex()], true);
+                }
             }
         }
         return state;

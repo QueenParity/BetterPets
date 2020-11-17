@@ -1,10 +1,7 @@
 package com.kingparity.betterpets.init;
 
 import com.kingparity.betterpets.BetterPets;
-import com.kingparity.betterpets.block.FluidPipeBlock;
-import com.kingparity.betterpets.block.FluidPumpBlock;
-import com.kingparity.betterpets.block.WaterCollectorBlock;
-import com.kingparity.betterpets.block.WaterFilterBlock;
+import com.kingparity.betterpets.block.*;
 import com.kingparity.betterpets.util.Reference;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -33,6 +30,8 @@ public class ModBlocks
     
     public static final RegistryObject<Block> FLUID_PIPE = register("fluid_pipe", new FluidPipeBlock(IRON));
     public static final RegistryObject<Block> FLUID_PUMP = register("fluid_pump", new FluidPumpBlock(IRON));
+    
+    public static final RegistryObject<Block> TANK = register("tank", new TankBlock(IRON));
     
     public static final RegistryObject<FlowingFluidBlock> FILTERED_WATER = register("filtered_water", new FlowingFluidBlock(ModFluids.FLOWING_FILTERED_WATER, AbstractBlock.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops()), null);
     

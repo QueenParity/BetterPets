@@ -1,7 +1,6 @@
 package com.kingparity.betterpets.client.render.tileentity;
 
-import com.kingparity.betterpets.block.FluidPumpBlock;
-import com.kingparity.betterpets.tileentity.FluidPumpTileEntity;
+import com.kingparity.betterpets.tileentity.TankTileEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -12,41 +11,36 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.util.Direction;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.IBlockDisplayReader;
 import net.minecraftforge.client.ForgeHooksClient;
 
-public class FluidPumpRenderer extends TileEntityRenderer<FluidPumpTileEntity>
+public class TankRenderer extends TileEntityRenderer<TankTileEntity>
 {
-    public FluidPumpRenderer(TileEntityRendererDispatcher dispatcher)
+    public TankRenderer(TileEntityRendererDispatcher dispatcher)
     {
         super(dispatcher);
     }
     
     @Override
-    public void render(FluidPumpTileEntity tileEntity, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer typeBuffer, int light, int overlay)
+    public void render(TankTileEntity tileEntity, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer typeBuffer, int light, int overlay)
     {
         matrixStack.push();
-        matrixStack.translate(0.5, 0.5, 0.5);
-        Direction direction = tileEntity.getBlockState().get(FluidPumpBlock.DIRECTION);
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(direction.getHorizontalIndex() * -90F - 90F));
-        matrixStack.translate(-0.5, -0.5, -0.5);
-        float height = (float) (20.0 * (tileEntity.getFluidLevel() / (double) tileEntity.getCapacity()));
+        float height = (float) (16.0 * (tileEntity.getFluidLevel() / (double) tileEntity.getCapacity()));
         if(height > 0)
         {
-            this.drawFluid(tileEntity, matrixStack, typeBuffer, 4.01F * 0.0625F, 12.01F * 0.0625F, 4.01F * 0.0625F, (8 - 0.02F) * 0.0625F, height * 0.0625F, (8 - 0.02F) * 0.0625F);
+            this.drawFluid(tileEntity, matrixStack, typeBuffer, 2.01F * 0.0625F, 0.0F, 2.01F * 0.0625F, (12 - 0.02F) * 0.0625F, height * 0.0625F, (12 - 0.02F) * 0.0625F);
         }
         matrixStack.pop();
     }
     
-    private void drawFluid(FluidPumpTileEntity te, MatrixStack matrixStack, IRenderTypeBuffer typeBuffer, float x, float y, float z, float width, float height, float depth)
+    private void drawFluid(TankTileEntity te, MatrixStack matrixStack, IRenderTypeBuffer typeBuffer, float x, float y, float z, float width, float height, float depth)
     {
         Fluid fluid = te.getFluidStackTank().getFluid();
         if(fluid == Fluids.EMPTY) return;
-        
+    
         TextureAtlasSprite sprite = ForgeHooksClient.getFluidSprites(te.getWorld(), te.getPos(), fluid.getDefaultState())[0];
         float minU = sprite.getMinU();
         float maxU = Math.min(minU + (sprite.getMaxU() - minU) * width, sprite.getMaxU());
@@ -57,7 +51,7 @@ public class FluidPumpRenderer extends TileEntityRenderer<FluidPumpTileEntity>
         float green = (float) (waterColor >> 8 & 255) / 255.0F;
         float blue = (float) (waterColor & 255) / 255.0F;
         int light = this.getCombinedLight(te.getWorld(), te.getPos());
-        
+    
         IVertexBuilder buffer = typeBuffer.getBuffer(RenderType.getTranslucent());
         Matrix4f matrix = matrixStack.getLast().getMatrix();
     
@@ -88,18 +82,41 @@ public class FluidPumpRenderer extends TileEntityRenderer<FluidPumpTileEntity>
         buffer.pos(matrix, x, y, z + depth).color(red * 0.85F, green * 0.85F, blue * 0.85F, 1.0F).tex(maxU, maxV).lightmap(light).normal(0.0F, 1.0F, 0.0F).endVertex();
     
         maxV = Math.min(minV + (sprite.getMaxV() - minV) * width, sprite.getMaxV());
-    
-        //top
-        buffer.pos(matrix, x, y + height, z).color(red, green, blue, 1.0F).tex(maxU, minV).lightmap(light).normal(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.pos(matrix, x, y + height, z + depth).color(red, green, blue, 1.0F).tex(minU, minV).lightmap(light).normal(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.pos(matrix, x + width, y + height, z + depth).color(red, green, blue, 1.0F).tex(minU, maxV).lightmap(light).normal(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.pos(matrix, x + width, y + height, z).color(red, green, blue, 1.0F).tex(maxU, maxV).lightmap(light).normal(0.0F, 1.0F, 0.0F).endVertex();
-    
-        //bottom
-        buffer.pos(matrix, x + width, y, z + depth).color(red, green, blue, 1.0F).tex(maxU, minV).lightmap(light).normal(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.pos(matrix, x + width, y, z).color(red, green, blue, 1.0F).tex(minU, minV).lightmap(light).normal(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.pos(matrix, x, y, z).color(red, green, blue, 1.0F).tex(minU, maxV).lightmap(light).normal(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.pos(matrix, x, y, z + depth).color(red, green, blue, 1.0F).tex(maxU, maxV).lightmap(light).normal(0.0F, 1.0F, 0.0F).endVertex();
+        
+        boolean renderTop = false;
+        
+        TileEntity tileEntityAbove = te.getWorld().getTileEntity(te.getPos().up());
+        TankTileEntity tankAbove = null;
+        if(tileEntityAbove instanceof TankTileEntity)
+        {
+            tankAbove = (TankTileEntity) tileEntityAbove;
+        }
+        
+        if(te.getFluidLevel() < te.getCapacity())
+        {
+            renderTop = true;
+        }
+        else if(tankAbove != null)
+        {
+            if(tankAbove.getFluidLevel() == 0)
+            {
+                renderTop = true;
+            }
+        }
+        
+        if(te.getFluidLevel() == te.getCapacity() && tankAbove == null)
+        {
+            renderTop = false;
+        }
+        
+        if(renderTop)
+        {
+            //top
+            buffer.pos(matrix, x, y + height, z).color(red, green, blue, 1.0F).tex(maxU, minV).lightmap(light).normal(0.0F, 1.0F, 0.0F).endVertex();
+            buffer.pos(matrix, x, y + height, z + depth).color(red, green, blue, 1.0F).tex(minU, minV).lightmap(light).normal(0.0F, 1.0F, 0.0F).endVertex();
+            buffer.pos(matrix, x + width, y + height, z + depth).color(red, green, blue, 1.0F).tex(minU, maxV).lightmap(light).normal(0.0F, 1.0F, 0.0F).endVertex();
+            buffer.pos(matrix, x + width, y + height, z).color(red, green, blue, 1.0F).tex(maxU, maxV).lightmap(light).normal(0.0F, 1.0F, 0.0F).endVertex();
+        }
     }
     
     private int getCombinedLight(IBlockDisplayReader lightReader, BlockPos pos)

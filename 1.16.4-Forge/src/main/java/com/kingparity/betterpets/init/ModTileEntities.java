@@ -1,9 +1,6 @@
 package com.kingparity.betterpets.init;
 
-import com.kingparity.betterpets.tileentity.FluidPipeTileEntity;
-import com.kingparity.betterpets.tileentity.FluidPumpTileEntity;
-import com.kingparity.betterpets.tileentity.WaterCollectorTileEntity;
-import com.kingparity.betterpets.tileentity.WaterFilterTileEntity;
+import com.kingparity.betterpets.tileentity.*;
 import com.kingparity.betterpets.util.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
@@ -36,6 +33,11 @@ public class ModTileEntities
     public static final RegistryObject<TileEntityType<FluidPumpTileEntity>> FLUID_PUMP = register("fluid_pump", FluidPumpTileEntity::new, () -> new Block[]
         {
             ModBlocks.FLUID_PUMP.get()
+        });
+    
+    public static final RegistryObject<TileEntityType<TankTileEntity>> TANK = register("tank", TankTileEntity::new, () -> new Block[]
+        {
+            ModBlocks.TANK.get()
         });
     
     private static <T extends TileEntity> RegistryObject<TileEntityType<T>> register(String id, Supplier<T> factoryIn, Supplier<Block[]> validBlocksSupplier)

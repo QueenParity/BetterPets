@@ -1,9 +1,6 @@
 package com.kingparity.betterpets.proxy;
 
-import com.kingparity.betterpets.client.render.tileentity.FluidPipeRenderer;
-import com.kingparity.betterpets.client.render.tileentity.FluidPumpRenderer;
-import com.kingparity.betterpets.client.render.tileentity.WaterCollectorRenderer;
-import com.kingparity.betterpets.client.render.tileentity.WaterFilterRenderer;
+import com.kingparity.betterpets.client.render.tileentity.*;
 import com.kingparity.betterpets.client.screen.WaterFilterScreen;
 import com.kingparity.betterpets.init.ModBlocks;
 import com.kingparity.betterpets.init.ModContainers;
@@ -32,6 +29,8 @@ public class ClientProxy implements Proxy
         RenderTypeLookup.setRenderLayer(ModBlocks.WATER_COLLECTOR.get(), RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(ModBlocks.WATER_FILTER.get(), RenderType.getCutout());
         
+        RenderTypeLookup.setRenderLayer(ModBlocks.TANK.get(), RenderType.getCutout());
+        
         RenderTypeLookup.setRenderLayer(ModFluids.FILTERED_WATER.get(), RenderType.getTranslucent());
         RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_FILTERED_WATER.get(), RenderType.getTranslucent());
     }
@@ -43,6 +42,8 @@ public class ClientProxy implements Proxy
     
         ClientRegistry.bindTileEntityRenderer(ModTileEntities.FLUID_PIPE.get(), FluidPipeRenderer::new);
         ClientRegistry.bindTileEntityRenderer(ModTileEntities.FLUID_PUMP.get(), FluidPumpRenderer::new);
+        
+        ClientRegistry.bindTileEntityRenderer(ModTileEntities.TANK.get(), TankRenderer::new);
     }
     
     private void registerScreenFactories()
