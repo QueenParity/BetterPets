@@ -1,16 +1,15 @@
 package com.kingparity.betterpets.proxy;
 
+import com.kingparity.betterpets.client.render.entity.BetterWolfRenderer;
 import com.kingparity.betterpets.client.render.tileentity.*;
 import com.kingparity.betterpets.client.screen.WaterFilterScreen;
-import com.kingparity.betterpets.init.ModBlocks;
-import com.kingparity.betterpets.init.ModContainers;
-import com.kingparity.betterpets.init.ModFluids;
-import com.kingparity.betterpets.init.ModTileEntities;
+import com.kingparity.betterpets.init.*;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
 public class ClientProxy implements Proxy
 {
@@ -20,6 +19,7 @@ public class ClientProxy implements Proxy
         MinecraftForge.EVENT_BUS.register(this);
         
         this.setupRenderLayers();
+        this.registerEntityRenders();
         this.bindTileEntityRenders();
         this.registerScreenFactories();
     }
@@ -33,6 +33,11 @@ public class ClientProxy implements Proxy
         
         RenderTypeLookup.setRenderLayer(ModFluids.FILTERED_WATER.get(), RenderType.getTranslucent());
         RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_FILTERED_WATER.get(), RenderType.getTranslucent());
+    }
+    
+    private void registerEntityRenders()
+    {
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.BETTER_WOLF.get(), BetterWolfRenderer::new);
     }
     
     private void bindTileEntityRenders()

@@ -33,19 +33,20 @@ public class BetterPets
     
     public BetterPets()
     {
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        ModBlocks.BLOCKS.register(bus);
-        ModItems.ITEMS.register(bus);
-        ModTileEntities.TILE_ENTITY_TYPES.register(bus);
-        ModContainers.CONTAINER_TYPES.register(bus);
-        ModFluids.FLUIDS.register(bus);
+        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        ModBlocks.BLOCKS.register(eventBus);
+        ModItems.ITEMS.register(eventBus);
+        ModEntities.ENTITY_TYPES.register(eventBus);
+        ModTileEntities.TILE_ENTITY_TYPES.register(eventBus);
+        ModContainers.CONTAINER_TYPES.register(eventBus);
+        ModFluids.FLUIDS.register(eventBus);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onCommonSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientSetup);
     }
     
     private void onCommonSetup(FMLCommonSetupEvent event)
     {
-    
+        ModEntities.registerEntityTypeAttributes();
     }
     
     private void onClientSetup(FMLClientSetupEvent event)
