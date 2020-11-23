@@ -22,11 +22,11 @@
       "com.kingparity.betterpets.BetterPets",
       "com.kingparity.betterpets.core.ModItems",
       "com.kingparity.betterpets.core.ModBlocks",
-      "com.kingparity.betterpets.core.ModBlockEntityTypes",
+      "com.kingparity.betterpets.core.ModTileEntities",
       "com.kingparity.betterpets.core.ModFluids"
     ],
     "client": [
-      "com.kingparity.betterpets.ModClient"
+      "com.kingparity.betterpets.BetterPetsClient"
     ]
   },
   "mixins": [
@@ -36,7 +36,10 @@
   "depends": {
     "fabricloader": ">=0.7.4",
     "fabric": "*",
-    "minecraft": "1.16.x"
+    "minecraft": "1.16.x",
+    "libblockattributes": "*",
+    "libnetworkstack": "*",
+    "libmultipart": "*"
   },
   "suggests": {
     "flamingo": "*"

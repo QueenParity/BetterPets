@@ -1,7 +1,6 @@
 package com.kingparity.betterpets.core;
 
 import com.kingparity.betterpets.BetterPets;
-import com.kingparity.betterpets.names.ItemNames;
 import com.kingparity.betterpets.util.Reference;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -11,9 +10,6 @@ import net.minecraft.util.registry.Registry;
 
 public class ModItems implements ModInitializer
 {
-    public static Item WATER_FILTER_FABRIC;
-    public static Item WATER_FILTER_FABRIC_DISPLAY;
-    
     private static Item register(String name)
     {
         return register(name, new Item(new FabricItemSettings().group(BetterPets.GROUP)));
@@ -27,7 +23,6 @@ public class ModItems implements ModInitializer
     @Override
     public void onInitialize()
     {
-        WATER_FILTER_FABRIC = register(ItemNames.WATER_FILTER_FABRIC);
-        WATER_FILTER_FABRIC_DISPLAY = register(ItemNames.WATER_FILTER_FABRIC_DISPLAY);
+    
     }
 }

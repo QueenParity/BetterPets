@@ -1,6 +1,7 @@
 package com.kingparity.betterpets;
 
 import com.kingparity.betterpets.init.*;
+import com.kingparity.betterpets.network.PacketHandler;
 import com.kingparity.betterpets.proxy.ClientProxy;
 import com.kingparity.betterpets.proxy.Proxy;
 import com.kingparity.betterpets.proxy.ServerProxy;
@@ -46,6 +47,7 @@ public class BetterPets
     
     private void onCommonSetup(FMLCommonSetupEvent event)
     {
+        PacketHandler.register();
         ModEntities.registerEntityTypeAttributes();
     }
     

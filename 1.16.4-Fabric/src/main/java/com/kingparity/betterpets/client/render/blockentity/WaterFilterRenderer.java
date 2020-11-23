@@ -1,30 +1,26 @@
 package com.kingparity.betterpets.client.render.blockentity;
 
-import com.kingparity.betterpets.block.entity.WaterFilterBlockEntity;
-import com.kingparity.betterpets.core.ModItems;
-import com.kingparity.betterpets.fluidtank.FluidTank;
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
+import com.kingparity.betterpets.block.entity.WaterFilterTileEntity;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.minecraft.block.HorizontalFacingBlock;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.world.BlockRenderView;
 
-public class WaterFilterRenderer extends BlockEntityRenderer<WaterFilterBlockEntity>
+public class WaterFilterRenderer extends BlockEntityRenderer<WaterFilterTileEntity>
 {
     public WaterFilterRenderer(BlockEntityRenderDispatcher dispatcher)
     {
@@ -32,9 +28,9 @@ public class WaterFilterRenderer extends BlockEntityRenderer<WaterFilterBlockEnt
     }
     
     @Override
-    public void render(WaterFilterBlockEntity waterFilter, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, int light, int overlay)
+    public void render(WaterFilterTileEntity waterFilter, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, int light, int overlay)
     {
-        matrixStack.push();
+        /*matrixStack.push();
         {
             Direction direction = waterFilter.getCachedState().get(HorizontalFacingBlock.FACING);
             matrixStack.translate(0.5, 0.5, 0.5);
@@ -45,7 +41,7 @@ public class WaterFilterRenderer extends BlockEntityRenderer<WaterFilterBlockEnt
             ItemStack stack = new ItemStack(ModItems.WATER_FILTER_FABRIC_DISPLAY, 1);
             MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.NONE, light, overlay, matrixStack, vertexConsumers);
         }
-        matrixStack.pop();
+        matrixStack.pop();*/
         
         matrixStack.push();
         {
@@ -54,28 +50,27 @@ public class WaterFilterRenderer extends BlockEntityRenderer<WaterFilterBlockEnt
             matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(direction.getHorizontal() * -90F - 90F));
             matrixStack.translate(-0.5, -0.5, -0.5);
             
-            FluidTank tankWater = waterFilter.getTankWater();
-            float heightTankWater = (float) ((tankWater.getCapacity() / 1000) * (((double)tankWater.getBuckets()) / ((double)tankWater.getCapacity())));
+            //FluidTank tankWater = waterFilter.getTankWater();
+            //float heightTankWater = (float) ((tankWater.getCapacity() / 1000) * (((double)tankWater.getBuckets()) / ((double)tankWater.getCapacity())));
             
-            FluidTank tankFilteredWater = waterFilter.getTankFilteredWater();
-            float heightTankFilteredWater = (float) ((tankFilteredWater.getCapacity() / 1000) * (((double)tankFilteredWater.getBuckets()) / ((double)tankFilteredWater.getCapacity())));
-            
-            //matrixStack.scale(0.5F, 0.5F, 0.5F);
-            //matrixStack.translate(-9.5 * 0.0625, -2.5 * 0.0625, -8 * 0.0625);
+            //FluidTank tankFilteredWater = waterFilter.getTankFilteredWater();
+            //float heightTankFilteredWater = (float) ((tankFilteredWater.getCapacity() / 1000) * (((double)tankFilteredWater.getBuckets()) / ((double)tankFilteredWater.getCapacity())));
+            float heightTankWater = (float) ((waterFilter.fluidInv.getMaxAmount(0) / FluidVolume.BUCKET) * (((double)waterFilter.fluidInv.getInvFluid(0).getAmount()) / ((double)waterFilter.fluidInv.getMaxAmount(0))));
+            float heightTankFilteredWater = (float) ((waterFilter.fluidInv.getMaxAmount(1) / FluidVolume.BUCKET) * (((double)waterFilter.fluidInv.getInvFluid(1).getAmount()) / ((double)waterFilter.fluidInv.getMaxAmount(1))));
             if(heightTankWater > 0)
             {
-                drawFluid(tankWater.getFluid(), waterFilter, matrixStack, vertexConsumers, 1.01F * 0.0625F, 1.01F * 0.0625F, 1.01F * 0.0625F, (14 - 0.02F) * 0.0625F, heightTankWater * 0.0625F, (7 - 0.02F) * 0.0625F);
+                drawFluid(waterFilter.fluidInv.getInvFluid(0).getRawFluid(), waterFilter, matrixStack, vertexConsumers, 1.01F * 0.0625F, 1.01F * 0.0625F, 1.01F * 0.0625F, (14 - 0.02F) * 0.0625F, heightTankWater * 0.0625F, (7 - 0.02F) * 0.0625F);
             }
             
             if(heightTankFilteredWater > 0)
             {
-                drawFluid(tankFilteredWater.getFluid(), waterFilter, matrixStack, vertexConsumers, 1.01F * 0.0625F, 1.01F * 0.0625F, 8.01F * 0.0625F, (14 - 0.02F) * 0.0625F, heightTankFilteredWater * 0.0625F, (7 - 0.02F) * 0.0625F);
+                drawFluid(waterFilter.fluidInv.getInvFluid(1).getRawFluid(), waterFilter, matrixStack, vertexConsumers, 1.01F * 0.0625F, 1.01F * 0.0625F, 8.01F * 0.0625F, (14 - 0.02F) * 0.0625F, heightTankFilteredWater * 0.0625F, (7 - 0.02F) * 0.0625F);
             }
         }
         matrixStack.pop();
     }
     
-    private void drawFluid(Fluid fluid, WaterFilterBlockEntity waterFilter, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, float x, float y, float z, float width, float height, float depth)
+    private void drawFluid(Fluid fluid, WaterFilterTileEntity waterFilter, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, float x, float y, float z, float width, float height, float depth)
     {
         if(fluid == Fluids.EMPTY)
         {

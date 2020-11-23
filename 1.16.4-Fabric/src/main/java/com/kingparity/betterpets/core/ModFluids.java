@@ -2,8 +2,6 @@ package com.kingparity.betterpets.core;
 
 import com.kingparity.betterpets.BetterPets;
 import com.kingparity.betterpets.fluid.FilteredWaterFluid;
-import com.kingparity.betterpets.names.FluidNames;
-import com.kingparity.betterpets.names.ItemNames;
 import com.kingparity.betterpets.util.Reference;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -45,10 +43,10 @@ public class ModFluids implements ModInitializer
     @Override
     public void onInitialize()
     {
-        STILL_FILTERED_WATER = register(FluidNames.FILTERED_WATER, new FilteredWaterFluid.Still());
-        FLOWING_FILTERED_WATER = register(FluidNames.FLOWING_FILTERED_WATER, new FilteredWaterFluid.Flowing());
-        FILTERED_WATER_BUCKET = register(ItemNames.FILTERED_WATER_BUCKET, new BucketItem(STILL_FILTERED_WATER, new FabricItemSettings().recipeRemainder(Items.BUCKET).maxCount(1).group(BetterPets.GROUP)));
-        FILTERED_WATER = register(FluidNames.FILTERED_WATER, new FluidBlock(STILL_FILTERED_WATER, FabricBlockSettings.copy(Blocks.WATER)){});
+        STILL_FILTERED_WATER = register("filtered_water", new FilteredWaterFluid.Still());
+        FLOWING_FILTERED_WATER = register("flowing_filtered_water", new FilteredWaterFluid.Flowing());
+        FILTERED_WATER_BUCKET = register("filtered_water_bucket", new BucketItem(STILL_FILTERED_WATER, new FabricItemSettings().recipeRemainder(Items.BUCKET).maxCount(1).group(BetterPets.GROUP)));
+        FILTERED_WATER = register("filtered_water", new FluidBlock(STILL_FILTERED_WATER, FabricBlockSettings.copy(Blocks.WATER)){});
         
         /*STILL_FILTERED_WATER = Registry.register(Registry.FLUID, new Identifier(Reference.ID, FluidNames.FILTERED_WATER), new FilteredWaterFluid.Still());
         FLOWING_FILTERED_WATER = Registry.register(Registry.FLUID, new Identifier(Reference.ID, FluidNames.FLOWING_FILTERED_WATER), new FilteredWaterFluid.Flowing());

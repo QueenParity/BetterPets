@@ -1,19 +1,19 @@
 package com.kingparity.betterpets.block;
 
+import alexiil.mc.lib.attributes.AttributeList;
+import alexiil.mc.lib.attributes.AttributeProvider;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.kingparity.betterpets.block.entity.WaterCollectorBlockEntity;
+import com.kingparity.betterpets.block.entity.BaseTileEntity;
+import com.kingparity.betterpets.block.entity.WaterCollectorTileEntity;
 import com.kingparity.betterpets.util.VoxelShapeHelper;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
@@ -24,11 +24,12 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class WaterCollectorBlock extends HorizontalFacingBlock implements BlockEntityProvider
+public class WaterCollectorBlock extends HorizontalFacingBlock implements BlockEntityProvider, AttributeProvider
 {
     public final ImmutableMap<BlockState, VoxelShape> SHAPES;
     
@@ -154,9 +155,42 @@ public class WaterCollectorBlock extends HorizontalFacingBlock implements BlockE
     }
     
     @Override
+    public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack)
+    {
+        super.onPlaced(world, pos, state, placer, stack);
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if(blockEntity instanceof BaseTileEntity)
+        {
+            ((BaseTileEntity)blockEntity).onPlacedBy(placer, stack);
+        }
+    }
+    
+    @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit)
     {
-        WaterCollectorBlockEntity blockEntity = (WaterCollectorBlockEntity)world.getBlockEntity(pos);
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if(blockEntity instanceof BaseTileEntity)
+        {
+            return ((BaseTileEntity)blockEntity).onUse(player, hand, hit);
+        }
+        return super.onUse(state, world, pos, player, hand, hit);
+    }
+    
+    @Override
+    public void addAllAttributes(World world, BlockPos pos, BlockState state, AttributeList<?> list)
+    {
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if(blockEntity instanceof WaterCollectorTileEntity)
+        {
+            WaterCollectorTileEntity waterCollector = (WaterCollectorTileEntity)blockEntity;
+            list.offer(waterCollector.fluidInv, SHAPES.get(state));
+        }
+    }
+    
+    /*@Override
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit)
+    {
+        WaterCollectorTileEntity blockEntity = (WaterCollectorTileEntity)world.getBlockEntity(pos);
         ItemStack itemStack = player.getStackInHand(hand);
         
         Item item = itemStack.getItem();
@@ -207,11 +241,11 @@ public class WaterCollectorBlock extends HorizontalFacingBlock implements BlockE
         {
             return ActionResult.PASS;
         }
-    }
+    }*/
     
     @Override
     public BlockEntity createBlockEntity(BlockView world)
     {
-        return new WaterCollectorBlockEntity();
+        return new WaterCollectorTileEntity();
     }
 }

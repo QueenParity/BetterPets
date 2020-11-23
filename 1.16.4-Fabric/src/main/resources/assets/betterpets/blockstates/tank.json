@@ -1,0 +1,20 @@
+{
+    "variants": {
+        "up=false,down=false": {
+            "model": "betterpets:block/tank",
+            "uvlock": true
+        },
+        "up=true,down=false": {
+            "model": "betterpets:block/tank_bottom",
+            "uvlock": true
+        },
+        "up=false,down=true": {
+            "model": "betterpets:block/tank_top",
+            "uvlock": true
+        },
+        "up=true,down=true": {
+            "model": "betterpets:block/tank_middle",
+            "uvlock": true
+        }
+    }
+}

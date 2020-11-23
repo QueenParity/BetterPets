@@ -2,11 +2,20 @@ package com.kingparity.betterpets.entity;
 
 import com.kingparity.betterpets.entity.ai.goal.BetterWolfBegGoal;
 import com.kingparity.betterpets.init.ModEntities;
+import com.kingparity.betterpets.inventory.IAttachableChest;
+import com.kingparity.betterpets.inventory.BetterWolfInventory;
+import com.kingparity.betterpets.network.PacketHandler;
+import com.kingparity.betterpets.network.message.MessageAttachChest;
+import com.kingparity.betterpets.network.message.MessageOpenPetChest;
+import com.kingparity.betterpets.util.InventoryUtil;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.AbstractSkeletonEntity;
 import net.minecraft.entity.monster.CreeperEntity;
 import net.minecraft.entity.monster.GhastEntity;
@@ -17,6 +26,7 @@ import net.minecraft.entity.passive.horse.AbstractHorseEntity;
 import net.minecraft.entity.passive.horse.LlamaEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
@@ -27,17 +37,20 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-public class BetterWolfEntity extends TameableEntity implements IAngerable
+public class BetterWolfEntity extends TameableEntity implements IAngerable, IAttachableChest
 {
+    private static final DataParameter<Boolean> CHEST = EntityDataManager.createKey(BetterWolfEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> BEGGING = EntityDataManager.createKey(BetterWolfEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> COLLAR_COLOR = EntityDataManager.createKey(BetterWolfEntity.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> field_234232_bz_ = EntityDataManager.createKey(BetterWolfEntity.class, DataSerializers.VARINT);
@@ -54,6 +67,8 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable
     private float prevTimeWolfIsShaking;
     private static final RangedInteger field_234230_bG_ = TickRangeConverter.convertRange(20, 39);
     private UUID field_234231_bH_;
+    
+    private BetterWolfInventory inventory;
     
     public BetterWolfEntity(EntityType<? extends BetterWolfEntity> type, World world)
     {
@@ -97,6 +112,7 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable
     protected void registerData()
     {
         super.registerData();
+        this.dataManager.register(CHEST, false);
         this.dataManager.register(BEGGING, false);
         this.dataManager.register(COLLAR_COLOR, DyeColor.BLUE.getId());
         this.dataManager.register(field_234232_bz_, 0);
@@ -109,14 +125,6 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable
     }
     
     @Override
-    public void writeAdditional(CompoundNBT compound)
-    {
-        super.writeAdditional(compound);
-        compound.putByte("CollarColor", (byte)this.getCollarColor().getId());
-        this.writeAngerNBT(compound);
-    }
-    
-    @Override
     public void readAdditional(CompoundNBT compound)
     {
         super.readAdditional(compound);
@@ -124,8 +132,108 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable
         {
             this.setCollarColor(DyeColor.byId(compound.getInt("CollarColor")));
         }
-    
+        
+        if(compound.contains("Chest", Constants.NBT.TAG_BYTE))
+        {
+            this.setChest(compound.getBoolean("Chest"));
+            if(compound.contains("Inventory", Constants.NBT.TAG_LIST))
+            {
+                this.initInventory();
+                InventoryUtil.readInventoryToNBT(compound, "Inventory", inventory);
+            }
+        }
+        
         this.readAngerNBT((ServerWorld)this.world, compound);
+    }
+    
+    @Override
+    public void writeAdditional(CompoundNBT compound)
+    {
+        super.writeAdditional(compound);
+        compound.putByte("CollarColor", (byte)this.getCollarColor().getId());
+        compound.putBoolean("Chest", this.hasChest());
+        if(this.hasChest() && inventory != null)
+        {
+            InventoryUtil.writeInventoryToNBT(compound, "Inventory", inventory);
+        }
+        this.writeAngerNBT(compound);
+    }
+    
+    @Override
+    public boolean hasChest()
+    {
+        return this.dataManager.get(CHEST);
+    }
+    
+    public void setChest(boolean chest)
+    {
+        this.dataManager.set(CHEST, chest);
+    }
+    
+    private void initInventory()
+    {
+        BetterWolfInventory original = this.inventory;
+        this.inventory = new BetterWolfInventory(this, 15);
+        if(original != null)
+        {
+            for(int i = 0; i < original.getSizeInventory(); i++)
+            {
+                ItemStack stack = original.getStackInSlot(i);
+                if(!stack.isEmpty())
+                {
+                    this.inventory.setInventorySlotContents(i, stack.copy());
+                }
+            }
+        }
+    }
+    
+    @Override
+    public BetterWolfInventory getInventory()
+    {
+        if(this.hasChest() && this.inventory == null)
+        {
+            this.initInventory();
+        }
+        return this.inventory;
+    }
+    
+    @Override
+    public void attachChest(ItemStack stack)
+    {
+        if(!stack.isEmpty() && stack.getItem() == Item.getItemFromBlock(Blocks.CHEST))
+        {
+            this.setChest(true);
+            this.initInventory();
+        
+            CompoundNBT itemTag = stack.getTag();
+            if(itemTag != null)
+            {
+                CompoundNBT blockEntityTag = itemTag.getCompound("BlockEntityTag");
+                if(!blockEntityTag.isEmpty() && blockEntityTag.contains("Items", Constants.NBT.TAG_LIST))
+                {
+                    NonNullList<ItemStack> chestInventory = NonNullList.withSize(27, ItemStack.EMPTY);
+                    ItemStackHelper.loadAllItems(blockEntityTag, chestInventory);
+                    for(int i = 0; i < chestInventory.size(); i++)
+                    {
+                        this.inventory.setInventorySlotContents(i, chestInventory.get(i));
+                    }
+                }
+            }
+        }
+    }
+    
+    @Override
+    public void removeChest()
+    {
+        if(this.inventory != null)
+        {
+            Vector3d target = new Vector3d(0, 0.75, -0.75).rotateYaw(-this.rotationYaw * 0.017453292F).add(this.getPositionVec());
+            InventoryUtil.dropInventoryItems(world, target.x, target.y, target.z, this.inventory);
+            this.inventory = null;
+            this.setChest(false);
+            world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            world.addEntity(new ItemEntity(world, target.x, target.y, target.z, new ItemStack(Blocks.CHEST)));
+        }
     }
     
     @Override
@@ -143,6 +251,19 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable
         {
             return SoundEvents.ENTITY_WOLF_AMBIENT;
         }
+    }
+    
+    @Override
+    public ITextComponent getPetChestName()
+    {
+        return this.getDisplayName();
+    }
+    
+    @Override
+    public void openInventory(PlayerEntity player)
+    {
+        Vector3d target = new Vector3d(0, 0.75, -0.75).rotateYaw(-this.rotationYaw * 0.017453292F).add(this.getPositionVec());
+        this.world.playSound(null, target.x, target.y, target.z, SoundEvents.BLOCK_CHEST_OPEN, this.getSoundCategory(), 0.5F, 0.9F);
     }
     
     @Override
@@ -355,79 +476,93 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable
     @Override
     public ActionResultType func_230254_b_(PlayerEntity player, Hand hand)
     {
-        ItemStack itemstack = player.getHeldItem(hand);
-        Item item = itemstack.getItem();
-        if(this.world.isRemote)
+        if(player.isCrouching() && this.hasChest())
         {
-            boolean flag = this.isOwner(player) || this.isTamed() || item == Items.BONE && !this.isTamed() && !this.func_233678_J__();
-            return flag ? ActionResultType.CONSUME : ActionResultType.PASS;
+            PacketHandler.instance.sendToServer(new MessageOpenPetChest(this.getEntityId()));
+            Minecraft.getInstance().player.swingArm(Hand.MAIN_HAND);
+            return ActionResultType.SUCCESS;
+        }
+        else if(player.isCrouching() && !this.hasChest() && player.getHeldItem(hand).getItem() == Items.CHEST)
+        {
+            PacketHandler.instance.sendToServer(new MessageAttachChest(this.getEntityId()));
+            return ActionResultType.SUCCESS;
         }
         else
         {
-            if(this.isTamed())
+            ItemStack itemstack = player.getHeldItem(hand);
+            Item item = itemstack.getItem();
+            if(this.world.isRemote)
             {
-                if(this.isBreedingItem(itemstack) && this.getHealth() < this.getMaxHealth())
+                boolean flag = this.isOwner(player) || this.isTamed() || item == Items.BONE && !this.isTamed() && !this.func_233678_J__();
+                return flag ? ActionResultType.CONSUME : ActionResultType.PASS;
+            }
+            else
+            {
+                if(this.isTamed())
                 {
-                    if(!player.abilities.isCreativeMode)
+                    if(this.isBreedingItem(itemstack) && this.getHealth() < this.getMaxHealth())
                     {
-                        itemstack.shrink(1);
-                    }
+                        if(!player.abilities.isCreativeMode)
+                        {
+                            itemstack.shrink(1);
+                        }
                 
-                    this.heal((float)item.getFood().getHealing());
-                    return ActionResultType.SUCCESS;
-                }
-            
-                if(!(item instanceof DyeItem))
-                {
-                    ActionResultType actionresulttype = super.func_230254_b_(player, hand);
-                    if((!actionresulttype.isSuccessOrConsume() || this.isChild()) && this.isOwner(player))
-                    {
-                        this.func_233687_w_(!this.isSitting());
-                        this.isJumping = false;
-                        this.navigator.clearPath();
-                        this.setAttackTarget((LivingEntity)null);
+                        this.heal((float) item.getFood().getHealing());
                         return ActionResultType.SUCCESS;
                     }
-                
-                    return actionresulttype;
-                }
             
-                DyeColor dyecolor = ((DyeItem)item).getDyeColor();
-                if(dyecolor != this.getCollarColor())
+                    if(!(item instanceof DyeItem))
+                    {
+                        ActionResultType actionresulttype = super.func_230254_b_(player, hand);
+                        if((!actionresulttype.isSuccessOrConsume() || this.isChild()) && this.isOwner(player))
+                        {
+                            this.func_233687_w_(!this.isSitting());
+                            this.isJumping = false;
+                            this.navigator.clearPath();
+                            this.setAttackTarget((LivingEntity) null);
+                            return ActionResultType.SUCCESS;
+                        }
+                
+                        return actionresulttype;
+                    }
+            
+                    DyeColor dyecolor = ((DyeItem) item).getDyeColor();
+                    if(dyecolor != this.getCollarColor())
+                    {
+                        this.setCollarColor(dyecolor);
+                        if(!player.abilities.isCreativeMode)
+                        {
+                            itemstack.shrink(1);
+                        }
+                
+                        return ActionResultType.SUCCESS;
+                    }
+                }
+                else if(item == Items.BONE && !this.func_233678_J__())
                 {
-                    this.setCollarColor(dyecolor);
                     if(!player.abilities.isCreativeMode)
                     {
                         itemstack.shrink(1);
                     }
-                
+            
+                    if(this.rand.nextInt(3) == 0 && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, player))
+                    {
+                        this.setTamedBy(player);
+                        this.navigator.clearPath();
+                        this.setAttackTarget((LivingEntity) null);
+                        this.func_233687_w_(true);
+                        this.world.setEntityState(this, (byte) 7);
+                    }
+                    else
+                    {
+                        this.world.setEntityState(this, (byte) 6);
+                    }
+            
                     return ActionResultType.SUCCESS;
                 }
-            }
-            else if(item == Items.BONE && !this.func_233678_J__())
-            {
-                if(!player.abilities.isCreativeMode)
-                {
-                    itemstack.shrink(1);
-                }
-            
-                if(this.rand.nextInt(3) == 0 && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, player))
-                {
-                    this.setTamedBy(player);
-                    this.navigator.clearPath();
-                    this.setAttackTarget((LivingEntity)null);
-                    this.func_233687_w_(true);
-                    this.world.setEntityState(this, (byte)7);
-                }
-                else
-                {
-                    this.world.setEntityState(this, (byte)6);
-                }
-            
-                return ActionResultType.SUCCESS;
-            }
         
-            return super.func_230254_b_(player, hand);
+                return super.func_230254_b_(player, hand);
+            }
         }
     }
     

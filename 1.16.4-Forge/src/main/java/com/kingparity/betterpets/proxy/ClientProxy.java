@@ -2,6 +2,7 @@ package com.kingparity.betterpets.proxy;
 
 import com.kingparity.betterpets.client.render.entity.BetterWolfRenderer;
 import com.kingparity.betterpets.client.render.tileentity.*;
+import com.kingparity.betterpets.client.screen.BetterWolfScreen;
 import com.kingparity.betterpets.client.screen.WaterFilterScreen;
 import com.kingparity.betterpets.init.*;
 import net.minecraft.client.gui.ScreenManager;
@@ -54,5 +55,6 @@ public class ClientProxy implements Proxy
     private void registerScreenFactories()
     {
         ScreenManager.registerFactory(ModContainers.WATER_FILTER.get(), WaterFilterScreen::new);
+        ScreenManager.registerFactory(ModContainers.BETTER_WOLF.get(), BetterWolfScreen::new);
     }
 }

@@ -1,7 +1,7 @@
 package com.kingparity.betterpets.client.render.blockentity;
 
-import com.kingparity.betterpets.block.entity.WaterCollectorBlockEntity;
-import com.kingparity.betterpets.fluidtank.FluidTank;
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
+import com.kingparity.betterpets.block.entity.WaterCollectorTileEntity;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.client.render.RenderLayer;
@@ -20,7 +20,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.world.BlockRenderView;
 
-public class WaterCollectorRenderer extends BlockEntityRenderer<WaterCollectorBlockEntity>
+public class WaterCollectorRenderer extends BlockEntityRenderer<WaterCollectorTileEntity>
 {
     public WaterCollectorRenderer(BlockEntityRenderDispatcher dispatcher)
     {
@@ -28,7 +28,7 @@ public class WaterCollectorRenderer extends BlockEntityRenderer<WaterCollectorBl
     }
     
     @Override
-    public void render(WaterCollectorBlockEntity waterCollector, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, int light, int overlay)
+    public void render(WaterCollectorTileEntity waterCollector, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, int light, int overlay)
     {
         matrixStack.push();
         {
@@ -36,8 +36,10 @@ public class WaterCollectorRenderer extends BlockEntityRenderer<WaterCollectorBl
             matrixStack.translate(0.5, 0.5, 0.5);
             matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(direction.getHorizontal() * -90F - 90F));
             matrixStack.translate(-0.5, -0.5, -0.5);
-            FluidTank tank = waterCollector.getTankWater();
-            float height = (float) ((tank.getCapacity() / 1000) * (((double)tank.getBuckets()) / ((double)tank.getCapacity())));
+            //FluidTank tank = waterCollector.getTankWater();
+            //float height = (float) ((tank.getCapacity() / 1000) * (((double)tank.getBuckets()) / ((double)tank.getCapacity())));
+            float height = (float) ((waterCollector.fluidInv.getMaxAmount(0) / FluidVolume.BUCKET) * (((double)waterCollector.fluidInv.getInvFluid(0).getAmount()) / ((double)waterCollector.fluidInv.getMaxAmount(0))));
+            System.out.println(waterCollector.fluidInv.getInvFluid(0).getAmount());
             if(height > 0)
             {
                 drawFluid(waterCollector, matrixStack, vertexConsumers, 2.01F * 0.0625F, 8.01F * 0.0625F, 2.01F * 0.0625F, (12 - 0.02F) * 0.0625F, height * 0.0625F, (12 - 0.02F) * 0.0625F);
@@ -46,9 +48,10 @@ public class WaterCollectorRenderer extends BlockEntityRenderer<WaterCollectorBl
         matrixStack.pop();
     }
     
-    private void drawFluid(WaterCollectorBlockEntity waterCollector, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, float x, float y, float z, float width, float height, float depth)
+    private void drawFluid(WaterCollectorTileEntity waterCollector, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, float x, float y, float z, float width, float height, float depth)
     {
-        Fluid fluid = waterCollector.getTankWater().getFluid();
+        //Fluid fluid = waterCollector.getTankWater().getFluid();
+        Fluid fluid = waterCollector.fluidInv.getInvFluid(0).getRawFluid();
         if(fluid == Fluids.EMPTY)
         {
             return;

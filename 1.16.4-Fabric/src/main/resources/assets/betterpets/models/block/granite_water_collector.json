@@ -1,7 +1,0 @@
-{
-    "parent": "betterpets:block/water_collector",
-    "textures": {
-        "top": "minecraft:block/polished_granite",
-        "legs": "minecraft:block/granite"
-    }
-}
