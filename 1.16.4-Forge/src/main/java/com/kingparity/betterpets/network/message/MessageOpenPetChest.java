@@ -1,11 +1,9 @@
 package com.kingparity.betterpets.network.message;
 
 import com.kingparity.betterpets.entity.BetterWolfEntity;
-import com.kingparity.betterpets.inventory.IAttachableChest;
 import com.kingparity.betterpets.inventory.IPetChest;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeMod;
@@ -56,23 +54,10 @@ public class MessageOpenPetChest implements IMessage<MessageOpenPetChest>
                     float reachDistance = (float) player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
                     if(player.getDistance(targetEntity) < reachDistance)
                     {
-                        if(targetEntity instanceof IAttachableChest)
+                        if(targetEntity instanceof BetterWolfEntity)
                         {
-                            IAttachableChest attachableChest = (IAttachableChest) targetEntity;
-                            if(attachableChest.hasChest())
-                            {
-                                ItemStack stack = player.inventory.getCurrentItem();
-                                BetterWolfEntity betterWolf = (BetterWolfEntity)targetEntity;
-                                NetworkHooks.openGui(player, storage.getPetChestContainerProvider(betterWolf), buffer -> buffer.writeVarInt(message.entityId));
-                                /*if(stack.getItem() == ModItems.WRENCH.get())
-                                {
-                                    ((IAttachableChest) targetEntity).removeChest();
-                                }
-                                else
-                                {
-                                    NetworkHooks.openGui(player, storage.getPetChestContainerProvider(), buffer -> buffer.writeVarInt(message.entityId));
-                                }*/
-                            }
+                            BetterWolfEntity betterWolf = (BetterWolfEntity)targetEntity;
+                            NetworkHooks.openGui(player, storage.getPetChestContainerProvider(betterWolf), buffer -> buffer.writeVarInt(message.entityId));
                         }
                     }
                 }

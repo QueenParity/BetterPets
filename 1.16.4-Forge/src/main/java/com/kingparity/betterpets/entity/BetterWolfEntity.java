@@ -2,20 +2,19 @@ package com.kingparity.betterpets.entity;
 
 import com.kingparity.betterpets.entity.ai.goal.BetterWolfBegGoal;
 import com.kingparity.betterpets.init.ModEntities;
-import com.kingparity.betterpets.inventory.IAttachableChest;
 import com.kingparity.betterpets.inventory.BetterWolfInventory;
+import com.kingparity.betterpets.inventory.IAttachableChest;
 import com.kingparity.betterpets.network.PacketHandler;
 import com.kingparity.betterpets.network.message.MessageAttachChest;
 import com.kingparity.betterpets.network.message.MessageOpenPetChest;
+import com.kingparity.betterpets.network.message.MessageRemoveChest;
 import com.kingparity.betterpets.util.InventoryUtil;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.AbstractSkeletonEntity;
 import net.minecraft.entity.monster.CreeperEntity;
 import net.minecraft.entity.monster.GhastEntity;
@@ -26,6 +25,8 @@ import net.minecraft.entity.passive.horse.AbstractHorseEntity;
 import net.minecraft.entity.passive.horse.LlamaEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.IInventoryChangedListener;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
@@ -48,7 +49,7 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-public class BetterWolfEntity extends TameableEntity implements IAngerable, IAttachableChest
+public class BetterWolfEntity extends TameableEntity implements IAngerable, IAttachableChest, IInventoryChangedListener
 {
     private static final DataParameter<Boolean> CHEST = EntityDataManager.createKey(BetterWolfEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> BEGGING = EntityDataManager.createKey(BetterWolfEntity.class, DataSerializers.BOOLEAN);
@@ -136,11 +137,12 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable, IAtt
         if(compound.contains("Chest", Constants.NBT.TAG_BYTE))
         {
             this.setChest(compound.getBoolean("Chest"));
-            if(compound.contains("Inventory", Constants.NBT.TAG_LIST))
-            {
-                this.initInventory();
-                InventoryUtil.readInventoryToNBT(compound, "Inventory", inventory);
-            }
+        }
+        
+        if(compound.contains("Inventory", Constants.NBT.TAG_LIST))
+        {
+            this.initInventory();
+            InventoryUtil.readInventoryToNBT(compound, "Inventory", inventory);
         }
         
         this.readAngerNBT((ServerWorld)this.world, compound);
@@ -152,7 +154,7 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable, IAtt
         super.writeAdditional(compound);
         compound.putByte("CollarColor", (byte)this.getCollarColor().getId());
         compound.putBoolean("Chest", this.hasChest());
-        if(this.hasChest() && inventory != null)
+        if(inventory != null)
         {
             InventoryUtil.writeInventoryToNBT(compound, "Inventory", inventory);
         }
@@ -173,7 +175,7 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable, IAtt
     private void initInventory()
     {
         BetterWolfInventory original = this.inventory;
-        this.inventory = new BetterWolfInventory(this, 15);
+        this.inventory = new BetterWolfInventory(this, 17);
         if(original != null)
         {
             for(int i = 0; i < original.getSizeInventory(); i++)
@@ -185,12 +187,37 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable, IAtt
                 }
             }
         }
+        this.inventory.addListener(this);
+    }
+    
+    private void updateSlots()
+    {
+        if(this.world.isRemote)
+        {
+            ItemStack chest = this.inventory.getStackInSlot(1);
+            if(chest.getItem() == Items.CHEST && !this.hasChest())
+            {
+                this.setChest(true);
+                PacketHandler.instance.sendToServer(new MessageAttachChest(this.getEntityId()));
+            }
+            else if(chest.getItem() != Items.CHEST && this.hasChest())
+            {
+                this.setChest(false);
+                PacketHandler.instance.sendToServer(new MessageRemoveChest(this.getEntityId()));
+            }
+        }
+    }
+    
+    @Override
+    public void onInventoryChanged(IInventory invBasic)
+    {
+        this.updateSlots();
     }
     
     @Override
     public BetterWolfInventory getInventory()
     {
-        if(this.hasChest() && this.inventory == null)
+        if(this.inventory == null)
         {
             this.initInventory();
         }
@@ -200,22 +227,22 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable, IAtt
     @Override
     public void attachChest(ItemStack stack)
     {
-        if(!stack.isEmpty() && stack.getItem() == Item.getItemFromBlock(Blocks.CHEST))
+        if(!stack.isEmpty() && stack.getItem() == Items.CHEST)
         {
             this.setChest(true);
-            this.initInventory();
-        
+            
             CompoundNBT itemTag = stack.getTag();
             if(itemTag != null)
             {
                 CompoundNBT blockEntityTag = itemTag.getCompound("BlockEntityTag");
                 if(!blockEntityTag.isEmpty() && blockEntityTag.contains("Items", Constants.NBT.TAG_LIST))
                 {
-                    NonNullList<ItemStack> chestInventory = NonNullList.withSize(27, ItemStack.EMPTY);
+                    NonNullList<ItemStack> chestInventory = NonNullList.withSize(17, ItemStack.EMPTY);
                     ItemStackHelper.loadAllItems(blockEntityTag, chestInventory);
-                    for(int i = 0; i < chestInventory.size(); i++)
+                    for(int i = 2; i < chestInventory.size(); i++)
                     {
                         this.inventory.setInventorySlotContents(i, chestInventory.get(i));
+                        System.out.println("uwu");
                     }
                 }
             }
@@ -228,11 +255,10 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable, IAtt
         if(this.inventory != null)
         {
             Vector3d target = new Vector3d(0, 0.75, -0.75).rotateYaw(-this.rotationYaw * 0.017453292F).add(this.getPositionVec());
-            InventoryUtil.dropInventoryItems(world, target.x, target.y, target.z, this.inventory);
-            this.inventory = null;
+            InventoryUtil.dropInventoryItems(world, target.x, target.y, target.z, this.inventory, 2);
             this.setChest(false);
             world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.BLOCKS, 1.0F, 1.0F);
-            world.addEntity(new ItemEntity(world, target.x, target.y, target.z, new ItemStack(Blocks.CHEST)));
+            //world.addEntity(new ItemEntity(world, target.x, target.y, target.z, new ItemStack(Blocks.CHEST)));
         }
     }
     
@@ -476,16 +502,18 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable, IAtt
     @Override
     public ActionResultType func_230254_b_(PlayerEntity player, Hand hand)
     {
-        if(player.isCrouching() && this.hasChest())
+        if(player.isCrouching())
         {
-            PacketHandler.instance.sendToServer(new MessageOpenPetChest(this.getEntityId()));
-            Minecraft.getInstance().player.swingArm(Hand.MAIN_HAND);
-            return ActionResultType.SUCCESS;
-        }
-        else if(player.isCrouching() && !this.hasChest() && player.getHeldItem(hand).getItem() == Items.CHEST)
-        {
-            PacketHandler.instance.sendToServer(new MessageAttachChest(this.getEntityId()));
-            return ActionResultType.SUCCESS;
+            if(this.world.isRemote)
+            {
+                PacketHandler.instance.sendToServer(new MessageOpenPetChest(this.getEntityId()));
+                Minecraft.getInstance().player.swingArm(Hand.MAIN_HAND);
+                return ActionResultType.SUCCESS;
+            }
+            else
+            {
+                return super.func_230254_b_(player, hand);
+            }
         }
         else
         {

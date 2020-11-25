@@ -19,7 +19,6 @@ public class BetterWolfScreen extends ContainerScreen<PetChestContainer>
     private static final ResourceLocation TEXTURES = new ResourceLocation(Reference.ID + ":textures/gui/better_wolf.png");
     private final BetterWolfEntity betterWolf;
     private final PlayerInventory playerInventory;
-    private final int inventoryRows;
     private float mousePosX;
     private float mousePosY;
     
@@ -29,7 +28,6 @@ public class BetterWolfScreen extends ContainerScreen<PetChestContainer>
         this.betterWolf = this.getContainer().getBetterWolf();
         this.playerInventory = playerInventory;
         this.passEvents = false;
-        this.inventoryRows = container.getPetChestInventory().getSizeInventory() / 5;
     }
     
     @Override

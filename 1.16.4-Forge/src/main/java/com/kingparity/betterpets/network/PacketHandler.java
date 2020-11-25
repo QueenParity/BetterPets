@@ -3,6 +3,7 @@ package com.kingparity.betterpets.network;
 import com.kingparity.betterpets.network.message.IMessage;
 import com.kingparity.betterpets.network.message.MessageAttachChest;
 import com.kingparity.betterpets.network.message.MessageOpenPetChest;
+import com.kingparity.betterpets.network.message.MessageRemoveChest;
 import com.kingparity.betterpets.util.Reference;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkRegistry;
@@ -23,8 +24,9 @@ public class PacketHandler
             .clientAcceptedVersions(PROTOCOL_VERSION::equals)
             .serverAcceptedVersions(PROTOCOL_VERSION::equals)
             .simpleChannel();
-        
+    
         register(MessageAttachChest.class, new MessageAttachChest());
+        register(MessageRemoveChest.class, new MessageRemoveChest());
         register(MessageOpenPetChest.class, new MessageOpenPetChest());
     }
     

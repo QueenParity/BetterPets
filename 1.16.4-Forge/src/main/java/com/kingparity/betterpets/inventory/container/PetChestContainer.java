@@ -11,6 +11,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 
 public class PetChestContainer extends Container
 {
@@ -27,11 +28,41 @@ public class PetChestContainer extends Container
         petChestInventory.openInventory(playerInventory.player);
         int yOffset = (this.numRows - 4) * 18;
         
+        this.addSlot(new Slot(betterWolf, 0, 6, 18)
+        {
+            @Override
+            public int getSlotStackLimit()
+            {
+                return 1;
+            }
+    
+            @Override
+            public boolean isItemValid(ItemStack stack)
+            {
+                return true;
+            }
+        });
+        
+        this.addSlot(new Slot(betterWolf, 1, 6, 36)
+        {
+            @Override
+            public int getSlotStackLimit()
+            {
+                return 1;
+            }
+    
+            @Override
+            public boolean isItemValid(ItemStack stack)
+            {
+                return stack.getItem() == Items.CHEST;
+            }
+        });
+        
         for(int i = 0; i < this.numRows; i++)
         {
             for(int j = 0; j < 5; j++)
             {
-                this.addSlot(new PetChestSlot(betterWolf, petChestInventory.getInventory(), j + i * 5, 80 + j * 18, 18 + i * 18));
+                this.addSlot(new PetChestSlot(betterWolf, petChestInventory.getInventory(), 2 + j + i * 5, 80 + j * 18, 18 + i * 18));
             }
         }
         
@@ -45,7 +76,7 @@ public class PetChestContainer extends Container
         
         for(int i = 0; i < 9; i++)
         {
-            this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 161 + yOffset));
+            this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 160 + yOffset));
         }
     }
     
@@ -73,10 +104,24 @@ public class PetChestContainer extends Container
         {
             ItemStack stack1 = slot.getStack();
             stack = stack1.copy();
-        
-            if(index < this.numRows * 5)
+            int size = this.betterWolf.getSizeInventory();
+            if(index < size)
             {
-                if(!this.mergeItemStack(stack1, this.numRows * 5, this.inventorySlots.size(), true))
+                if(!this.mergeItemStack(stack1, size, this.inventorySlots.size(), true))
+                {
+                    return ItemStack.EMPTY;
+                }
+            }
+            else if(this.getSlot(1).isItemValid(stack1) && !this.getSlot(1).getHasStack())
+            {
+                if(!this.mergeItemStack(stack1, 1, 2, false))
+                {
+                    return ItemStack.EMPTY;
+                }
+            }
+            else if(size <= 2 || !this.mergeItemStack(stack1, 2, size, false))
+            {
+                if(!this.mergeItemStack(stack1, 0, 1, false))
                 {
                     return ItemStack.EMPTY;
                 }

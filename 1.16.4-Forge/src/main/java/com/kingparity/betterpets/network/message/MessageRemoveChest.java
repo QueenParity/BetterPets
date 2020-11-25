@@ -14,34 +14,34 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class MessageAttachChest implements IMessage<MessageAttachChest>
+public class MessageRemoveChest implements IMessage<MessageRemoveChest>
 {
     private int entityId;
     
-    public MessageAttachChest()
+    public MessageRemoveChest()
     {
     
     }
     
-    public MessageAttachChest(int entityId)
+    public MessageRemoveChest(int entityId)
     {
         this.entityId = entityId;
     }
     
     @Override
-    public void encode(MessageAttachChest message, PacketBuffer buffer)
+    public void encode(MessageRemoveChest message, PacketBuffer buffer)
     {
         buffer.writeInt(message.entityId);
     }
     
     @Override
-    public MessageAttachChest decode(PacketBuffer buffer)
+    public MessageRemoveChest decode(PacketBuffer buffer)
     {
-        return new MessageAttachChest(buffer.readInt());
+        return new MessageRemoveChest(buffer.readInt());
     }
     
     @Override
-    public void handle(MessageAttachChest message, Supplier<NetworkEvent.Context> supplier)
+    public void handle(MessageRemoveChest message, Supplier<NetworkEvent.Context> supplier)
     {
         supplier.get().enqueueWork(() ->
         {
@@ -56,10 +56,10 @@ public class MessageAttachChest implements IMessage<MessageAttachChest>
                     if(player.getDistance(targetEntity) < reachDistance)
                     {
                         IAttachableChest attachableChest = (IAttachableChest) targetEntity;
-                        if(!attachableChest.hasChest())
+                        if(attachableChest.hasChest())
                         {
-                            attachableChest.attachChest(new ItemStack(Items.CHEST));
-                            world.playSound(null, targetEntity.getPosX(), targetEntity.getPosY(), targetEntity.getPosZ(), SoundType.WOOD.getPlaceSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+                            attachableChest.removeChest();
+                            world.playSound(null, targetEntity.getPosX(), targetEntity.getPosY(), targetEntity.getPosZ(), SoundType.WOOD.getBreakSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                         }
                     }
                 }

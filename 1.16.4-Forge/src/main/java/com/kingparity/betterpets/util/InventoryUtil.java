@@ -66,6 +66,19 @@ public class InventoryUtil
             }
         }
     }
+    
+    public static void dropInventoryItems(World worldIn, double x, double y, double z, IInventory inventory, int indexStart)
+    {
+        for(int i = indexStart; i < inventory.getSizeInventory(); ++i)
+        {
+            ItemStack itemstack = inventory.getStackInSlot(i);
+            
+            if(!itemstack.isEmpty())
+            {
+                spawnItemStack(worldIn, x, y, z, itemstack);
+            }
+        }
+    }
 
     public static void spawnItemStack(World worldIn, double x, double y, double z, ItemStack stack)
     {
