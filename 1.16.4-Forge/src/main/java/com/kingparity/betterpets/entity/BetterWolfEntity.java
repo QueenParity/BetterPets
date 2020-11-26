@@ -242,7 +242,6 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable, IAtt
                     for(int i = 2; i < chestInventory.size(); i++)
                     {
                         this.inventory.setInventorySlotContents(i, chestInventory.get(i));
-                        System.out.println("uwu");
                     }
                 }
             }
