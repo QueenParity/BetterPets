@@ -1,8 +1,8 @@
 package com.kingparity.betterpets.client.render.entity.layers;
 
+import com.kingparity.betterpets.BetterPets;
 import com.kingparity.betterpets.client.render.entity.model.BetterWolfModel;
 import com.kingparity.betterpets.entity.BetterWolfEntity;
-import com.kingparity.betterpets.util.Reference;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
@@ -14,7 +14,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class BetterWolfCollarLayer extends LayerRenderer<BetterWolfEntity, BetterWolfModel<BetterWolfEntity>>
 {
-    private static final ResourceLocation BETTER_WOLF_COLLAR = new ResourceLocation(Reference.ID + ":textures/entity/wolf/wolf_collar.png");
+    private static final ResourceLocation BETTER_WOLF_COLLAR = new ResourceLocation(BetterPets.ID + ":textures/entity/wolf/wolf_collar.png");
     
     public BetterWolfCollarLayer(IEntityRenderer<BetterWolfEntity, BetterWolfModel<BetterWolfEntity>> renderer)
     {

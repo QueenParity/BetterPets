@@ -1,10 +1,10 @@
 package com.kingparity.betterpets.init;
 
+import com.kingparity.betterpets.BetterPets;
 import com.kingparity.betterpets.entity.BetterWolfEntity;
 import com.kingparity.betterpets.inventory.container.PetChestContainer;
 import com.kingparity.betterpets.inventory.container.WaterFilterContainer;
 import com.kingparity.betterpets.tileentity.WaterFilterTileEntity;
-import com.kingparity.betterpets.util.Reference;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraftforge.fml.RegistryObject;
@@ -14,7 +14,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class ModContainers
 {
-    public static final DeferredRegister<ContainerType<?>> CONTAINER_TYPES = DeferredRegister.create(ForgeRegistries.CONTAINERS, Reference.ID);
+    public static final DeferredRegister<ContainerType<?>> CONTAINER_TYPES = DeferredRegister.create(ForgeRegistries.CONTAINERS, BetterPets.ID);
     
     public static final RegistryObject<ContainerType<WaterFilterContainer>> WATER_FILTER = register("water_filter", (IContainerFactory<WaterFilterContainer>) (windowId, playerInventory, data) -> {
         WaterFilterTileEntity waterFilter = (WaterFilterTileEntity)playerInventory.player.world.getTileEntity(data.readBlockPos());

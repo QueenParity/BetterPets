@@ -5,10 +5,8 @@ import com.kingparity.betterpets.network.PacketHandler;
 import com.kingparity.betterpets.proxy.ClientProxy;
 import com.kingparity.betterpets.proxy.Proxy;
 import com.kingparity.betterpets.proxy.ServerProxy;
-import com.kingparity.betterpets.util.Reference;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
@@ -18,17 +16,18 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(Reference.ID)
+@Mod(BetterPets.ID)
 public class BetterPets
 {
+    public static final String ID = "betterpets";
     public static final Proxy PROXY = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
-    public static final Logger LOGGER = LogManager.getLogger(Reference.ID);
+    public static final Logger LOGGER = LogManager.getLogger(BetterPets.ID);
     public static final ItemGroup TAB = new ItemGroup("tabBetterPets")
     {
         @Override
         public ItemStack createIcon()
         {
-            return new ItemStack(Items.APPLE);
+            return new ItemStack(ModBlocks.WATER_COLLECTOR.get());
         }
     };
     

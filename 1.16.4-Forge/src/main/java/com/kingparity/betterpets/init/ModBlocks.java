@@ -2,7 +2,6 @@ package com.kingparity.betterpets.init;
 
 import com.kingparity.betterpets.BetterPets;
 import com.kingparity.betterpets.block.*;
-import com.kingparity.betterpets.util.Reference;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
@@ -18,7 +17,7 @@ import java.util.function.Function;
 
 public class ModBlocks
 {
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Reference.ID);
+    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, BetterPets.ID);
     
     public static final AbstractBlock.Properties WOOD = AbstractBlock.Properties.create(Material.WOOD).hardnessAndResistance(0.5F).sound(SoundType.WOOD);
     public static final AbstractBlock.Properties STONE = AbstractBlock.Properties.create(Material.ROCK).hardnessAndResistance(0.5F).sound(SoundType.STONE);

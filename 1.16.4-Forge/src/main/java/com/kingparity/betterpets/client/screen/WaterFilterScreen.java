@@ -1,11 +1,11 @@
 package com.kingparity.betterpets.client.screen;
 
 import com.google.common.collect.Lists;
+import com.kingparity.betterpets.BetterPets;
 import com.kingparity.betterpets.init.ModFluids;
 import com.kingparity.betterpets.inventory.container.WaterFilterContainer;
 import com.kingparity.betterpets.tileentity.WaterFilterTileEntity;
 import com.kingparity.betterpets.util.FluidUtils;
-import com.kingparity.betterpets.util.Reference;
 import com.kingparity.betterpets.util.RenderUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -27,7 +27,7 @@ import java.util.Collections;
 
 public class WaterFilterScreen extends ContainerScreen<WaterFilterContainer>
 {
-    private static final ResourceLocation GUI = new ResourceLocation(Reference.ID + ":textures/gui/water_filter.png");
+    private static final ResourceLocation GUI = new ResourceLocation(BetterPets.ID + ":textures/gui/water_filter.png");
     
     private PlayerInventory playerInventory;
     private WaterFilterTileEntity waterFilter;

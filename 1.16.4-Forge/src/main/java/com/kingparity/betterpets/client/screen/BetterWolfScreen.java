@@ -1,8 +1,8 @@
 package com.kingparity.betterpets.client.screen;
 
+import com.kingparity.betterpets.BetterPets;
 import com.kingparity.betterpets.entity.BetterWolfEntity;
 import com.kingparity.betterpets.inventory.container.PetChestContainer;
-import com.kingparity.betterpets.util.Reference;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -16,7 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class BetterWolfScreen extends ContainerScreen<PetChestContainer>
 {
-    private static final ResourceLocation TEXTURES = new ResourceLocation(Reference.ID + ":textures/gui/better_wolf.png");
+    private static final ResourceLocation TEXTURES = new ResourceLocation(BetterPets.ID + ":textures/gui/better_wolf.png");
     private final BetterWolfEntity betterWolf;
     private final PlayerInventory playerInventory;
     private float mousePosX;

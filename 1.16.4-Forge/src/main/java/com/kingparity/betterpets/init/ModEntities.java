@@ -1,7 +1,7 @@
 package com.kingparity.betterpets.init;
 
+import com.kingparity.betterpets.BetterPets;
 import com.kingparity.betterpets.entity.BetterWolfEntity;
-import com.kingparity.betterpets.util.Reference;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -15,7 +15,7 @@ import java.util.function.BiFunction;
 
 public class ModEntities
 {
-    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES, Reference.ID);
+    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES, BetterPets.ID);
     
     public static final RegistryObject<EntityType<BetterWolfEntity>> BETTER_WOLF = registerEntity("better_wolf", BetterWolfEntity::new, 0.6F, 0.85F);
     

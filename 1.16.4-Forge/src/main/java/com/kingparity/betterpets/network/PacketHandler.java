@@ -1,10 +1,10 @@
 package com.kingparity.betterpets.network;
 
+import com.kingparity.betterpets.BetterPets;
 import com.kingparity.betterpets.network.message.IMessage;
 import com.kingparity.betterpets.network.message.MessageAttachChest;
 import com.kingparity.betterpets.network.message.MessageOpenPetChest;
 import com.kingparity.betterpets.network.message.MessageRemoveChest;
-import com.kingparity.betterpets.util.Reference;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -19,7 +19,7 @@ public class PacketHandler
     public static void register()
     {
         instance = NetworkRegistry.ChannelBuilder
-            .named(new ResourceLocation(Reference.ID, "play"))
+            .named(new ResourceLocation(BetterPets.ID, "play"))
             .networkProtocolVersion(() -> PROTOCOL_VERSION)
             .clientAcceptedVersions(PROTOCOL_VERSION::equals)
             .serverAcceptedVersions(PROTOCOL_VERSION::equals)

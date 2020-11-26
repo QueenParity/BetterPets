@@ -1,7 +1,7 @@
 package com.kingparity.betterpets.init;
 
+import com.kingparity.betterpets.BetterPets;
 import com.kingparity.betterpets.tileentity.*;
-import com.kingparity.betterpets.util.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 public class ModTileEntities
 {
-    public static final DeferredRegister<TileEntityType<?>> TILE_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, Reference.ID);
+    public static final DeferredRegister<TileEntityType<?>> TILE_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, BetterPets.ID);
     
     public static final RegistryObject<TileEntityType<WaterCollectorTileEntity>> WATER_COLLECTOR = register("water_collector", WaterCollectorTileEntity::new, () -> new Block[]
         {

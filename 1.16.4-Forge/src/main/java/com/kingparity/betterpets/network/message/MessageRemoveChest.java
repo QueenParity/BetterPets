@@ -4,8 +4,6 @@ import com.kingparity.betterpets.inventory.IAttachableChest;
 import net.minecraft.block.SoundType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;

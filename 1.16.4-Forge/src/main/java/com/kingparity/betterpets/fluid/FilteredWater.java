@@ -1,9 +1,9 @@
 package com.kingparity.betterpets.fluid;
 
+import com.kingparity.betterpets.BetterPets;
 import com.kingparity.betterpets.init.ModBlocks;
 import com.kingparity.betterpets.init.ModFluids;
 import com.kingparity.betterpets.init.ModItems;
-import com.kingparity.betterpets.util.Reference;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
@@ -17,7 +17,7 @@ public abstract class FilteredWater extends ForgeFlowingFluid
 {
     public FilteredWater()
     {
-        super(new Properties(() -> ModFluids.FILTERED_WATER.get(), () -> ModFluids.FLOWING_FILTERED_WATER.get(), FluidAttributes.builder(new ResourceLocation(Reference.ID, "block/filtered_water_still"), new ResourceLocation(Reference.ID, "block/filtered_water_flowing")).overlay(new ResourceLocation(Reference.ID, "block/filtered_water_overlay")).color(/*0xFF3F76E4*/0xFF00C8FF).sound(SoundEvents.ITEM_BUCKET_FILL, SoundEvents.ITEM_BUCKET_EMPTY)).block(() -> ModBlocks.FILTERED_WATER.get()));
+        super(new Properties(() -> ModFluids.FILTERED_WATER.get(), () -> ModFluids.FLOWING_FILTERED_WATER.get(), FluidAttributes.builder(new ResourceLocation(BetterPets.ID, "block/filtered_water_still"), new ResourceLocation(BetterPets.ID, "block/filtered_water_flowing")).overlay(new ResourceLocation(BetterPets.ID, "block/filtered_water_overlay")).color(/*0xFF3F76E4*/0xFF00C8FF).sound(SoundEvents.ITEM_BUCKET_FILL, SoundEvents.ITEM_BUCKET_EMPTY)).block(() -> ModBlocks.FILTERED_WATER.get()));
     }
     
     @Override

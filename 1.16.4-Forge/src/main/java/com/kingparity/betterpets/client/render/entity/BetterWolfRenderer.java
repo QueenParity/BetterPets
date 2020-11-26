@@ -1,9 +1,9 @@
 package com.kingparity.betterpets.client.render.entity;
 
+import com.kingparity.betterpets.BetterPets;
 import com.kingparity.betterpets.client.render.entity.layers.BetterWolfCollarLayer;
 import com.kingparity.betterpets.client.render.entity.model.BetterWolfModel;
 import com.kingparity.betterpets.entity.BetterWolfEntity;
-import com.kingparity.betterpets.util.Reference;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -15,9 +15,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class BetterWolfRenderer extends MobRenderer<BetterWolfEntity, BetterWolfModel<BetterWolfEntity>>
 {
-    private static final ResourceLocation WOLF_TEXTURES = new ResourceLocation(Reference.ID + ":textures/entity/wolf/wolf.png");
-    private static final ResourceLocation TAMED_WOLF_TEXTURES = new ResourceLocation(Reference.ID + ":textures/entity/wolf/wolf_tame.png");
-    private static final ResourceLocation ANGRY_WOLF_TEXTURES = new ResourceLocation(Reference.ID + ":textures/entity/wolf/wolf_angry.png");
+    private static final ResourceLocation WOLF_TEXTURES = new ResourceLocation(BetterPets.ID + ":textures/entity/wolf/wolf.png");
+    private static final ResourceLocation TAMED_WOLF_TEXTURES = new ResourceLocation(BetterPets.ID + ":textures/entity/wolf/wolf_tame.png");
+    private static final ResourceLocation ANGRY_WOLF_TEXTURES = new ResourceLocation(BetterPets.ID + ":textures/entity/wolf/wolf_angry.png");
     
     public BetterWolfRenderer(EntityRendererManager renderManager)
     {
