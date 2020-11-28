@@ -4,10 +4,18 @@ import com.kingparity.betterpets.client.render.entity.BetterWolfRenderer;
 import com.kingparity.betterpets.client.render.tileentity.*;
 import com.kingparity.betterpets.client.screen.BetterWolfScreen;
 import com.kingparity.betterpets.client.screen.WaterFilterScreen;
+import com.kingparity.betterpets.entity.BetterWolfEntity;
 import com.kingparity.betterpets.init.*;
+import com.kingparity.betterpets.network.message.MessageUpdateFoodStats;
+import com.kingparity.betterpets.network.message.MessageUpdateThirstStats;
+import com.kingparity.betterpets.stats.PetFoodStats;
+import com.kingparity.betterpets.stats.PetThirstStats;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -56,5 +64,44 @@ public class ClientProxy implements Proxy
     {
         ScreenManager.registerFactory(ModContainers.WATER_FILTER.get(), WaterFilterScreen::new);
         ScreenManager.registerFactory(ModContainers.BETTER_WOLF.get(), BetterWolfScreen::new);
+    }
+    
+    @Override
+    public void syncThirstStats(MessageUpdateThirstStats message)
+    {
+        ClientPlayerEntity playerEntity = Minecraft.getInstance().player;
+        Entity entity = playerEntity.world.getEntityByID(message.getEntityId());
+        if(entity instanceof BetterWolfEntity)
+        {
+            BetterWolfEntity betterWolf = (BetterWolfEntity)entity;
+            PetThirstStats stats = betterWolf.getPetThirstStats();
+            stats.thirstLevel = message.getThirstLevel();
+            stats.thirstSaturationLevel = message.getSaturation();
+            stats.thirstExhaustionLevel = message.getExhaustion();
+            stats.poisoned = message.isPoisoned();
+        }
+        else
+        {
+            System.out.println(entity != null ? entity.getPosition() : "uhthirst");
+        }
+    }
+    
+    @Override
+    public void syncFoodStats(MessageUpdateFoodStats message)
+    {
+        ClientPlayerEntity playerEntity = Minecraft.getInstance().player;
+        Entity entity = playerEntity.world.getEntityByID(message.getEntityId());
+        if(entity instanceof BetterWolfEntity)
+        {
+            BetterWolfEntity betterWolf = (BetterWolfEntity)entity;
+            PetFoodStats stats = betterWolf.getPetFoodStats();
+            stats.foodLevel = message.getFoodLevel();
+            stats.foodSaturationLevel = message.getSaturation();
+            stats.foodExhaustionLevel = message.getExhaustion();
+        }
+        else
+        {
+            System.out.println(entity != null ? entity.getPosition() : "uhfood");
+        }
     }
 }

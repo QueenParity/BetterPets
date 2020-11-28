@@ -2,12 +2,16 @@ package com.kingparity.betterpets.entity;
 
 import com.kingparity.betterpets.entity.ai.goal.BetterWolfBegGoal;
 import com.kingparity.betterpets.init.ModEntities;
+import com.kingparity.betterpets.init.ModItems;
 import com.kingparity.betterpets.inventory.BetterWolfInventory;
 import com.kingparity.betterpets.inventory.IAttachableChest;
 import com.kingparity.betterpets.network.PacketHandler;
 import com.kingparity.betterpets.network.message.MessageAttachChest;
+import com.kingparity.betterpets.network.message.MessageMovementSpeed;
 import com.kingparity.betterpets.network.message.MessageOpenPetChest;
 import com.kingparity.betterpets.network.message.MessageRemoveChest;
+import com.kingparity.betterpets.stats.PetFoodStats;
+import com.kingparity.betterpets.stats.PetThirstStats;
 import com.kingparity.betterpets.util.InventoryUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -24,9 +28,11 @@ import net.minecraft.entity.passive.TurtleEntity;
 import net.minecraft.entity.passive.horse.AbstractHorseEntity;
 import net.minecraft.entity.passive.horse.LlamaEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.IInventoryChangedListener;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
@@ -34,15 +40,20 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.stats.Stats;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.Difficulty;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
@@ -54,9 +65,9 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable, IAtt
     private static final DataParameter<Boolean> CHEST = EntityDataManager.createKey(BetterWolfEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> BEGGING = EntityDataManager.createKey(BetterWolfEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> COLLAR_COLOR = EntityDataManager.createKey(BetterWolfEntity.class, DataSerializers.VARINT);
-    private static final DataParameter<Integer> field_234232_bz_ = EntityDataManager.createKey(BetterWolfEntity.class, DataSerializers.VARINT);
-    public static final Predicate<LivingEntity> TARGET_ENTITIES = (p_213440_0_) -> {
-        EntityType<?> entity = p_213440_0_.getType();
+    private static final DataParameter<Integer> ANGER_TIME = EntityDataManager.createKey(BetterWolfEntity.class, DataSerializers.VARINT);
+    public static final Predicate<LivingEntity> TARGET_ENTITIES = (target) -> {
+        EntityType<?> entity = target.getType();
         return entity == EntityType.SHEEP || entity == EntityType.RABBIT || entity == EntityType.FOX;
     };
     
@@ -67,9 +78,10 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable, IAtt
     private float timeWolfIsShaking;
     private float prevTimeWolfIsShaking;
     private static final RangedInteger field_234230_bG_ = TickRangeConverter.convertRange(20, 39);
-    private UUID field_234231_bH_;
-    
+    private UUID angerTarget;
     private BetterWolfInventory inventory;
+    private PetFoodStats petFoodStats = new PetFoodStats();
+    private PetThirstStats petThirstStats = new PetThirstStats();
     
     public BetterWolfEntity(EntityType<? extends BetterWolfEntity> type, World world)
     {
@@ -116,7 +128,7 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable, IAtt
         this.dataManager.register(CHEST, false);
         this.dataManager.register(BEGGING, false);
         this.dataManager.register(COLLAR_COLOR, DyeColor.BLUE.getId());
-        this.dataManager.register(field_234232_bz_, 0);
+        this.dataManager.register(ANGER_TIME, 0);
     }
     
     @Override
@@ -146,6 +158,9 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable, IAtt
         }
         
         this.readAngerNBT((ServerWorld)this.world, compound);
+        
+        this.petFoodStats.read(compound);
+        this.petThirstStats.read(compound);
     }
     
     @Override
@@ -159,6 +174,110 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable, IAtt
             InventoryUtil.writeInventoryToNBT(compound, "Inventory", inventory);
         }
         this.writeAngerNBT(compound);
+        
+        this.petFoodStats.write(compound);
+        this.petThirstStats.write(compound);
+    }
+    
+    @Override
+    protected void damageEntity(DamageSource damageSrc, float damageAmount)
+    {
+        if(!this.isInvulnerableTo(damageSrc))
+        {
+            damageAmount = ForgeHooks.onLivingHurt(this, damageSrc, damageAmount);
+            if(damageAmount <= 0)
+            {
+                return;
+            }
+            damageAmount = this.applyArmorCalculations(damageSrc, damageAmount);
+            damageAmount = this.applyPotionDamageCalculations(damageSrc, damageAmount);
+            float f2 = Math.max(damageAmount - this.getAbsorptionAmount(), 0.0F);
+            this.setAbsorptionAmount(this.getAbsorptionAmount() - (damageAmount - f2));
+            float f = damageAmount - f2;
+            if(f > 0.0F && f < 3.4028235E37F && damageSrc.getTrueSource() instanceof ServerPlayerEntity)
+            {
+                ((ServerPlayerEntity)damageSrc.getTrueSource()).addStat(Stats.DAMAGE_DEALT_ABSORBED, Math.round(f * 10.0F));
+            }
+        
+            f2 = ForgeHooks.onLivingDamage(this, damageSrc, f2);
+            if(f2 != 0.0F)
+            {
+                this.addExhaustion(damageSrc.getHungerDamage());
+                float f1 = this.getHealth();
+                this.getCombatTracker().trackDamage(damageSrc, f1, f2);
+                this.setHealth(f1 - f2); // Forge: moved to fix MC-121048
+                this.setAbsorptionAmount(this.getAbsorptionAmount() - f2);
+            }
+        }
+    }
+    
+    @Override
+    protected void jump()
+    {
+        super.jump();
+        this.addExhaustion(0.2F);
+    }
+    
+    @Override
+    public void travel(Vector3d travelVector)
+    {
+        super.travel(travelVector);
+        double d0 = this.getPosX();
+        double d1 = this.getPosY();
+        double d2 = this.getPosZ();
+        this.addMovementStat(this.getPosX() - d0, this.getPosY() - d1, this.getPosZ() - d2);
+    }
+    
+    public void addMovementStat(double posX, double posY, double posZ)
+    {
+        if(!this.isPassenger())
+        {
+            double var1 = posX * posX + posY * posY + posZ * posZ;
+            double var2 = posX * posX + posZ * posZ;
+            if(this.isSwimming())
+            {
+                int i = Math.round(MathHelper.sqrt(var1) * 100.0F);
+                if(i > 0)
+                {
+                    this.addExhaustion(0.01F * (float)i * 0.01F);
+                }
+            }
+            else if(this.areEyesInFluid(FluidTags.WATER))
+            {
+                int j = Math.round(MathHelper.sqrt(var1) * 100.0F);
+                if(j > 0)
+                {
+                    this.addExhaustion(0.01F * (float)j * 0.01F);
+                }
+            }
+            else if(this.isInWater())
+            {
+                int k = Math.round(MathHelper.sqrt(var2) * 100.0F);
+                if(k > 0)
+                {
+                    this.addExhaustion(0.01F * (float)k * 0.01F);
+                }
+            }
+            else if(this.onGround)
+            {
+                int l = Math.round(MathHelper.sqrt(var2) * 100.0F);
+                if(l > 0)
+                {
+                    this.addExhaustion(0.1F * (float)l * 0.01F);
+                }
+            }
+        }
+    }
+    
+    public void addExhaustion(float exhaustion)
+    {
+        if(!this.isInvisible())
+        {
+            if(!this.world.isRemote)
+            {
+                this.petFoodStats.addExhaustion(exhaustion);
+            }
+        }
     }
     
     @Override
@@ -195,12 +314,12 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable, IAtt
         if(this.world.isRemote)
         {
             ItemStack chest = this.inventory.getStackInSlot(1);
-            if(chest.getItem() == Items.CHEST && !this.hasChest())
+            if(chest.getItem() == ModItems.PET_CHEST.get() && !this.hasChest())
             {
                 this.setChest(true);
                 PacketHandler.instance.sendToServer(new MessageAttachChest(this.getEntityId()));
             }
-            else if(chest.getItem() != Items.CHEST && this.hasChest())
+            else if(chest.getItem() != ModItems.PET_CHEST.get() && this.hasChest())
             {
                 this.setChest(false);
                 PacketHandler.instance.sendToServer(new MessageRemoveChest(this.getEntityId()));
@@ -227,7 +346,7 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable, IAtt
     @Override
     public void attachChest(ItemStack stack)
     {
-        if(!stack.isEmpty() && stack.getItem() == Items.CHEST)
+        if(!stack.isEmpty() && stack.getItem() == ModItems.PET_CHEST.get())
         {
             this.setChest(true);
             
@@ -259,6 +378,21 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable, IAtt
             world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.BLOCKS, 1.0F, 1.0F);
             //world.addEntity(new ItemEntity(world, target.x, target.y, target.z, new ItemStack(Blocks.CHEST)));
         }
+    }
+    
+    public PetFoodStats getPetFoodStats()
+    {
+        return this.petFoodStats;
+    }
+    
+    public PetThirstStats getPetThirstStats()
+    {
+        return this.petThirstStats;
+    }
+    
+    public boolean shouldHeal()
+    {
+        return this.getHealth() > 0.0F && this.getHealth() < this.getMaxHealth();
     }
     
     @Override
@@ -313,17 +447,30 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable, IAtt
     public void livingTick()
     {
         super.livingTick();
-        if(!this.world.isRemote && this.isWet && !this.isShaking && !this.hasPath() && this.onGround)
-        {
-            this.isShaking = true;
-            this.timeWolfIsShaking = 0.0F;
-            this.prevTimeWolfIsShaking = 0.0F;
-            this.world.setEntityState(this, (byte)8);
-        }
-        
         if(!this.world.isRemote)
         {
+            if(this.isWet && !this.isShaking && !this.hasPath() && this.onGround)
+            {
+                this.isShaking = true;
+                this.timeWolfIsShaking = 0.0F;
+                this.prevTimeWolfIsShaking = 0.0F;
+                this.world.setEntityState(this, (byte) 8);
+            }
+    
             this.func_241359_a_((ServerWorld)this.world, true);
+        }
+        
+        if( this.world.getDifficulty() == Difficulty.PEACEFUL && this.world.getGameRules().getBoolean(GameRules.NATURAL_REGENERATION))
+        {
+            if(this.getHealth() < this.getMaxHealth() && this.ticksExisted % 20 == 0)
+            {
+                this.heal(1.0F);
+            }
+            
+            if(this.petFoodStats.needFood() && this.ticksExisted % 10 == 0)
+            {
+                this.petFoodStats.setFoodLevel(this.petFoodStats.getFoodLevel() + 1);
+            }
         }
     }
     
@@ -333,6 +480,16 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable, IAtt
         super.tick();
         if(this.isAlive())
         {
+            if(!this.world.isRemote)
+            {
+                this.petFoodStats.tick(this);
+                this.petThirstStats.tick(this);
+            }
+            else
+            {
+                PacketHandler.instance.sendToServer(new MessageMovementSpeed(this.getEntityId(), this.petThirstStats.getMovementSpeed(this)));
+            }
+            
             this.headRotationCourseOld = this.headRotationCourse;
             if(this.isBegging())
             {
@@ -401,6 +558,10 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable, IAtt
         this.prevTimeWolfIsShaking = 0.0F;
         this.timeWolfIsShaking = 0.0F;
         super.onDeath(cause);
+        if(inventory != null)
+        {
+            InventoryHelper.dropInventoryItems(world, this, inventory);
+        }
     }
     
     @OnlyIn(Dist.CLIENT)
@@ -427,7 +588,7 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable, IAtt
         {
             f = 1.0F;
         }
-    
+        
         return MathHelper.sin(f * (float)Math.PI) * MathHelper.sin(f * (float)Math.PI * 11.0F) * 0.15F * (float)Math.PI;
     }
     
@@ -463,6 +624,11 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable, IAtt
             if(entity != null && !(entity instanceof PlayerEntity) && !(entity instanceof AbstractArrowEntity))
             {
                 amount = (amount + 1.0F) / 2.0F;
+            }
+            
+            if(!world.isRemote)
+            {
+                this.petThirstStats.addExhaustion(0.4F);
             }
             
             return super.attackEntityFrom(source, amount);
@@ -501,7 +667,13 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable, IAtt
     @Override
     public ActionResultType func_230254_b_(PlayerEntity player, Hand hand)
     {
-        if(player.isCrouching())
+        if(!this.world.isRemote)
+        {
+            this.petThirstStats.syncStats(this);
+            this.petFoodStats.syncStats(this);
+        }
+        
+        if(player.isCrouching() && this.isTamed())
         {
             if(this.world.isRemote)
             {
@@ -642,13 +814,13 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable, IAtt
     @Override
     public int getAngerTime()
     {
-        return this.dataManager.get(field_234232_bz_);
+        return this.dataManager.get(ANGER_TIME);
     }
     
     @Override
     public void setAngerTime(int time)
     {
-        this.dataManager.set(field_234232_bz_, time);
+        this.dataManager.set(ANGER_TIME, time);
     }
     
     @Override
@@ -661,13 +833,13 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable, IAtt
     @Override
     public UUID getAngerTarget()
     {
-        return this.field_234231_bH_;
+        return this.angerTarget;
     }
     
     @Override
     public void setAngerTarget(@Nullable UUID target)
     {
-        this.field_234231_bH_ = target;
+        this.angerTarget = target;
     }
     
     public DyeColor getCollarColor()

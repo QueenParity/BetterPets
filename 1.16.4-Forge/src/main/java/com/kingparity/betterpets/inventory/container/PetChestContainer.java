@@ -2,6 +2,7 @@ package com.kingparity.betterpets.inventory.container;
 
 import com.kingparity.betterpets.entity.BetterWolfEntity;
 import com.kingparity.betterpets.init.ModContainers;
+import com.kingparity.betterpets.init.ModItems;
 import com.kingparity.betterpets.inventory.IPetChest;
 import com.kingparity.betterpets.inventory.container.slot.PetChestSlot;
 import net.minecraft.entity.Entity;
@@ -11,7 +12,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 
 public class PetChestContainer extends Container
 {
@@ -54,7 +54,7 @@ public class PetChestContainer extends Container
             @Override
             public boolean isItemValid(ItemStack stack)
             {
-                return stack.getItem() == Items.CHEST;
+                return stack.getItem() == ModItems.PET_CHEST.get();
             }
         });
         

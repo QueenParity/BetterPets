@@ -1,10 +1,7 @@
 package com.kingparity.betterpets.network;
 
 import com.kingparity.betterpets.BetterPets;
-import com.kingparity.betterpets.network.message.IMessage;
-import com.kingparity.betterpets.network.message.MessageAttachChest;
-import com.kingparity.betterpets.network.message.MessageOpenPetChest;
-import com.kingparity.betterpets.network.message.MessageRemoveChest;
+import com.kingparity.betterpets.network.message.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -28,6 +25,9 @@ public class PacketHandler
         register(MessageAttachChest.class, new MessageAttachChest());
         register(MessageRemoveChest.class, new MessageRemoveChest());
         register(MessageOpenPetChest.class, new MessageOpenPetChest());
+        register(MessageMovementSpeed.class, new MessageMovementSpeed());
+        register(MessageUpdateFoodStats.class, new MessageUpdateFoodStats());
+        register(MessageUpdateThirstStats.class, new MessageUpdateThirstStats());
     }
     
     private static <T> void register(Class<T> clazz, IMessage<T> message)
