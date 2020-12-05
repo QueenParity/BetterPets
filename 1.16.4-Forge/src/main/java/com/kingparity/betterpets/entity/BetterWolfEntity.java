@@ -1,6 +1,7 @@
 package com.kingparity.betterpets.entity;
 
 import com.kingparity.betterpets.entity.ai.goal.BetterWolfBegGoal;
+import com.kingparity.betterpets.entity.ai.goal.BetterWolfDrinkGoal;
 import com.kingparity.betterpets.init.ModEntities;
 import com.kingparity.betterpets.init.ModItems;
 import com.kingparity.betterpets.inventory.BetterWolfInventory;
@@ -93,8 +94,10 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable, IAtt
     protected void registerGoals()
     {
         this.goalSelector.addGoal(1, new SwimGoal(this));
-        this.goalSelector.addGoal(2, new SitGoal(this));
-        this.goalSelector.addGoal(3, new BetterWolfEntity.AvoidEntityGoal(this, LlamaEntity.class, 24.0F, 1.5D, 1.5D));
+        this.goalSelector.addGoal(2, new BetterWolfEntity.PanicGoal(this, 1.5D));
+        this.goalSelector.addGoal(2, new BetterWolfDrinkGoal(this));
+        this.goalSelector.addGoal(3, new SitGoal(this));
+        this.goalSelector.addGoal(4, new BetterWolfEntity.AvoidEntityGoal(this, LlamaEntity.class, 24.0F, 1.5D, 1.5D));
         this.goalSelector.addGoal(4, new LeapAtTargetGoal(this, 0.4F));
         this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, true));
         this.goalSelector.addGoal(6, new FollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
@@ -991,6 +994,23 @@ public class BetterWolfEntity extends TameableEntity implements IAngerable, IAtt
         {
             BetterWolfEntity.this.setAttackTarget(null);
             super.tick();
+        }
+    }
+    
+    class PanicGoal extends net.minecraft.entity.ai.goal.PanicGoal
+    {
+        private final BetterWolfEntity betterWolf;
+        
+        public PanicGoal(BetterWolfEntity betterWolf, double speed)
+        {
+            super(betterWolf, speed);
+            this.betterWolf = betterWolf;
+        }
+    
+        @Override
+        public boolean shouldExecute()
+        {
+            return (this.betterWolf.getPetThirstStats().thirstLevel < 6 && !this.betterWolf.isInWaterRainOrBubbleColumn()) || super.shouldExecute();
         }
     }
 }
