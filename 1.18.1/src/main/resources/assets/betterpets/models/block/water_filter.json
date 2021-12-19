@@ -1,0 +1,228 @@
+{
+    "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
+    "textures": {
+        "glass_6x14": "betterpets:block/glass_6x14",
+        "glass_14x14": "betterpets:block/glass_14x14",
+        "stone": "minecraft:block/stone"
+    },
+    "display": {
+        "gui": {
+            "rotation": [ 30, 45, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 0.625, 0.625, 0.625 ]
+        },
+        "ground": {
+            "rotation": [ 0, 0, 0 ],
+            "translation": [ 0, 3, 0 ],
+            "scale": [ 0.25, 0.25, 0.25 ]
+        },
+        "fixed": {
+            "rotation": [ 0, 180, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 0.5, 0.5, 0.5 ]
+        },
+        "head": {
+            "rotation": [ 0, 0, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 1, 1, 1 ]
+        },
+        "firstperson_righthand": {
+            "rotation": [ 0, 315, 0 ],
+            "translation": [ 0, 2.5, 0 ],
+            "scale": [ 0.4, 0.4, 0.4 ]
+        },
+        "thirdperson_righthand": {
+            "rotation": [ 75, 315, 0 ],
+            "translation": [ 0, 2.5, 0 ],
+            "scale": [ 0.375, 0.375, 0.375 ]
+        }
+    },
+    "elements": [
+        {
+            "name": "bottom",
+            "from": [ 0, 0, 0 ], 
+            "to": [ 16, 1, 16 ], 
+            "faces": {
+                "north": { "texture": "#stone", "uv": [ 0, 0, 16, 1 ] },
+                "east": { "texture": "#stone", "uv": [ 0, 0, 16, 1 ] },
+                "south": { "texture": "#stone", "uv": [ 0, 0, 16, 1 ] },
+                "west": { "texture": "#stone", "uv": [ 0, 0, 16, 1 ] },
+                "up": { "texture": "#stone", "uv": [ 0, 0, 16, 16 ] },
+                "down": { "texture": "#stone", "uv": [ 0, 0, 16, 16 ] }
+            }
+        },
+        {
+            "name": "beam_nw",
+            "from": [ 0, 1, 0 ], 
+            "to": [ 1, 15, 1 ], 
+            "faces": {
+                "north": { "texture": "#stone", "uv": [ 0, 0, 1, 14 ] },
+                "east": { "texture": "#stone", "uv": [ 0, 0, 1, 14 ] },
+                "south": { "texture": "#stone", "uv": [ 0, 0, 1, 14 ] },
+                "west": { "texture": "#stone", "uv": [ 0, 0, 1, 14 ] }
+            }
+        },
+        {
+            "name": "beam_ne",
+            "from": [ 15, 1, 0 ], 
+            "to": [ 16, 15, 1 ], 
+            "faces": {
+                "north": { "texture": "#stone", "uv": [ 0, 0, 1, 14 ] },
+                "east": { "texture": "#stone", "uv": [ 0, 0, 1, 14 ] },
+                "south": { "texture": "#stone", "uv": [ 0, 0, 1, 14 ] },
+                "west": { "texture": "#stone", "uv": [ 0, 0, 1, 14 ] }
+            }
+        },
+        {
+            "name": "beam_se",
+            "from": [ 15, 1, 15 ], 
+            "to": [ 16, 15, 16 ], 
+            "faces": {
+                "north": { "texture": "#stone", "uv": [ 0, 0, 1, 14 ] },
+                "east": { "texture": "#stone", "uv": [ 0, 0, 1, 14 ] },
+                "south": { "texture": "#stone", "uv": [ 0, 0, 1, 14 ] },
+                "west": { "texture": "#stone", "uv": [ 0, 0, 1, 14 ] }
+            }
+        },
+        {
+            "name": "beam_sw",
+            "from": [ 0, 1, 15 ], 
+            "to": [ 1, 15, 16 ], 
+            "faces": {
+                "north": { "texture": "#stone", "uv": [ 0, 0, 1, 14 ] },
+                "east": { "texture": "#stone", "uv": [ 0, 0, 1, 14 ] },
+                "south": { "texture": "#stone", "uv": [ 0, 0, 1, 14 ] },
+                "west": { "texture": "#stone", "uv": [ 0, 0, 1, 14 ] }
+            }
+        },
+        {
+            "name": "top",
+            "from": [ 0, 15, 0 ], 
+            "to": [ 16, 16, 16 ], 
+            "faces": {
+                "north": { "texture": "#stone", "uv": [ 0, 0, 16, 1 ] },
+                "east": { "texture": "#stone", "uv": [ 0, 0, 16, 1 ] },
+                "south": { "texture": "#stone", "uv": [ 0, 0, 16, 1 ] },
+                "west": { "texture": "#stone", "uv": [ 0, 0, 16, 1 ] },
+                "up": { "texture": "#stone", "uv": [ 0, 0, 16, 16 ] },
+                "down": { "texture": "#stone", "uv": [ 0, 0, 16, 16 ] }
+            }
+        },
+        {
+            "name": "beam_s",
+            "from": [ 7, 1, 15 ], 
+            "to": [ 9, 15, 16 ], 
+            "faces": {
+                "north": { "texture": "#stone", "uv": [ 0, 0, 2, 14 ] },
+                "east": { "texture": "#stone", "uv": [ 0, 0, 1, 14 ] },
+                "south": { "texture": "#stone", "uv": [ 0, 0, 2, 14 ] },
+                "west": { "texture": "#stone", "uv": [ 0, 0, 1, 14 ] }
+            }
+        },
+        {
+            "name": "beam_n",
+            "from": [ 7, 1, 0 ], 
+            "to": [ 9, 15, 1 ], 
+            "faces": {
+                "north": { "texture": "#stone", "uv": [ 0, 0, 2, 14 ] },
+                "east": { "texture": "#stone", "uv": [ 0, 0, 1, 14 ] },
+                "south": { "texture": "#stone", "uv": [ 0, 0, 2, 14 ] },
+                "west": { "texture": "#stone", "uv": [ 0, 0, 1, 14 ] }
+            }
+        },
+        {
+            "name": "glass_nw",
+            "from": [ 1, 1, 0.25 ], 
+            "to": [ 7, 15, 1 ], 
+            "faces": {
+                "north": { "texture": "#glass_6x14", "uv": [ 0, 0, 6, 14 ] },
+                "south": { "texture": "#glass_6x14", "uv": [ 0, 0, 6, 14 ] }
+            }
+        },
+        {
+            "name": "glass_ne",
+            "from": [ 9, 1, 0.25 ], 
+            "to": [ 15, 15, 1 ], 
+            "faces": {
+                "north": { "texture": "#glass_6x14", "uv": [ 0, 0, 6, 14 ] },
+                "south": { "texture": "#glass_6x14", "uv": [ 0, 0, 6, 14 ] }
+            }
+        },
+        {
+            "name": "glass_se",
+            "from": [ 9, 1, 15 ], 
+            "to": [ 15, 15, 15.75 ], 
+            "faces": {
+                "north": { "texture": "#glass_6x14", "uv": [ 0, 0, 6, 14 ] },
+                "south": { "texture": "#glass_6x14", "uv": [ 0, 0, 6, 14 ] }
+            }
+        },
+        {
+            "name": "glass_sw",
+            "from": [ 1, 1, 15 ], 
+            "to": [ 7, 15, 15.75 ], 
+            "faces": {
+                "north": { "texture": "#glass_6x14", "uv": [ 0, 0, 6, 14 ] },
+                "south": { "texture": "#glass_6x14", "uv": [ 0, 0, 6, 14 ] }
+            }
+        },
+        {
+            "name": "glass_w",
+            "from": [ 0.25, 1, 1 ], 
+            "to": [ 1, 15, 15 ], 
+            "faces": {
+                "east": { "texture": "#glass_14x14", "uv": [ 0, 0, 14, 14 ] },
+                "west": { "texture": "#glass_14x14", "uv": [ 0, 0, 14, 14 ] }
+            }
+        },
+        {
+            "name": "glass_e",
+            "from": [ 15, 1, 1 ], 
+            "to": [ 15.75, 15, 15 ], 
+            "faces": {
+                "east": { "texture": "#glass_14x14", "uv": [ 0, 0, 14, 14 ] },
+                "west": { "texture": "#glass_14x14", "uv": [ 0, 0, 14, 14 ] }
+            }
+        },
+        {
+            "name": "beam_inner_bottom",
+            "from": [ 7, 1, 1 ], 
+            "to": [ 9, 1.5, 15 ], 
+            "faces": {
+                "east": { "texture": "#stone", "uv": [ 0, 0, 14, 0.5 ] },
+                "west": { "texture": "#stone", "uv": [ 0, 0, 14, 0.5 ] },
+                "up": { "texture": "#stone", "uv": [ 0, 0, 2, 14 ] }
+            }
+        },
+        {
+            "name": "beam_inner_top",
+            "from": [ 7, 14.5, 1 ], 
+            "to": [ 9, 15, 15 ], 
+            "faces": {
+                "east": { "texture": "#stone", "uv": [ 0, 0, 14, 0.5 ] },
+                "west": { "texture": "#stone", "uv": [ 0, 0, 14, 0.5 ] },
+                "down": { "texture": "#stone", "uv": [ 0, 0, 2, 14 ] }
+            }
+        },
+        {
+            "name": "beam_inner_north",
+            "from": [ 7, 1.5, 1 ], 
+            "to": [ 9, 14.5, 1.5 ], 
+            "faces": {
+                "east": { "texture": "#stone", "uv": [ 0, 0, 0.5, 13 ] },
+                "south": { "texture": "#stone", "uv": [ 0, 0, 2, 13 ] },
+                "west": { "texture": "#stone", "uv": [ 0, 0, 0.5, 13 ] }
+            }
+        },
+        {
+            "name": "beam_inner_south",
+            "from": [ 7, 1.5, 14.5 ], 
+            "to": [ 9, 14.5, 15 ], 
+            "faces": {
+                "north": { "texture": "#stone", "uv": [ 0, 0, 2, 13 ] },
+                "east": { "texture": "#stone", "uv": [ 0, 0, 0.5, 13 ] },
+                "west": { "texture": "#stone", "uv": [ 0, 0, 0.5, 13 ] }
+            }
+        }
+    ]
+}
