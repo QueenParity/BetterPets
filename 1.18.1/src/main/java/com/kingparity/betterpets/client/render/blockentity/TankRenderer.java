@@ -28,7 +28,7 @@ public class TankRenderer implements BlockEntityRenderer<TankBlockEntity>
     public void render(TankBlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay)
     {
         poseStack.pushPose();
-        float height = (float) (16.0 * (blockEntity.getTank().getFluidAmount() / (double) blockEntity.getTank().getCapacity()));
+        float height = (float) (16.0 * (blockEntity.getFluidLevel() / (double) blockEntity.getCapacity()));
         if(height > 0)
         {
             this.drawFluid(blockEntity, poseStack, buffer, 2.01F * 0.0625F, 0.1F * 0.0625F, 2.01F * 0.0625F, (12 - 0.02F) * 0.0625F, height * 0.0625F, (12 - 0.02F) * 0.0625F);
@@ -38,7 +38,7 @@ public class TankRenderer implements BlockEntityRenderer<TankBlockEntity>
     
     private void drawFluid(TankBlockEntity be, PoseStack poseStack, MultiBufferSource bufferSource, float x, float y, float z, float width, float height, float depth)
     {
-        Fluid fluid = be.getTank().getFluid().getFluid();
+        Fluid fluid = be.getFluidStackTank().getFluid();
         if(fluid == Fluids.EMPTY) return;
         
         TextureAtlasSprite sprite = ForgeHooksClient.getFluidSprites(be.getLevel(), be.getBlockPos(), fluid.defaultFluidState())[0];
@@ -92,19 +92,19 @@ public class TankRenderer implements BlockEntityRenderer<TankBlockEntity>
             tankAbove = (TankBlockEntity) blockEntityAbove;
         }
         
-        if(be.getTank().getFluidAmount() < be.getTank().getCapacity())
+        if(be.getFluidLevel() < be.getCapacity())
         {
             renderTop = true;
         }
         else if(tankAbove != null)
         {
-            if(tankAbove.getTank().getFluidAmount() == 0)
+            if(tankAbove.getFluidLevel() == 0)
             {
                 renderTop = true;
             }
         }
         
-        if(be.getTank().getFluidAmount() == be.getTank().getCapacity() && tankAbove == null)
+        if(be.getFluidLevel() == be.getCapacity() && tankAbove == null)
         {
             renderTop = false;
         }

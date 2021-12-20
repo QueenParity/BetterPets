@@ -28,7 +28,7 @@ public class TankBlockEntity extends FluidHandlerSyncedBlockEntity
                 IFluidHandler fluidHandler = blockEntityBelow.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).orElse(null);
                 if(fluidHandler != null)
                 {
-                    FluidUtils.transferFluid(blockEntity.getTank(), fluidHandler, blockEntity.getTank().getFluidAmount());
+                    FluidUtils.transferFluid(blockEntity.getTank(), fluidHandler, blockEntity.getFluidLevel());
                 }
                 else
                 {

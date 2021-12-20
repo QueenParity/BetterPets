@@ -1,8 +1,6 @@
 package com.kingparity.betterpets.client;
 
-import com.kingparity.betterpets.client.render.blockentity.TankRenderer;
-import com.kingparity.betterpets.client.render.blockentity.WaterCollectorRenderer;
-import com.kingparity.betterpets.client.render.blockentity.WaterFilterRenderer;
+import com.kingparity.betterpets.client.render.blockentity.*;
 import com.kingparity.betterpets.client.render.entity.BetterWolfRenderer;
 import com.kingparity.betterpets.client.render.entity.model.BetterWolfModel;
 import com.kingparity.betterpets.client.render.entity.model.BetterWolfModelLayers;
@@ -29,6 +27,10 @@ public class ClientHandler
     {
         BlockEntityRenderers.register(ModBlockEntities.WATER_COLLECTOR.get(), WaterCollectorRenderer::new);
         BlockEntityRenderers.register(ModBlockEntities.WATER_FILTER.get(), WaterFilterRenderer::new);
+        
+        BlockEntityRenderers.register(ModBlockEntities.FLUID_PIPE.get(), FluidPipeRenderer::new);
+        BlockEntityRenderers.register(ModBlockEntities.FLUID_PUMP.get(), FluidPumpRenderer::new);
+        
         BlockEntityRenderers.register(ModBlockEntities.TANK.get(), TankRenderer::new);
     }
     
@@ -48,6 +50,10 @@ public class ClientHandler
     {
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.WATER_COLLECTOR.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.WATER_FILTER.get(), RenderType.cutout());
+    
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.FLUID_PIPE.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.FLUID_PUMP.get(), RenderType.cutout());
+        
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.TANK.get(), RenderType.cutout());
         
         ItemBlockRenderTypes.setRenderLayer(ModFluids.FILTERED_WATER.get(), RenderType.translucent());

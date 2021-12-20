@@ -53,8 +53,24 @@ public abstract class FluidHandlerSyncedBlockEntity extends BlockEntity
         return this.tank;
     }
     
+    public FluidStack getFluidStackTank()
+    {
+        return this.tank.getFluid();
+    }
+    
+    public int getCapacity()
+    {
+        return this.tank.getCapacity();
+    }
+    
+    public int getFluidLevel()
+    {
+        return this.tank.getFluidAmount();
+    }
+    
     public void syncFluidToClient()
     {
+        this.setChanged();
         BlockEntityUtil.sendUpdatePacket(this, this.saveWithFullMetadata());
     }
     

@@ -1,7 +1,7 @@
 package com.kingparity.betterpets.client.render.blockentity;
 
-import com.kingparity.betterpets.block.WaterCollectorBlock;
-import com.kingparity.betterpets.blockentity.WaterCollectorBlockEntity;
+import com.kingparity.betterpets.block.FluidPumpBlock;
+import com.kingparity.betterpets.blockentity.FluidPumpBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
@@ -19,32 +19,32 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.client.ForgeHooksClient;
 
-public class WaterCollectorRenderer implements BlockEntityRenderer<WaterCollectorBlockEntity>
+public class FluidPumpRenderer implements BlockEntityRenderer<FluidPumpBlockEntity>
 {
-    public WaterCollectorRenderer(BlockEntityRendererProvider.Context context)
+    public FluidPumpRenderer(BlockEntityRendererProvider.Context context)
     {
         super();
     }
     
     @Override
-    public void render(WaterCollectorBlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay)
+    public void render(FluidPumpBlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay)
     {
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
-        Direction direction = blockEntity.getBlockState().getValue(WaterCollectorBlock.DIRECTION);
+        Direction direction = blockEntity.getBlockState().getValue(FluidPumpBlock.DIRECTION);
         poseStack.mulPose(Vector3f.YP.rotationDegrees(direction.get2DDataValue() * -90F - 90F));
         poseStack.translate(-0.5, -0.5, -0.5);
         float height = (float) (14.0 * (blockEntity.getFluidLevel() / (double) blockEntity.getCapacity()));
         if(height > 0)
         {
-            this.drawFluid(blockEntity, poseStack, buffer, 2.01F * 0.0625F, 8.01F * 0.0625F, 2.01F * 0.0625F, (12 - 0.02F) * 0.0625F, height * 0.0625F, (12 - 0.02F) * 0.0625F);
+            this.drawFluid(blockEntity, poseStack, buffer, 4.01F * 0.0625F, 12.01F * 0.0625F, 4.01F * 0.0625F, (8 - 0.02F) * 0.0625F, height * 0.0625F, (8 - 0.02F) * 0.0625F);
         }
         poseStack.popPose();
     }
     
-    private void drawFluid(WaterCollectorBlockEntity be, PoseStack poseStack, MultiBufferSource bufferSource, float x, float y, float z, float width, float height, float depth)
+    private void drawFluid(FluidPumpBlockEntity be, PoseStack poseStack, MultiBufferSource bufferSource, float x, float y, float z, float width, float height, float depth)
     {
-        Fluid fluid = be.getFluidStackTank().getFluid();
+        Fluid fluid = be.getTank().getFluid().getFluid();
         if(fluid == Fluids.EMPTY) return;
         
         TextureAtlasSprite sprite = ForgeHooksClient.getFluidSprites(be.getLevel(), be.getBlockPos(), fluid.defaultFluidState())[0];

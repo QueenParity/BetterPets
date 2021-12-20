@@ -1,9 +1,7 @@
 package com.kingparity.betterpets.init;
 
 import com.kingparity.betterpets.BetterPets;
-import com.kingparity.betterpets.blockentity.TankBlockEntity;
-import com.kingparity.betterpets.blockentity.WaterCollectorBlockEntity;
-import com.kingparity.betterpets.blockentity.WaterFilterBlockEntity;
+import com.kingparity.betterpets.blockentity.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -25,6 +23,16 @@ public class ModBlockEntities
     public static final RegistryObject<BlockEntityType<WaterFilterBlockEntity>> WATER_FILTER = register("water_filter", WaterFilterBlockEntity::new, () -> new Block[]
         {
             ModBlocks.WATER_FILTER.get()
+        });
+    
+    public static final RegistryObject<BlockEntityType<FluidPipeBlockEntity>> FLUID_PIPE = register("fluid_pipe", FluidPipeBlockEntity::new, () -> new Block[]
+        {
+            ModBlocks.FLUID_PIPE.get()
+        });
+    
+    public static final RegistryObject<BlockEntityType<FluidPumpBlockEntity>> FLUID_PUMP = register("fluid_pump", FluidPumpBlockEntity::new, () -> new Block[]
+        {
+            ModBlocks.FLUID_PUMP.get()
         });
     
     public static final RegistryObject<BlockEntityType<TankBlockEntity>> TANK = register("tank", TankBlockEntity::new, () -> new Block[]

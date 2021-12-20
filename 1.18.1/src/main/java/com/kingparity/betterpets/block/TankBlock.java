@@ -164,7 +164,7 @@ public class TankBlock extends BaseEntityBlock
             while(blockEntity instanceof TankBlockEntity)
             {
                 TankBlockEntity tank = (TankBlockEntity)blockEntity;
-                if(tank.getTank().getFluidAmount() <= tank.getTank().getCapacity() - 1000 || !(level.getBlockEntity(tankPos.above()) instanceof TankBlockEntity))
+                if(tank.getFluidLevel() <= tank.getCapacity() - 1000 || !(level.getBlockEntity(tankPos.above()) instanceof TankBlockEntity))
                 {
                     if(!FluidUtil.interactWithFluidHandler(player, hand, level, tankPos, result.getDirection()))
                     {
