@@ -10,16 +10,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -36,7 +33,6 @@ public class WaterCollectorBlock extends RotatedBlockObjectEntity
     public WaterCollectorBlock(Properties properties)
     {
         super(properties);
-        this.registerDefaultState(this.getStateDefinition().any().setValue(DIRECTION, Direction.NORTH));
         SHAPES = this.generateShapes(this.getStateDefinition().getPossibleStates());
     }
     
@@ -166,18 +162,5 @@ public class WaterCollectorBlock extends RotatedBlockObjectEntity
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
     {
         return new WaterCollectorBlockEntity(pos, state);
-    }
-    
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
-    {
-        super.createBlockStateDefinition(builder);
-        builder.add(DIRECTION);
-    }
-    
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context)
-    {
-        return super.getStateForPlacement(context).setValue(DIRECTION, context.getHorizontalDirection());
     }
 }

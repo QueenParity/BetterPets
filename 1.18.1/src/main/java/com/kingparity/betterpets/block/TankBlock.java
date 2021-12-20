@@ -3,6 +3,7 @@ package com.kingparity.betterpets.block;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.kingparity.betterpets.blockentity.TankBlockEntity;
+import com.kingparity.betterpets.init.ModBlockEntities;
 import com.kingparity.betterpets.util.BlockEntityUtil;
 import com.kingparity.betterpets.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
@@ -14,9 +15,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -24,13 +28,12 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TankBlock extends Block implements EntityBlock
+public class TankBlock extends BaseEntityBlock
 {
     public static final BooleanProperty UP = BooleanProperty.create("up");
     public static final BooleanProperty DOWN = BooleanProperty.create("down");
@@ -113,6 +116,12 @@ public class TankBlock extends Block implements EntityBlock
     }
     
     @Override
+    public RenderShape getRenderShape(BlockState p_49232_)
+    {
+        return RenderShape.MODEL;
+    }
+    
+    @Override
     public BlockState updateShape(BlockState state, Direction direction, BlockState newState, LevelAccessor level, BlockPos pos, BlockPos newPos)
     {
         boolean up = level.getBlockState(pos.above()).getBlock() == this;
@@ -126,6 +135,13 @@ public class TankBlock extends Block implements EntityBlock
         super.createBlockStateDefinition(builder);
         builder.add(UP);
         builder.add(DOWN);
+    }
+    
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntity)
+    {
+        return createTickerHelper(blockEntity, ModBlockEntities.TANK.get(), TankBlockEntity::tick);
     }
     
     @Override
@@ -163,9 +179,7 @@ public class TankBlock extends Block implements EntityBlock
                     blockEntity = level.getBlockEntity(tankPos);
                 }
             }
-            //BlockEntityUtil.sendUpdatePacket(level.getBlockEntity(pos), (ServerPlayer) player);
             return InteractionResult.SUCCESS;
-            //return FluidUtil.interactWithFluidHandler(player, hand, level, tankPos, result.getDirection()) ? InteractionResult.SUCCESS : InteractionResult.PASS;
         }
         return InteractionResult.SUCCESS;
     }

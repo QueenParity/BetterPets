@@ -11,6 +11,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -38,7 +39,7 @@ public class WaterFilterScreen extends AbstractContainerScreen<WaterFilterMenu>
         this.playerInventory = playerInventory;
         this.waterFilter = container.getWaterFilter();
         this.imageWidth = 176;
-        this.imageWidth = 180;
+        this.imageHeight = 180;
     }
     
     @Override
@@ -100,6 +101,7 @@ public class WaterFilterScreen extends AbstractContainerScreen<WaterFilterMenu>
         int startY = (this.height - this.imageHeight) / 2;
         
         RenderSystem.setShaderTexture(0, GUI);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         this.blit(poseStack, startX, startY, 0, 0, this.imageWidth, this.imageHeight);
         
         if(this.waterFilter.getRemainingFuel() >= 0)
@@ -119,6 +121,7 @@ public class WaterFilterScreen extends AbstractContainerScreen<WaterFilterMenu>
             int bottom = top + 26;
             double filterPercentage = this.waterFilter.getFilterProgress() / (double) 58;
             double percentage = Mth.clamp(filterPercentage, 0, 1);
+            RenderSystem.setShader(GameRenderer::getPositionColorShader);
             RenderUtil.drawGradientRectHorizontal(left, top, right, bottom, waterColor, filteredWaterColor);
             this.blit(poseStack, left, top, 176, 14, 58, 26);
             int filterProgress = (int) (58 * percentage);

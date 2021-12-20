@@ -39,7 +39,6 @@ public class WaterFilterBlock extends RotatedBlockObjectEntity
     public WaterFilterBlock(Properties properties)
     {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(DIRECTION, Direction.NORTH));
         SHAPES = this.generateShapes(this.getStateDefinition().getPossibleStates());
     }
     
@@ -157,18 +156,5 @@ public class WaterFilterBlock extends RotatedBlockObjectEntity
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
     {
         return new WaterFilterBlockEntity(pos, state);
-    }
-    
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
-    {
-        super.createBlockStateDefinition(builder);
-        builder.add(DIRECTION);
-    }
-    
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context)
-    {
-        return super.getStateForPlacement(context).setValue(DIRECTION, context.getHorizontalDirection());
     }
 }

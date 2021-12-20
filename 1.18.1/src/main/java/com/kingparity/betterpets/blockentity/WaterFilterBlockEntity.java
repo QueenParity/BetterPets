@@ -45,8 +45,23 @@ public class WaterFilterBlockEntity extends BaseContainerBlockEntity implements 
 {
     private NonNullList<ItemStack> items = NonNullList.withSize(2, ItemStack.EMPTY);
     
-    private FluidTank tankWater = new FluidTank(FluidAttributes.BUCKET_VOLUME * 7, stack -> stack.getFluid() == Fluids.WATER);
-    private FluidTank tankFilteredWater = new FluidTank(FluidAttributes.BUCKET_VOLUME * 7, stack -> stack.getFluid() == ModFluids.FILTERED_WATER.get());
+    private FluidTank tankWater = new FluidTank(FluidAttributes.BUCKET_VOLUME * 7, stack -> stack.getFluid() == Fluids.WATER)
+    {
+        @Override
+        protected void onContentsChanged()
+        {
+            WaterFilterBlockEntity.this.syncToClient();
+        }
+    };
+    
+    private FluidTank tankFilteredWater = new FluidTank(FluidAttributes.BUCKET_VOLUME * 7, stack -> stack.getFluid() == ModFluids.FILTERED_WATER.get())
+    {
+        @Override
+        protected void onContentsChanged()
+        {
+            WaterFilterBlockEntity.this.syncToClient();
+        }
+    };
     
     private static final int SLOT_FUEL = 0;
     
@@ -197,7 +212,7 @@ public class WaterFilterBlockEntity extends BaseContainerBlockEntity implements 
     public void syncToClient()
     {
         this.setChanged();
-        BlockEntityUtil.sendUpdatePacket(this);
+        BlockEntityUtil.sendUpdatePacket(this, this.saveWithFullMetadata());
     }
     
     public static void tick(Level level, BlockPos pos, BlockState state, WaterFilterBlockEntity blockEntity)
