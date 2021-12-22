@@ -21,13 +21,14 @@ public class WaterCollectorBlockEntity extends FluidHandlerSyncedBlockEntity
     {
         if(!level.isClientSide)
         {
+            blockEntity.syncFluidToClient();
             if(blockEntity.tank.getFluidAmount() < blockEntity.tank.getCapacity())
             {
                 if(level.getBiome(pos).getPrecipitation() == Biome.Precipitation.RAIN)
                 {
                     if(level.getRandom().nextFloat() < 0.05F)
                     {
-                        blockEntity.tank.fill(new FluidStack(Fluids.WATER, Math.round(FluidAttributes.BUCKET_VOLUME / 2.0F)), IFluidHandler.FluidAction.EXECUTE);
+                        //blockEntity.tank.fill(new FluidStack(Fluids.WATER, Math.round(FluidAttributes.BUCKET_VOLUME / 2.0F)), IFluidHandler.FluidAction.EXECUTE);
                     }
                 }
             }

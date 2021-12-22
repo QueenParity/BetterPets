@@ -151,7 +151,7 @@ public class WaterCollectorBlock extends RotatedBlockObjectEntity
         if(!level.isClientSide)
         {
             FluidUtil.interactWithFluidHandler(player, hand, level, pos, result.getDirection());
-            
+    
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.SUCCESS;

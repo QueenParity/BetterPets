@@ -127,6 +127,7 @@ public class FluidPipeBlock extends BaseEntityBlock
     @Override
     public BlockState updateShape(BlockState state, Direction direction, BlockState newState, LevelAccessor level, BlockPos pos, BlockPos newPos)
     {
+        FluidPipeBlockEntity.updateLinks(level, pos, state, level.getBlockEntity(pos, ModBlockEntities.FLUID_PIPE.get()).get());
         return this.getPipeState(state, level, pos);
     }
     
