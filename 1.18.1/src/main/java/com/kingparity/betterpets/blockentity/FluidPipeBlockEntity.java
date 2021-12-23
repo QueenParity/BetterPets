@@ -8,7 +8,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -17,16 +16,26 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWriter
 {
     protected final int[] links = new int[6];
+    protected int centerAmountLastTick;
+    protected int[] sideAmountLastTick = new int[6];
     
-    protected FluidTank tankCenter = new FluidTank(80)
+    public static final int CENTER_CAPACITY = 80;
+    public static final int SIDE_CAPACITY = 80;
+    
+    protected FluidTank tankCenter = new FluidTank(SIDE_CAPACITY)
     {
         @Override
         protected void onContentsChanged()
@@ -47,7 +56,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
         super(blockEntityType, pos, state);
         for(int i = 0; i < 6; i++)
         {
-            this.tankSides[i] = new FluidTank(80)
+            this.tankSides[i] = new FluidTank(SIDE_CAPACITY)
             {
                 @Override
                 protected void onContentsChanged()
@@ -66,115 +75,318 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
     
     public static void updateLinks(LevelAccessor level, BlockPos pos, BlockState state, FluidPipeBlockEntity blockEntity)
     {
+        blockEntity.updateLinks(level, pos);
+    }
+    
+    public void updateLinks(LevelAccessor level, BlockPos pos)
+    {
         for(Direction direction : Direction.values())
         {
-            blockEntity.links[direction.get3DDataValue()] = 0;
+            this.links[direction.get3DDataValue()] = 0;
             BlockEntity fluidReceiver = level.getBlockEntity(pos.relative(direction));
             if(fluidReceiver != null)
             {
                 IFluidHandler fluidHandler = fluidReceiver.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction.getOpposite()).orElse(null);
                 if(fluidHandler != null)
                 {
-                    blockEntity.links[direction.get3DDataValue()] = 1;
+                    this.links[direction.get3DDataValue()] = 1;
                 }
             }
-            if(blockEntity.links[direction.get3DDataValue()] == 0)
+            if(this.links[direction.get3DDataValue()] == 0)
             {
-                blockEntity.tankSides[direction.get3DDataValue()].drain(500, IFluidHandler.FluidAction.EXECUTE);
+                this.tankSides[direction.get3DDataValue()].drain(500, IFluidHandler.FluidAction.EXECUTE);
             }
         }
     }
     
     public static void tick(Level level, BlockPos pos, BlockState state, FluidPipeBlockEntity blockEntity)
     {
-        if(!level.isClientSide)
+        blockEntity.doTick();
+    }
+    
+    public void doTick()
+    {
+        if(!this.level.isClientSide)
         {
-            updateLinks(level, pos, state, blockEntity);
-            blockEntity.syncToClient();
-            if(blockEntity.getFluidLevel() > 0)
+            this.updateLinks(this.level, this.worldPosition);
+            
+            this.updateAmounts();
+            
+            this.doCenterLogic();
+            
+            for(int i = 0; i < 6; i++)
             {
-                int remaining = 50;
-                if(blockEntity.getLinkBoolean(0))
+                if(this.getLinkBoolean(i))
                 {
-                    remaining = remaining - FluidUtils.transferFluid(blockEntity.tankCenter, blockEntity.tankSides[0], remaining);
+                    this.doSideLogic(Direction.from3DDataValue(i));
                 }
-                if(remaining > 0)
+            }
+            
+            updateAmounts();
+            
+            this.syncToClient();
+        }
+    }
+    
+    protected void doCenterLogic()
+    {
+        if(this.tankCenter.isEmpty())
+        {
+            return;
+        }
+    
+        List<Direction> sides = new ArrayList<>(6);
+    
+        for(Direction to : Direction.values())
+        {
+            if(canGoInDirection(null, to))
+            {
+                int movable = (centerAmountLastTick - sideAmountLastTick[to.get3DDataValue()]);
+                if(movable > 0)
                 {
-                    int horizontal = 0;
-                    for(int i = 2; i < 6; i++)
-                    {
-                        if(blockEntity.getLinkBoolean(i))
-                        {
-                            horizontal++;
-                        }
-                    }
-                    
-                    for(int i = 2; i < 6; i++)
-                    {
-                        if(blockEntity.getLinkBoolean(i))
-                        {
-                            remaining = remaining - FluidUtils.transferFluid(blockEntity.tankCenter, blockEntity.tankSides[i], remaining / horizontal);
-                            horizontal--;
-                        }
-                    }
+                    sides.add(to);
                 }
-                if(remaining > 0)
+                else if(!canGoInDirection(to, null) && this.tankSides[to.get3DDataValue()].getFluidAmount() < SIDE_CAPACITY)
                 {
-                    if(blockEntity.getLinkBoolean(1))
-                    {
-                        FluidUtils.transferFluid(blockEntity.tankCenter, blockEntity.tankSides[1], remaining);
-                    }
-                }
-                
-                for(Direction direction : Direction.values())
-                {
-                    if(blockEntity.getLinkBoolean(direction.get3DDataValue()))
-                    {
-                        BlockEntity fluidReceiver = level.getBlockEntity(pos.relative(direction));
-                        if(fluidReceiver != null)
-                        {
-                            IFluidHandler fluidHandler = fluidReceiver.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction.getOpposite()).orElse(null);
-                            if(fluidHandler != null)
-                            {
-                                int transferAmount = 10;
-                                boolean doTransferCenter = true, doTransferOther = true;
-                                if(fluidReceiver instanceof FluidPumpBlockEntity)
-                                {
-                                    doTransferOther = false;
-                                }
-                                if(fluidReceiver instanceof FluidPipeBlockEntity)
-                                {
-                                    int other = ((FluidPipeBlockEntity)fluidReceiver).getFluidLevelSide(direction.getOpposite().get3DDataValue());
-                                    int here = blockEntity.getFluidLevelSide(direction.get3DDataValue());
-                                    transferAmount = Mth.clamp((here - other) / 2, 0, 10);
-                                    if(other > here)
-                                    {
-                                        doTransferOther = false;
-                                    }
-                                }
-                                int fluidLevelCenter = blockEntity.getFluidLevelCenter();
-                                int fluidLevelSide = blockEntity.getFluidLevelSide(direction.get3DDataValue());
-                                if(fluidLevelCenter > fluidLevelSide)
-                                {
-                                    doTransferCenter = false;
-                                }
-                                if(doTransferOther)
-                                {
-                                    if(blockEntity.tankSides[direction.get3DDataValue()].getFluidAmount() > 20)
-                                    {
-                                        FluidUtils.transferFluid(blockEntity.tankSides[direction.get3DDataValue()], fluidHandler, transferAmount);
-                                    }
-                                }
-                                if(doTransferCenter)
-                                {
-                                    FluidUtils.transferFluid(blockEntity.tankSides[direction.get3DDataValue()], blockEntity.tankCenter, Mth.clamp((fluidLevelSide - fluidLevelCenter) / 2, 0, 20));
-                                }
-                            }
-                        }
-                    }
+                    sides.add(to);
                 }
             }
         }
+    
+        Collections.shuffle(sides);
+    
+        for(Direction to : sides)
+        {
+            /*if(this.worldPosition.getX() == 7 && this.worldPosition.getY() == 64 && this.worldPosition.getZ() == 0)
+            {
+                System.out.println(to.getName());
+            }*/
+            FluidTank other = this.tankSides[to.get3DDataValue()];
+            int movable = (this.centerAmountLastTick - this.sideAmountLastTick[to.get3DDataValue()] + sides.size() - 1) / sides.size();
+            if(!canGoInDirection(to, null))
+            {
+                movable = Math.min(this.tankCenter.getFluidAmount(), SIDE_CAPACITY - other.getFluidAmount());
+            }
+            if(movable < 1)
+            {
+                continue;
+            }
+            FluidUtils.transferFluid(this.tankCenter, this.tankSides[to.get3DDataValue()], movable / 2);
+            /*FluidTank fluidCopy = this.tankCenter;
+            FluidTank split = fluidCopy;
+            split.setFluid(new FluidStack(split.getFluid(), movable / 2));
+            FluidTank merged = this.tankSides[to.get3DDataValue()];
+            FluidUtils.transferFluid(split, merged, 1000);
+            if(!merged.isEmpty())
+            {
+                this.tankSides[to.get3DDataValue()] = merged;
+                this.tankCenter = fluidCopy;
+                if(this.tankCenter.isEmpty())
+                {
+                    return;
+                }
+            }*/
+        }
+    }
+    
+    protected void doSideLogic(Direction side)
+    {
+        if(this.tankSides[side.get3DDataValue()].isEmpty())
+        {
+            return;
+        }
+    
+        List<Direction> sides = new ArrayList<>(2);
+        if(canGoInDirection(side, null))
+        {
+            int movable = (sideAmountLastTick[side.get3DDataValue()] - centerAmountLastTick);
+            if(movable > 0)
+            {
+                sides.add(null);
+            }
+            else if(!canGoInDirection(null, side) && this.tankCenter.getFluidAmount() < CENTER_CAPACITY)
+            {
+                sides.add(null);
+            }
+        }
+        
+        if(canGoInDirection(side, side))
+        {
+            BlockEntity blockEntityAtSide = this.level.getBlockEntity(this.worldPosition.relative(side));
+            FluidPipeBlockEntity otherPipe;
+            if(blockEntityAtSide instanceof FluidPipeBlockEntity)
+            {
+                otherPipe = (FluidPipeBlockEntity)blockEntityAtSide;
+            }
+            else
+            {
+                otherPipe = null;
+            }
+            
+            if(otherPipe != null)
+            {
+                int movable = (sideAmountLastTick[side.get3DDataValue()] - otherPipe.sideAmountLastTick[side.getOpposite().get3DDataValue()]);
+                if(movable > 0)
+                {
+                    sides.add(side);
+                }
+            }
+            else
+            {
+                IFluidHandler fluidHandler = this.level.getBlockEntity(this.worldPosition.relative(side)).getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).orElse(null);
+                FluidStack leftOver = FluidUtil.tryFluidTransfer(fluidHandler, this.tankSides[side.get3DDataValue()], 10, false);
+                if(leftOver.getAmount() < this.tankSides[side.get3DDataValue()].getFluidAmount())
+                {
+                    sides.add(side);
+                }
+            }
+        }
+    
+        Collections.shuffle(sides);
+    
+        for(Direction to : sides)
+        {
+            /*if(this.worldPosition.getX() == 7 && this.worldPosition.getY() == 64 && this.worldPosition.getZ() == 0)
+            {
+                if(to == null)
+                {
+                
+                }
+                System.out.println();
+            }*/
+            if(to == null)
+            {
+                FluidTank other = this.tankCenter;
+                int movable = (this.sideAmountLastTick[side.get3DDataValue()] - this.centerAmountLastTick + sides.size() - 1) / sides.size();
+                if(!canGoInDirection(null, side))
+                {
+                    movable = Math.min(this.tankSides[side.get3DDataValue()].getFluidAmount(), SIDE_CAPACITY - other.getFluidAmount());
+                }
+                if(movable < 1)
+                {
+                    continue;
+                }
+                FluidUtils.transferFluid(this.tankSides[side.get3DDataValue()], this.tankCenter, movable / 2);
+                /*FluidTank fluidCopy = this.tankSides[side.get3DDataValue()];
+                FluidTank split = fluidCopy;
+                split.setFluid(new FluidStack(split.getFluid(), movable / 2));
+                FluidTank merged = this.tankCenter;
+                FluidUtils.transferFluid(split, merged, 1000);
+                if(!merged.isEmpty())
+                {
+                    this.tankCenter = merged;
+                    this.tankSides[side.get3DDataValue()] = fluidCopy;
+                    if(this.tankSides[side.get3DDataValue()].isEmpty())
+                    {
+                        return;
+                    }
+                }*/
+            }
+            else
+            {
+                BlockEntity blockEntityAtSide = this.level.getBlockEntity(this.worldPosition.relative(side));
+                FluidPipeBlockEntity otherPipe;
+                if(blockEntityAtSide instanceof FluidPipeBlockEntity)
+                {
+                    otherPipe = (FluidPipeBlockEntity)blockEntityAtSide;
+                }
+                else
+                {
+                    otherPipe = null;
+                }
+                if(otherPipe != null)
+                {
+                    FluidTank other = otherPipe.tankSides[side.getOpposite().get3DDataValue()];
+                    int movable = (this.sideAmountLastTick[side.get3DDataValue()] - otherPipe.sideAmountLastTick[side.getOpposite().get3DDataValue()]);
+                    if(movable < 1)
+                    {
+                        continue;
+                    }
+                    FluidUtils.transferFluid(this.tankSides[side.get3DDataValue()], otherPipe.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, to.getOpposite()).orElse(null), movable / 2);
+                    /*FluidTank fluidCopy = this.tankSides[side.get3DDataValue()];
+                    FluidTank split = fluidCopy;
+                    split.setFluid(new FluidStack(split.getFluid(), movable / 2));
+                    FluidTank merged = other;
+                    FluidUtils.transferFluid(split, merged, 1000);
+                    if(!merged.isEmpty())
+                    {
+                        otherPipe.tankSides[side.get3DDataValue()] = merged;
+                        this.tankSides[side.get3DDataValue()] = fluidCopy;
+                        BlockEntityUtil.sendUpdatePacket(otherPipe);
+                        if(this.tankSides[side.get3DDataValue()].isEmpty())
+                        {
+                            return;
+                        }
+                    }*/
+                }
+                else
+                {
+                    IFluidHandler fluidHandler = this.level.getBlockEntity(this.worldPosition.relative(side)).getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).orElse(null);
+                    FluidTank leftOver = new FluidTank(1000);
+                    leftOver.setFluid(FluidUtil.tryFluidTransfer(fluidHandler, this.tankSides[side.get3DDataValue()], 10, false));
+                    
+                    int movable = (this.tankSides[side.get3DDataValue()].getFluidAmount() + 1) / 2;
+                    //System.out.println(this.worldPosition.getX() + " " + this.worldPosition.getY() + " " + this.worldPosition.getZ());
+                    if(movable < 0)
+                    {
+                        continue;
+                    }
+                    FluidUtils.transferFluid(this.tankSides[side.get3DDataValue()], fluidHandler, movable);
+                    /*FluidTank fluidCopy = this.tankSides[side.get3DDataValue()];
+                    FluidTank split = fluidCopy;
+                    split.setFluid(new FluidStack(split.getFluid(), movable / 2));
+                    int inserted = split.getFluidAmount() - leftOver.getFluidAmount();
+                    if(inserted > 0)
+                    {
+                        FluidTank merged = fluidCopy;
+                        FluidUtils.transferFluid(leftOver, merged, 1000);
+                        this.tankSides[side.get3DDataValue()] = merged;
+                        if(this.tankSides[side.get3DDataValue()].isEmpty())
+                        {
+                            return;
+                        }
+                    }*/
+                }
+            }
+        }
+    }
+    
+    public void updateAmounts()
+    {
+        this.centerAmountLastTick = tankCenter.getFluidAmount();
+        for(int i = 0; i < 6; i++)
+        {
+            this.sideAmountLastTick[i] = tankSides[i].getFluidAmount();
+        }
+    }
+    
+    public boolean canGoInDirection(@Nullable Direction from, @Nullable Direction to)
+    {
+        if(from == null)
+        {
+            if(to == null)
+            {
+                throw new IllegalArgumentException("WAT 2");
+            }
+            if(!this.getLinkBoolean(to.get3DDataValue()))
+            {
+                return false;
+            }
+            return true;
+        }
+        if(to == null)
+        {
+            return true;
+        }
+        if(to != from)
+        {
+            throw new IllegalArgumentException("WAT 2");
+        }
+        if(!this.getLinkBoolean(to.get3DDataValue()))
+        {
+            return false;
+        }
+        return true;
     }
     
     public int[] getLinks()
