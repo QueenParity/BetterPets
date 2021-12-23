@@ -79,7 +79,7 @@ public class FluidPumpBlockEntity extends FluidPipeBlockEntity
                 }
             }
             
-            updateAmounts();
+            this.updateAmounts();
             
             this.syncToClient();
         }
