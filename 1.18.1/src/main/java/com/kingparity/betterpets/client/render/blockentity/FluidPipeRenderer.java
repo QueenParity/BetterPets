@@ -34,74 +34,73 @@ public class FluidPipeRenderer implements BlockEntityRenderer<FluidPipeBlockEnti
         //poseStack.mulPose(Vector3f.YP.rotationDegrees(direction.get2DDataValue() * -90F - 90F));
         poseStack.translate(-0.5, -0.5, -0.5);
         //float height = (float) (16.0 * (blockEntity.getFluidLevel() / (double) blockEntity.getCapacity()));
-        float level = blockEntity.getFluidLevel();
-        float height = (4.0F * ((Mth.clamp(level, 0, 80)) / 80.0F));
-        if(level > 0)
+        int direction;
+        direction = Direction.DOWN.get3DDataValue();
+        if(blockEntity.getLinkBoolean(direction))
         {
-            //this.drawFluid(blockEntity, poseStack, buffer, 4.01F * 0.0625F, 12.01F * 0.0625F, 4.01F * 0.0625F, (8 - 0.02F) * 0.0625F, height * 0.0625F, (8 - 0.02F) * 0.0625F);
-            if(blockEntity.getLinkBoolean(Direction.DOWN.get3DDataValue()))
+            float height = (5.0F * ((Mth.clamp(blockEntity.getFluidLevelSide(direction), 0, 80)) / 80.0F));
+            if(height > 0)
             {
-                this.drawFluid(blockEntity, poseStack, buffer, 6.01F * 0.0625F, 0.01F * 0.0625F, 6.01F * 0.0625F, (height - 0.02F) * 0.0625F, (5 - 0.02F) * 0.0625F, (4 - 0.02F) * 0.0625F);
-                level -= 80;
+                this.drawFluid(blockEntity.getFluidStack(direction).getFluid(), blockEntity, poseStack, buffer, 6.01F * 0.0625F, 0.01F * 0.0625F, 6.01F * 0.0625F, (height - 0.02F) * 0.0625F, (5 - 0.02F) * 0.0625F, (4 - 0.02F) * 0.0625F);
             }
-            //this.drawFluid(blockEntity, poseStack, buffer, 4.51F * 0.0625F, 4.49F * 0.0625F, 4.51F * 0.0625F, (7 - 0.02F) * 0.0625F, height * 0.0625F, (7 - 0.02F) * 0.0625F);
         }
-        int connections = 0;
-        for(int i = 2; i < 6; i++)
+        direction = Direction.NORTH.get3DDataValue();
+        if(blockEntity.getLinkBoolean(direction))
         {
-            if(blockEntity.getLinkBoolean(i))
+            float height = (4.0F * ((Mth.clamp(blockEntity.getFluidLevelSide(direction), 0, 80)) / 80.0F));
+            if(height > 0)
             {
-                connections++;
+                this.drawFluid(blockEntity.getFluidStack(direction).getFluid(), blockEntity, poseStack, buffer, 6.01F * 0.0625F, 6.01F * 0.0625F, 0.01F * 0.0625F, (4 - 0.02F) * 0.0625F, (height - 0.02F) * 0.0625F, (5 - 0.02F) * 0.0625F);
+            }
+        }
+        direction = Direction.SOUTH.get3DDataValue();
+        if(blockEntity.getLinkBoolean(direction))
+        {
+            float height = (4.0F * ((Mth.clamp(blockEntity.getFluidLevelSide(direction), 0, 80)) / 80.0F));
+            if(height > 0)
+            {
+                this.drawFluid(blockEntity.getFluidStack(direction).getFluid(), blockEntity, poseStack, buffer, 6.01F * 0.0625F, 6.01F * 0.0625F, 11.01F * 0.0625F, (4 - 0.02F) * 0.0625F, (height - 0.02F) * 0.0625F, (5 - 0.02F) * 0.0625F);
+            }
+        }
+        direction = Direction.WEST.get3DDataValue();
+        if(blockEntity.getLinkBoolean(direction))
+        {
+            float height = (4.0F * ((Mth.clamp(blockEntity.getFluidLevelSide(direction), 0, 80)) / 80.0F));
+            if(height > 0)
+            {
+                this.drawFluid(blockEntity.getFluidStack(direction).getFluid(), blockEntity, poseStack, buffer, 0.01F * 0.0625F, 6.01F * 0.0625F, 6.01F * 0.0625F, (5 - 0.02F) * 0.0625F, (height - 0.02F) * 0.0625F, (4 - 0.02F) * 0.0625F);
+            }
+        }
+        direction = Direction.EAST.get3DDataValue();
+        if(blockEntity.getLinkBoolean(direction))
+        {
+            float height = (4.0F * ((Mth.clamp(blockEntity.getFluidLevelSide(direction), 0, 80)) / 80.0F));
+            if(height > 0)
+            {
+                this.drawFluid(blockEntity.getFluidStack(direction).getFluid(), blockEntity, poseStack, buffer, 11.01F * 0.0625F, 6.01F * 0.0625F, 6.01F * 0.0625F, (5 - 0.02F) * 0.0625F, (height - 0.02F) * 0.0625F, (4 - 0.02F) * 0.0625F);
+            }
+        }
+        direction = Direction.UP.get3DDataValue();
+        if(blockEntity.getLinkBoolean(direction))
+        {
+            float height = (4.0F * ((Mth.clamp(blockEntity.getFluidLevelSide(direction), 0, 80)) / 80.0F));
+            if(height > 0)
+            {
+                this.drawFluid(blockEntity.getFluidStack(direction).getFluid(), blockEntity, poseStack, buffer, 6.01F * 0.0625F, 11.01F * 0.0625F, 6.01F * 0.0625F, (height - 0.02F) * 0.0625F, (5 - 0.02F) * 0.0625F, (4 - 0.02F) * 0.0625F);
             }
         }
         
-        if(level > 0)
+        float height = (6.0F * ((Mth.clamp(blockEntity.getFluidLevelCenter(), 0, 80)) / 80.0F));
+        if(height > 0)
         {
-            float nodeHeight = (1.0F * Mth.clamp(level, 0, 36) / 36.0F) ;
-            if(level - 36 > 0)
-            {
-                int partThing = (80*connections) + (36*4);
-                height = (4.0F * ((Mth.clamp(level - 36, 0, partThing)) / (float)(partThing)));
-                
-                if(blockEntity.getLinkBoolean(Direction.NORTH.get3DDataValue()))
-                {
-                    this.drawFluid(blockEntity, poseStack, buffer, 6.01F * 0.0625F, 6.01F * 0.0625F, 0.01F * 0.0625F, (4 - 0.02F) * 0.0625F, (height - 0.02F) * 0.0625F, (5 - 0.02F) * 0.0625F);
-                }
-                if(blockEntity.getLinkBoolean(Direction.SOUTH.get3DDataValue()))
-                {
-                    this.drawFluid(blockEntity, poseStack, buffer, 6.01F * 0.0625F, 6.01F * 0.0625F, 11.01F * 0.0625F, (4 - 0.02F) * 0.0625F, (height - 0.02F) * 0.0625F, (5 - 0.02F) * 0.0625F);
-                }
-                if(blockEntity.getLinkBoolean(Direction.WEST.get3DDataValue()))
-                {
-                    this.drawFluid(blockEntity, poseStack, buffer, 0.01F * 0.0625F, 6.01F * 0.0625F, 6.01F * 0.0625F, (5 - 0.02F) * 0.0625F, (height - 0.02F) * 0.0625F, (4 - 0.02F) * 0.0625F);
-                }
-                if(blockEntity.getLinkBoolean(Direction.EAST.get3DDataValue()))
-                {
-                    this.drawFluid(blockEntity, poseStack, buffer, 11.01F * 0.0625F, 6.01F * 0.0625F, 6.01F * 0.0625F, (5 - 0.02F) * 0.0625F, (height - 0.02F) * 0.0625F, (4 - 0.02F) * 0.0625F);
-                }
-                
-                nodeHeight += height;
-            }
-            level = level - (80*connections) - 216 + 36;
-            height = (nodeHeight + (1.0F * Mth.clamp(level, 0, 36) / 36.0F));
-            this.drawFluid(blockEntity, poseStack, buffer, 5.01F * 0.0625F, 5.01F * 0.0625F, 5.01F * 0.0625F, (6 - 0.02F) * 0.0625F, (height - 0.02F) * 0.0625F, (6 - 0.02F) * 0.0625F);
-            
-            level -= 36;
-            if(level > 0)
-            {
-                height = (4.0F * ((Mth.clamp(level, 0, 80)) / 80.0F));
-                if(blockEntity.getLinkBoolean(Direction.UP.get3DDataValue()))
-                {
-                    this.drawFluid(blockEntity, poseStack, buffer, 6.01F * 0.0625F, 11.01F * 0.0625F, 6.01F * 0.0625F, (height - 0.02F) * 0.0625F, (5 - 0.02F) * 0.0625F, (4 - 0.02F) * 0.0625F);
-                }
-            }
+            this.drawFluid(blockEntity.getFluidStack(-1).getFluid(), blockEntity, poseStack, buffer, 5.01F * 0.0625F, 5.01F * 0.0625F, 5.01F * 0.0625F, (6 - 0.02F) * 0.0625F, (height - 0.02F) * 0.0625F, (6 - 0.02F) * 0.0625F);
         }
+        
         poseStack.popPose();
     }
     
-    private void drawFluid(FluidPipeBlockEntity be, PoseStack poseStack, MultiBufferSource bufferSource, float x, float y, float z, float width, float height, float depth)
+    private void drawFluid(Fluid fluid, FluidPipeBlockEntity be, PoseStack poseStack, MultiBufferSource bufferSource, float x, float y, float z, float width, float height, float depth)
     {
-        Fluid fluid = be.getFluidStackTank().getFluid();
         if(fluid == Fluids.EMPTY) return;
         
         TextureAtlasSprite sprite = ForgeHooksClient.getFluidSprites(be.getLevel(), be.getBlockPos(), fluid.defaultFluidState())[0];

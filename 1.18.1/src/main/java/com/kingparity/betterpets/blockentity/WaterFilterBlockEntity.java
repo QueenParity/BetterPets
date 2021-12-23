@@ -9,8 +9,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -339,6 +341,25 @@ public class WaterFilterBlockEntity extends BaseContainerBlockEntity implements 
         CompoundTag tagTankFilteredWater = new CompoundTag();
         this.tankFilteredWater.writeToNBT(tagTankFilteredWater);
         compound.put("TankFilteredWater", tagTankFilteredWater);
+    }
+    
+    @Override
+    public CompoundTag getUpdateTag()
+    {
+        return this.save(new CompoundTag());
+    }
+    
+    @org.jetbrains.annotations.Nullable
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket()
+    {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+    
+    @Override
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt)
+    {
+        this.load(pkt.getTag());
     }
     
     @Override
