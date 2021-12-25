@@ -366,7 +366,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
                 int actuallyDrained = section.drain(new FluidStack(currentFluid, leaving), IFluidHandler.FluidAction.EXECUTE).getAmount();
                 if(actuallyDrained != leaving)
                 {
-                    throw new IllegalStateException("WHYYY");
+                    throw new IllegalStateException("Couldn't drain " + leaving + " from " + part + ", only drained " + actuallyDrained);
                 }
                 if(actuallyDrained > 0)
                 {
@@ -378,7 +378,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
                     int actuallyFilled = center.fill(new FluidStack(currentFluid, entering), IFluidHandler.FluidAction.EXECUTE);
                     if(actuallyFilled != entering)
                     {
-                        throw new IllegalStateException("WHYYY");
+                        throw new IllegalStateException("Couldn't fill " + entering + " from " + part + ", only filled " + actuallyFilled);
                     }
                 }
             }
