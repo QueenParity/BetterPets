@@ -2,7 +2,6 @@ package com.kingparity.betterpets.blockentity;
 
 import com.kingparity.betterpets.init.ModBlockEntities;
 import com.kingparity.betterpets.util.BlockEntityUtil;
-import com.kingparity.betterpets.util.FluidUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -16,35 +15,27 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWriter
 {
     protected final int[] links = new int[6];
-    protected int centerAmountLastTick;
-    protected int[] sideAmountLastTick = new int[6];
     
-    public static final int CENTER_CAPACITY = 80;
-    public static final int SIDE_CAPACITY = 80;
+    public static final int SECTION_CAPACITY = 80;
+    public static final int TRANSFER_RATE = 20;
+    public static final int TRANSFER_DELAY = 10;
+    public static final int DIRECTION_COOLDOWN = 60;
+    public static final int COOLDOWN_INPUT = -DIRECTION_COOLDOWN;
+    public static final int COOLDOWN_OUTPUT = DIRECTION_COOLDOWN;
     
-    protected FluidTank tankCenter = new FluidTank(SIDE_CAPACITY)
-    {
-        @Override
-        protected void onContentsChanged()
-        {
-            FluidPipeBlockEntity.this.syncToClient();
-        }
-    };
+    private FluidStack currentFluid;
     
-    protected FluidTank[] tankSides = new FluidTank[6];
+    protected final Map<Parts, Section> sections = new EnumMap<>(Parts.class);
     
     public FluidPipeBlockEntity(BlockPos pos, BlockState state)
     {
@@ -54,17 +45,18 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
     public FluidPipeBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state)
     {
         super(blockEntityType, pos, state);
-        for(int i = 0; i < 6; i++)
+        for(Parts part : Parts.values())
         {
-            this.tankSides[i] = new FluidTank(SIDE_CAPACITY)
+            sections.put(part, new Section(SECTION_CAPACITY, part)
             {
                 @Override
                 protected void onContentsChanged()
                 {
                     FluidPipeBlockEntity.this.syncToClient();
                 }
-            };
+            });
         }
+        this.currentFluid = FluidStack.EMPTY;
     }
     
     public void syncToClient()
@@ -94,7 +86,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
             }
             if(this.links[direction.get3DDataValue()] == 0)
             {
-                this.tankSides[direction.get3DDataValue()].drain(500, IFluidHandler.FluidAction.EXECUTE);
+                this.sections.get(Parts.fromFacing(direction)).drain(500, IFluidHandler.FluidAction.EXECUTE);
             }
         }
     }
@@ -108,212 +100,277 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
     {
         if(!this.level.isClientSide)
         {
-            this.updateLinks(this.level, this.worldPosition);
-            
-            this.updateAmounts();
-            
-            this.doCenterLogic();
-            
-            for(int i = 0; i < 6; i++)
+            if(currentFluid != null)
             {
-                if(this.getLinkBoolean(i))
+                this.updateLinks(this.level, this.worldPosition);
+    
+                int totalFluid = 0;
+                boolean canOutput = false;
+    
+                for(Parts part : Parts.values())
                 {
-                    this.doSideLogic(Direction.from3DDataValue(i));
+                    Section section = sections.get(part);
+                    section.currentTime = (section.currentTime + 1) % TRANSFER_DELAY;
+                    totalFluid += section.getFluidAmount();
+                    if(section.getCurrentFlowDirection().canOutput())
+                    {
+                        canOutput = true;
+                    }
+                }
+    
+                if(totalFluid == 0)
+                {
+                    setFluid(FluidStack.EMPTY);
+                }
+                else
+                {
+                    if(canOutput)
+                    {
+                        moveFromPipe();
+                    }
+                    moveFromCenter();
+                    moveToCenter();
+                }
+    
+                for(Parts part : Parts.values())
+                {
+                    Section section = sections.get(part);
+                    if(section.ticksInDirection > 0)
+                    {
+                        section.ticksInDirection--;
+                    }
+                    else if(section.ticksInDirection < 0)
+                    {
+                        section.ticksInDirection++;
+                    }
                 }
             }
-            
-            this.updateAmounts();
-            
+    
+            boolean send = false;
+    
+            for(Parts part : Parts.values())
+            {
+                Section section = sections.get(part);
+                if(section.getFluidAmount() != section.lastTickAmount)
+                {
+                    send = true;
+                    break;
+                }
+                else
+                {
+                    FlowDirection should = FlowDirection.get(section.ticksInDirection);
+                    if(section.lastFlowDirection != should)
+                    {
+                        send = true;
+                        break;
+                    }
+                }
+            }
+    
             this.syncToClient();
+    
+            if(send)
+            {
+                this.syncToClient();
+            }
         }
     }
     
-    protected void doCenterLogic()
+    protected void moveFromPipe()
     {
-        if(this.tankCenter.isEmpty())
+        for(Parts part : Parts.FACES)
         {
-            return;
-        }
-    
-        List<Direction> sides = new ArrayList<>(6);
-    
-        for(Direction to : Direction.values())
-        {
-            if(canGoInDirection(null, to))
+            Section section = sections.get(part);
+            if(section.getCurrentFlowDirection().canOutput())
             {
-                int movable = (centerAmountLastTick - sideAmountLastTick[to.get3DDataValue()]);
-                if(movable > 0)
-                {
-                    sides.add(to);
-                }
-                else if(!canGoInDirection(to, null) && this.tankSides[to.get3DDataValue()].getFluidAmount() < SIDE_CAPACITY)
-                {
-                    sides.add(to);
-                }
-            }
-        }
-    
-        Collections.shuffle(sides);
-    
-        for(Direction to : sides)
-        {
-            FluidTank other = this.tankSides[to.get3DDataValue()];
-            int movable = (this.centerAmountLastTick - this.sideAmountLastTick[to.get3DDataValue()] + sides.size() - 1) / sides.size();
-            if(!canGoInDirection(to, null))
-            {
-                movable = Math.min(this.tankCenter.getFluidAmount(), SIDE_CAPACITY - other.getFluidAmount());
-            }
-            if(movable < 1)
-            {
-                continue;
-            }
-            FluidUtils.transferFluid(this.tankCenter, this.tankSides[to.get3DDataValue()], movable / 2);
-        }
-    }
-    
-    protected void doSideLogic(Direction side)
-    {
-        if(this.tankSides[side.get3DDataValue()].isEmpty())
-        {
-            return;
-        }
-    
-        List<Direction> sides = new ArrayList<>(2);
-        if(canGoInDirection(side, null))
-        {
-            int movable = (sideAmountLastTick[side.get3DDataValue()] - centerAmountLastTick);
-            if(movable > 0)
-            {
-                sides.add(null);
-            }
-            else if(!canGoInDirection(null, side) && this.tankCenter.getFluidAmount() < CENTER_CAPACITY)
-            {
-                sides.add(null);
-            }
-        }
-        
-        if(canGoInDirection(side, side))
-        {
-            BlockEntity blockEntityAtSide = this.level.getBlockEntity(this.worldPosition.relative(side));
-            FluidPipeBlockEntity otherPipe;
-            if(blockEntityAtSide instanceof FluidPipeBlockEntity)
-            {
-                otherPipe = (FluidPipeBlockEntity)blockEntityAtSide;
-            }
-            else
-            {
-                otherPipe = null;
-            }
-            
-            if(otherPipe != null)
-            {
-                int movable = (sideAmountLastTick[side.get3DDataValue()] - otherPipe.sideAmountLastTick[side.getOpposite().get3DDataValue()]);
-                if(movable > 0)
-                {
-                    sides.add(side);
-                }
-            }
-            else
-            {
-                IFluidHandler fluidHandler = this.level.getBlockEntity(this.worldPosition.relative(side)).getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).orElse(null);
-                FluidStack leftOver = FluidUtil.tryFluidTransfer(fluidHandler, this.tankSides[side.get3DDataValue()], 10, false);
-                if(leftOver.getAmount() < this.tankSides[side.get3DDataValue()].getFluidAmount())
-                {
-                    sides.add(side);
-                }
-            }
-        }
-    
-        Collections.shuffle(sides);
-    
-        for(Direction to : sides)
-        {
-            if(to == null)
-            {
-                FluidTank other = this.tankCenter;
-                int movable = (this.sideAmountLastTick[side.get3DDataValue()] - this.centerAmountLastTick + sides.size() - 1) / sides.size();
-                if(!canGoInDirection(null, side))
-                {
-                    movable = Math.min(this.tankSides[side.get3DDataValue()].getFluidAmount(), SIDE_CAPACITY - other.getFluidAmount());
-                }
-                if(movable < 1)
+                int maxDrain = section.drainInternal(TRANSFER_RATE, false);
+                if(maxDrain <= 0)
                 {
                     continue;
                 }
-                FluidUtils.transferFluid(this.tankSides[side.get3DDataValue()], this.tankCenter, movable / 2);
-            }
-            else
-            {
-                BlockEntity blockEntityAtSide = this.level.getBlockEntity(this.worldPosition.relative(side));
-                FluidPipeBlockEntity otherPipe;
-                if(blockEntityAtSide instanceof FluidPipeBlockEntity)
+                SidePriorities sidePriorities = new SidePriorities(currentFluid);
+                sidePriorities.disallowAllExcept(part.face);
+                if(sidePriorities.getOrder().size() == 1)
                 {
-                    otherPipe = (FluidPipeBlockEntity)blockEntityAtSide;
-                }
-                else
-                {
-                    otherPipe = null;
-                }
-                if(otherPipe != null)
-                {
-                    int movable = (this.sideAmountLastTick[side.get3DDataValue()] - otherPipe.sideAmountLastTick[side.getOpposite().get3DDataValue()]);
-                    if(movable < 1)
-                    {
-                        continue;
-                    }
-                    FluidUtils.transferFluid(this.tankSides[side.get3DDataValue()], otherPipe.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, to.getOpposite()).orElse(null), movable / 2);
-                }
-                else
-                {
-                    IFluidHandler fluidHandler = this.level.getBlockEntity(this.worldPosition.relative(side)).getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).orElse(null);
+                    FluidStack fluidToPush = new FluidStack(currentFluid, maxDrain);
                     
-                    int movable = (this.tankSides[side.get3DDataValue()].getFluidAmount() + 1) / 2;
-                    if(movable < 0)
+                    if(part != Parts.CENTER)
                     {
-                        continue;
+                        if(links[part.getIndex()] == 0)
+                        {
+                            continue;
+                        }
                     }
-                    FluidUtils.transferFluid(this.tankSides[side.get3DDataValue()], fluidHandler, movable);
+                    
+                    if(fluidToPush.getAmount() > 0)
+                    {
+                        int filled = this.sections.get(part).fill(fluidToPush, IFluidHandler.FluidAction.EXECUTE);
+                        if(filled > 0)
+                        {
+                            section.drainInternal(filled, true);
+                            section.ticksInDirection = COOLDOWN_OUTPUT;
+                        }
+                    }
                 }
             }
         }
     }
     
-    public void updateAmounts()
+    protected void moveFromCenter()
     {
-        this.centerAmountLastTick = tankCenter.getFluidAmount();
-        for(int i = 0; i < 6; i++)
+        Section center = sections.get(Parts.CENTER);
+        int totalAvailable = center.getMaxDrained();
+        if(totalAvailable < 1)
         {
-            this.sideAmountLastTick[i] = tankSides[i].getFluidAmount();
+            return;
+        }
+        
+        Set<Direction> realDirections = EnumSet.noneOf(Direction.class);
+        
+        for(Direction direction : Direction.values())
+        {
+            Section section = sections.get(Parts.fromFacing(direction));
+            if(!section.getCurrentFlowDirection().canOutput())
+            {
+                continue;
+            }
+            if(section.getMaxFilled() > 0 && links[direction.get3DDataValue()] != 0)
+            {
+                realDirections.add(direction);
+            }
+        }
+        
+        if(realDirections.size() > 0)
+        {
+            SidePriorities sidePriorities = new SidePriorities(currentFluid);
+            sidePriorities.disallowAllExcept(realDirections);
+            
+            EnumSet<Direction> set = sidePriorities.getOrder();
+            
+            List<Direction> random = new ArrayList<>(set);
+            Collections.shuffle(random);
+            
+            float min = Math.min(TRANSFER_RATE * realDirections.size(), totalAvailable) / (float) TRANSFER_RATE / realDirections.size();
+            for(Direction direction : random)
+            {
+                Section section = sections.get(Parts.fromFacing(direction));
+                int available = section.fill(TRANSFER_RATE, false);
+                int amountToPush = (int)(available * min);
+                if(amountToPush < 1)
+                {
+                    amountToPush++;
+                }
+                
+                amountToPush = center.drainInternal(amountToPush, false);
+                if(amountToPush > 0)
+                {
+                    int filled = section.fill(amountToPush, true);
+                    if(filled > 0)
+                    {
+                        center.drainInternal(filled, true);
+                        section.ticksInDirection = COOLDOWN_OUTPUT;
+                    }
+                }
+            }
         }
     }
     
-    public boolean canGoInDirection(@Nullable Direction from, @Nullable Direction to)
+    protected void moveToCenter()
     {
-        if(from == null)
+        int transferInCount = 0;
+        Section center = sections.get(Parts.CENTER);
+        int spaceAvailable = SECTION_CAPACITY - center.getFluidAmount();
+        if(spaceAvailable <= 0 || center.getMaxFilled() <= 0)
         {
-            if(to == null)
+            return;
+        }
+        
+        List<Parts> faces = new ArrayList<>();
+        Collections.addAll(faces, Parts.FACES);
+        Collections.shuffle(faces);
+        
+        int[] inputPerTick = new int[6];
+        for(Parts part : faces)
+        {
+            Section section = sections.get(part);
+            inputPerTick[part.getIndex()] = 0;
+            if(section.getCurrentFlowDirection().canInput())
             {
-                throw new IllegalArgumentException("WAT 2");
+                inputPerTick[part.getIndex()] = section.drainInternal(TRANSFER_RATE, false);
+                if(inputPerTick[part.getIndex()] > 0)
+                {
+                    transferInCount++;
+                }
             }
-            if(!this.getLinkBoolean(to.get3DDataValue()))
+        }
+        
+        int[] fluidLeavingSide = new int[6];
+        
+        int left = Math.min(TRANSFER_RATE, spaceAvailable);
+        float min = Math.min(TRANSFER_RATE * transferInCount, spaceAvailable) / (float) TRANSFER_RATE / transferInCount;
+        for(Parts part : Parts.values())
+        {
+            Section section = sections.get(part);
+            int i = part.getIndex();
+            if(inputPerTick[i] > 0)
             {
-                return false;
+                int amountToDrain = (int)(inputPerTick[i] * min);
+                if(amountToDrain < 1)
+                {
+                    amountToDrain++;
+                }
+                if(amountToDrain > left)
+                {
+                    amountToDrain = left;
+                }
+                int amountToPush = section.drainInternal(amountToDrain, false);
+                if(amountToPush > 0)
+                {
+                    fluidLeavingSide[i] = amountToPush;
+                    left -= amountToPush;
+                }
             }
-            return true;
         }
-        if(to == null)
+        
+        int[] fluidEnteringCentre = Arrays.copyOf(fluidLeavingSide, 6);
+        for(Parts part : Parts.values())
         {
-            return true;
+            Section section = sections.get(part);
+            int i = part.getIndex();
+            int leaving = fluidLeavingSide[i];
+            if(leaving > 0)
+            {
+                int actuallyDrained = section.drainInternal(leaving, true);
+                if(actuallyDrained != leaving)
+                {
+                    throw new IllegalStateException("WHYYY");
+                }
+                if(actuallyDrained > 0)
+                {
+                    section.ticksInDirection = COOLDOWN_INPUT;
+                }
+                int entering = fluidEnteringCentre[i];
+                if(entering > 0)
+                {
+                    int actuallyFilled = center.fill(entering, true);
+                    if(actuallyFilled != entering)
+                    {
+                        throw new IllegalStateException("WHYYY");
+                    }
+                }
+            }
         }
-        if(to != from)
+    }
+    
+    private void setFluid(FluidStack fluid)
+    {
+        currentFluid = fluid;
+        for(Section section : sections.values())
         {
-            throw new IllegalArgumentException("WAT 2");
+            section.incoming = new int[SECTION_CAPACITY];
+            section.currentTime = 0;
+            section.ticksInDirection = 0;
         }
-        if(!this.getLinkBoolean(to.get3DDataValue()))
-        {
-            return false;
-        }
-        return true;
     }
     
     public int[] getLinks()
@@ -333,34 +390,27 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
     
     public int getFluidLevel()
     {
-        int level = this.tankCenter.getFluidAmount();
-        for(int i = 0; i < 6; i++)
+        int level = 0;
+        for(Section section : sections.values())
         {
-            level += this.tankSides[i].getFluidAmount();
+            level += section.getFluidAmount();
         }
         return level;
     }
     
     public int getFluidLevelCenter()
     {
-        return this.tankCenter.getFluidAmount();
+        return sections.get(Parts.CENTER).getFluidAmount();
     }
     
     public int getFluidLevelSide(int side)
     {
-        return this.tankSides[side].getFluidAmount();
+        return sections.get(Parts.fromFacing(Direction.from3DDataValue(side))).getFluidAmount();
     }
     
     public FluidStack getFluidStack(int side)
     {
-        if(side == -1)
-        {
-            return this.tankCenter.getFluid();
-        }
-        else
-        {
-            return this.tankSides[side].getFluid();
-        }
+        return sections.get(Parts.fromFacing(Direction.from3DDataValue(side))).getFluid();
     }
     
     @Override
@@ -368,11 +418,42 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
     {
         super.load(compound);
         
-        this.tankCenter.readFromNBT(compound.getCompound("TankCenter"));
-        
-        for(int i = 0; i < 6; i++)
+        for(Parts part : Parts.values())
         {
-            this.tankSides[i].readFromNBT(compound.getCompound("TankSide" + Direction.from3DDataValue(i).getName().substring(0,1).toUpperCase() + Direction.from3DDataValue(i).getName().substring(1)));
+            sections.put(part, new Section(SECTION_CAPACITY, part));
+        }
+        if(compound.contains("Fluid"))
+        {
+            setFluid(FluidStack.loadFluidStackFromNBT(compound.getCompound("Fluid")));
+        }
+        else
+        {
+            setFluid(FluidStack.EMPTY);
+        }
+        
+        for(Parts part : Parts.values())
+        {
+            int direction = part.getIndex();
+            if(compound.contains("tank[" + direction + "]"))
+            {
+                CompoundTag tag = compound.getCompound("tank[" + direction + "]");
+                if(true)//if(tag.contains("FluidName"))
+                {
+                    FluidStack stack = FluidStack.loadFluidStackFromNBT(tag);
+                    if(currentFluid == null)
+                    {
+                        setFluid(stack);
+                    }
+                    if(stack != null && stack.isFluidEqual(currentFluid))
+                    {
+                        sections.get(part).readFromNBT(tag);
+                    }
+                }
+                else
+                {
+                    sections.get(part).readFromNBT(tag);
+                }
+            }
         }
         
         int[] aint = compound.getIntArray("Links");
@@ -384,7 +465,15 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
     {
         super.saveAdditional(compound);
         
-        this.writeTanks(compound);
+        if(currentFluid != null)
+        {
+            System.out.println("heya");
+            CompoundTag fluidTag = new CompoundTag();
+            currentFluid.writeToNBT(fluidTag);
+            compound.put("Fluid", fluidTag);
+    
+            this.writeTanks(compound);
+        }
         
         compound.putIntArray("Links", this.links);
     }
@@ -392,16 +481,12 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
     @Override
     public void writeTanks(CompoundTag compound)
     {
-        CompoundTag tagTankCenter = new CompoundTag();
-        this.tankCenter.writeToNBT(tagTankCenter);
-        compound.put("TankCenter", tagTankCenter);
-        
-        CompoundTag[] tagTankSides = new CompoundTag[6];
-        for(int i = 0; i < 6; i++)
+        for(Parts part : Parts.values())
         {
-            tagTankSides[i] = new CompoundTag();
-            this.tankSides[i].writeToNBT(tagTankSides[i]);
-            compound.put("TankSide" + Direction.from3DDataValue(i).getName().substring(0,1).toUpperCase() + Direction.from3DDataValue(i).getName().substring(1), tagTankSides[i]);
+            int direction = part.getIndex();
+            CompoundTag tagTankSection = new CompoundTag();
+            sections.get(part).writeToNBT(tagTankSection);
+            compound.put("tank[" + direction + "]", tagTankSection);
         }
     }
     
@@ -435,13 +520,311 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
     {
         if(cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
         {
-            BlockState state = this.level.getBlockState(this.worldPosition);
-            if(facing == null)
-            {
-                return LazyOptional.of(() -> this.tankCenter).cast();
-            }
-            return LazyOptional.of(() -> this.tankSides[facing.get3DDataValue()]).cast();
+            return LazyOptional.of(() -> this.sections.get(Parts.fromFacing(facing))).cast();
         }
         return super.getCapability(cap, facing);
+    }
+    
+    protected class Section extends FluidTank
+    {
+        public Section(int capacity, Parts part)
+        {
+            super(capacity);
+            this.pipePart = part;
+        }
+    
+        //Null means center
+        Parts pipePart;
+        
+        int currentTime = 0;
+        int lastTickAmount = 0;
+        int ticksInDirection = 0;
+        int incomingTotalCache = 0;
+        int[] incoming = new int[1];
+        FlowDirection lastFlowDirection;
+        
+        @Override
+        public FluidTank readFromNBT(CompoundTag nbt)
+        {
+            this.lastTickAmount = nbt.getInt("LastTickAmount");
+            this.ticksInDirection = nbt.getInt("TicksInDirection");
+    
+            incomingTotalCache = 0;
+            for(int i = 0; i < incoming.length; ++i)
+            {
+                incomingTotalCache += incoming[i] = nbt.getInt("in[" + i + "]");
+            }
+            
+            return super.readFromNBT(nbt);
+        }
+    
+        @Override
+        public CompoundTag writeToNBT(CompoundTag nbt)
+        {
+            nbt.putInt("LastTickAmount", this.lastTickAmount);
+            nbt.putInt("TicksInDirection", this.ticksInDirection);
+            
+            for(int i = 0; i < incoming.length; ++i)
+            {
+                nbt.putInt("in[" + i + "]", incoming[i]);
+            }
+            
+            return super.writeToNBT(nbt);
+        }
+        
+        public int getMaxFilled()
+        {
+            int availableTotal = capacity - fluid.getAmount();
+            int availableThisTick = TRANSFER_RATE - incoming[currentTime];
+            return Math.min(availableTotal, availableThisTick);
+        }
+        
+        public int getMaxDrained()
+        {
+            return Math.min(fluid.getAmount() - incomingTotalCache, TRANSFER_RATE);
+        }
+        
+        public int fill(int maxFill, boolean doFill)
+        {
+            int amountToFill = Math.min(getMaxFilled(), maxFill);
+            if(amountToFill <= 0)
+            {
+                return 0;
+            }
+            
+            if(doFill)
+            {
+                incoming[currentTime] += amountToFill;
+                incomingTotalCache += amountToFill;
+                fluid.setAmount(fluid.getAmount() + amountToFill);
+            }
+            return amountToFill;
+        }
+        
+        public int drainInternal(int maxDrain, boolean doDrain)
+        {
+            maxDrain = Math.min(maxDrain, getMaxDrained());
+            if(maxDrain <= 0)
+            {
+                return 0;
+            }
+            else
+            {
+                if(doDrain)
+                {
+                    fluid.setAmount(fluid.getAmount() - maxDrain);
+                }
+                return maxDrain;
+            }
+        }
+        
+        public FlowDirection getCurrentFlowDirection()
+        {
+            return ticksInDirection == 0 ? FlowDirection.NONE : ticksInDirection < 0 ? FlowDirection.IN : FlowDirection.OUT;
+        }
+    
+        @Override
+        public int fill(FluidStack resource, FluidAction action)
+        {
+            return super.fill(resource, action);
+            /*if(!getCurrentFlowDirection().canInput() || !pipe.isConnected(part.face) || resource == null)
+            {
+                return 0;
+            }
+            resource = resource.copy();*/
+            //PipeEventFluid.TryInsert tryInsert = new PipeEventFluid.TryInsert(pipe.getHolder(), PipeFlowFluids.this, part.face, resource);
+            //pipe.getHolder().fireEvent(tryInsert);
+            /*if(tryInsert.isCanceled())
+            {
+                return 0;
+            }*/
+    
+            /*if(currentFluid == null || currentFluid.isFluidEqual(resource))
+            {
+                boolean doFill = action == FluidAction.EXECUTE;
+                if(doFill)
+                {
+                    if(currentFluid == null)
+                    {
+                        setFluid(resource.copy());
+                    }
+                }
+                int filled = fill(resource.getAmount(), doFill);
+                if(filled > 0 && doFill)
+                {
+                    ticksInDirection = COOLDOWN_INPUT;
+                }
+                return filled;
+            }
+            return 0;*/
+        }
+    }
+    
+    public class SidePriorities
+    {
+        public final FluidStack fluid;
+        
+        private final int[] priority = new int[6];
+        private final EnumSet<Direction> allowed = EnumSet.allOf(Direction.class);
+        
+        public SidePriorities(FluidStack fluid)
+        {
+            this.fluid = fluid;
+        }
+        
+        public boolean isAllowed(Direction side)
+        {
+            return allowed.contains(side);
+        }
+        
+        public void disallowAllExcept(Direction side)
+        {
+            if(allowed.contains(side))
+            {
+                allowed.clear();;
+                allowed.add(side);
+            }
+            else
+            {
+                allowed.clear();
+            }
+        }
+        
+        public void disallowAllExcept(Direction... sides)
+        {
+            switch(sides.length)
+            {
+                case 0:
+                    allowed.clear();
+                    break;
+                case 1:
+                    disallowAllExcept(sides[0]);
+                    break;
+                case 2:
+                    allowed.retainAll(EnumSet.of(sides[0], sides[1]));
+                    break;
+                case 3:
+                    allowed.retainAll(EnumSet.of(sides[0], sides[1], sides[2]));
+                    break;
+                case 4:
+                    allowed.retainAll(EnumSet.of(sides[0], sides[1], sides[2], sides[3]));
+                    break;
+                default:
+                    EnumSet<Direction> except = EnumSet.noneOf(Direction.class);
+                    for(Direction face : sides)
+                    {
+                        except.add(face);
+                    }
+                    this.allowed.retainAll(except);
+                    break;
+            }
+        }
+        
+        public void disallowAllExcept(Collection<Direction> sides)
+        {
+            allowed.retainAll(sides);
+        }
+        
+        public EnumSet<Direction> getOrder()
+        {
+            if(allowed.isEmpty())
+            {
+                return EnumSet.noneOf(Direction.class);
+            }
+            if(allowed.size() == 1)
+            {
+                return allowed;
+            }
+            priority_search:
+            {
+                int val = priority[0];
+                for(int i = 1; i < priority.length; i++)
+                {
+                    if(priority[i] != val)
+                    {
+                        break priority_search;
+                    }
+                }
+                return allowed;
+            }
+            int[] ordered = Arrays.copyOf(priority, 6);
+            Arrays.sort(ordered);
+            int last = 0;
+            for(int i = 0; i < 6; i++)
+            {
+                int current = ordered[i];
+                if(i != 0 && current == last)
+                {
+                    continue;
+                }
+                last = current;
+                EnumSet<Direction> set = EnumSet.noneOf(Direction.class);
+                for(Direction face : Direction.values())
+                {
+                    if(allowed.contains(face))
+                    {
+                        if(priority[face.get3DDataValue()] == current)
+                        {
+                            set.add(face);
+                        }
+                    }
+                }
+                if(set.size() > 0)
+                {
+                    return set;
+                }
+            }
+            return EnumSet.noneOf(Direction.class);
+        }
+    }
+    
+    public enum FlowDirection
+    {
+        IN(-1),
+        NONE(0),
+        OUT(1);
+        
+        int nbtValue;
+        
+        FlowDirection(int nbtValue)
+        {
+            this.nbtValue = nbtValue;
+        }
+        
+        public boolean isInput()
+        {
+            return this == IN;
+        }
+        
+        public boolean canInput()
+        {
+            return this != OUT;
+        }
+        
+        public boolean isOutput()
+        {
+            return this == OUT;
+        }
+        
+        public boolean canOutput()
+        {
+            return this != IN;
+        }
+        
+        public static FlowDirection get(int flowDirection)
+        {
+            if(flowDirection == 0)
+            {
+                return NONE;
+            }
+            else if(flowDirection < 0)
+            {
+                return IN;
+            }
+            else
+            {
+                return OUT;
+            }
+        }
     }
 }

@@ -40,7 +40,7 @@ public class FluidPumpBlockEntity extends FluidPipeBlockEntity
             }
             if(this.links[direction.get3DDataValue()] == 0)
             {
-                this.tankSides[direction.get3DDataValue()].drain(500, IFluidHandler.FluidAction.EXECUTE);
+                this.sections.get(Parts.fromFacing(direction)).drain(500, IFluidHandler.FluidAction.EXECUTE);
             }
         }
     }
@@ -50,6 +50,7 @@ public class FluidPumpBlockEntity extends FluidPipeBlockEntity
         blockEntity.doTick();
     }
     
+    @Override
     public void doTick()
     {
         if(!this.level.isClientSide)
@@ -63,25 +64,10 @@ public class FluidPumpBlockEntity extends FluidPipeBlockEntity
                 IFluidHandler fluidHandler = fluidReceiver.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing).orElse(null);
                 if(fluidHandler != null)
                 {
-                    FluidUtils.transferFluid(fluidHandler, this.tankCenter, 20);
+                    FluidUtils.transferFluid(fluidHandler, this.sections.get(Parts.CENTER), 20);
                 }
             }
-            
-            this.updateAmounts();
-            
-            this.doCenterLogic();
-            
-            for(int i = 0; i < 6; i++)
-            {
-                if(this.getLinkBoolean(i))
-                {
-                    this.doSideLogic(Direction.from3DDataValue(i));
-                }
-            }
-            
-            this.updateAmounts();
-            
-            this.syncToClient();
         }
+        super.doTick();
     }
 }
