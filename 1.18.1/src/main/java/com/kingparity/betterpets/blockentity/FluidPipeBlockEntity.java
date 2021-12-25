@@ -12,6 +12,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -100,7 +101,21 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
     {
         if(!this.level.isClientSide)
         {
-            if(currentFluid != null)
+            FluidStack stack = FluidStack.EMPTY;
+            for(Section section : sections.values())
+            {
+                if(section.getFluid().getFluid() != Fluids.EMPTY)
+                {
+                    stack = section.getFluid();
+                    break;
+                }
+                //currentFluid = sections.get(Parts.CENTER).getFluid();//this.setFluid(sections.get(Parts.CENTER).getFluid());//currentFluid = sections.get(Parts.CENTER)
+            }
+            if(stack != FluidStack.EMPTY)
+            {
+                this.setFluid(new FluidStack(stack, 1));
+            }
+            if(currentFluid != FluidStack.EMPTY)
             {
                 this.updateLinks(this.level, this.worldPosition);
     
@@ -111,6 +126,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
                 {
                     Section section = sections.get(part);
                     section.currentTime = (section.currentTime + 1) % TRANSFER_DELAY;
+                    section.advanceForMovement();
                     totalFluid += section.getFluidAmount();
                     if(section.getCurrentFlowDirection().canOutput())
                     {
@@ -169,10 +185,10 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
     
             this.syncToClient();
     
-            if(send)
+            /*if(send)
             {
                 this.syncToClient();
-            }
+            }*/
         }
     }
     
@@ -183,7 +199,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
             Section section = sections.get(part);
             if(section.getCurrentFlowDirection().canOutput())
             {
-                int maxDrain = section.drainInternal(TRANSFER_RATE, false);
+                int maxDrain = section.drain(TRANSFER_RATE, IFluidHandler.FluidAction.SIMULATE).getAmount();
                 if(maxDrain <= 0)
                 {
                     continue;
@@ -192,7 +208,11 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
                 sidePriorities.disallowAllExcept(part.face);
                 if(sidePriorities.getOrder().size() == 1)
                 {
-                    FluidStack fluidToPush = new FluidStack(currentFluid, maxDrain);
+                    IFluidHandler fluidHandler = this.level.getBlockEntity(this.worldPosition.relative(part.face)).getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, part.face.getOpposite()).orElse(null);
+                    if(fluidHandler == null)
+                    {
+                        continue;
+                    }
                     
                     if(part != Parts.CENTER)
                     {
@@ -201,13 +221,15 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
                             continue;
                         }
                     }
+    
+                    FluidStack fluidToPush = new FluidStack(currentFluid, maxDrain);
                     
                     if(fluidToPush.getAmount() > 0)
                     {
-                        int filled = this.sections.get(part).fill(fluidToPush, IFluidHandler.FluidAction.EXECUTE);
+                        int filled = fluidHandler.fill(fluidToPush, IFluidHandler.FluidAction.EXECUTE);
                         if(filled > 0)
                         {
-                            section.drainInternal(filled, true);
+                            section.drain(filled, IFluidHandler.FluidAction.EXECUTE);
                             section.ticksInDirection = COOLDOWN_OUTPUT;
                         }
                     }
@@ -254,20 +276,21 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
             for(Direction direction : random)
             {
                 Section section = sections.get(Parts.fromFacing(direction));
-                int available = section.fill(TRANSFER_RATE, false);
+                int available = section.fill(new FluidStack(currentFluid.getFluid(), TRANSFER_RATE), IFluidHandler.FluidAction.SIMULATE);
                 int amountToPush = (int)(available * min);
                 if(amountToPush < 1)
                 {
                     amountToPush++;
                 }
                 
-                amountToPush = center.drainInternal(amountToPush, false);
+                FluidStack fluidToPush = center.drain(amountToPush, IFluidHandler.FluidAction.SIMULATE);
+                amountToPush = fluidToPush.getAmount();
                 if(amountToPush > 0)
                 {
-                    int filled = section.fill(amountToPush, true);
+                    int filled = section.fill(fluidToPush, IFluidHandler.FluidAction.EXECUTE);
                     if(filled > 0)
                     {
-                        center.drainInternal(filled, true);
+                        center.drain(filled, IFluidHandler.FluidAction.EXECUTE);
                         section.ticksInDirection = COOLDOWN_OUTPUT;
                     }
                 }
@@ -296,7 +319,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
             inputPerTick[part.getIndex()] = 0;
             if(section.getCurrentFlowDirection().canInput())
             {
-                inputPerTick[part.getIndex()] = section.drainInternal(TRANSFER_RATE, false);
+                inputPerTick[part.getIndex()] = section.drain(new FluidStack(currentFluid.getFluid(), TRANSFER_RATE), IFluidHandler.FluidAction.SIMULATE).getAmount();
                 if(inputPerTick[part.getIndex()] > 0)
                 {
                     transferInCount++;
@@ -308,7 +331,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
         
         int left = Math.min(TRANSFER_RATE, spaceAvailable);
         float min = Math.min(TRANSFER_RATE * transferInCount, spaceAvailable) / (float) TRANSFER_RATE / transferInCount;
-        for(Parts part : Parts.values())
+        for(Parts part : Parts.FACES)
         {
             Section section = sections.get(part);
             int i = part.getIndex();
@@ -323,7 +346,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
                 {
                     amountToDrain = left;
                 }
-                int amountToPush = section.drainInternal(amountToDrain, false);
+                int amountToPush = section.drain(new FluidStack(currentFluid.getFluid(), amountToDrain), IFluidHandler.FluidAction.SIMULATE).getAmount();
                 if(amountToPush > 0)
                 {
                     fluidLeavingSide[i] = amountToPush;
@@ -333,14 +356,14 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
         }
         
         int[] fluidEnteringCentre = Arrays.copyOf(fluidLeavingSide, 6);
-        for(Parts part : Parts.values())
+        for(Parts part : Parts.FACES)
         {
             Section section = sections.get(part);
             int i = part.getIndex();
             int leaving = fluidLeavingSide[i];
             if(leaving > 0)
             {
-                int actuallyDrained = section.drainInternal(leaving, true);
+                int actuallyDrained = section.drain(new FluidStack(currentFluid, leaving), IFluidHandler.FluidAction.EXECUTE).getAmount();
                 if(actuallyDrained != leaving)
                 {
                     throw new IllegalStateException("WHYYY");
@@ -352,7 +375,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
                 int entering = fluidEnteringCentre[i];
                 if(entering > 0)
                 {
-                    int actuallyFilled = center.fill(entering, true);
+                    int actuallyFilled = center.fill(new FluidStack(currentFluid, entering), IFluidHandler.FluidAction.EXECUTE);
                     if(actuallyFilled != entering)
                     {
                         throw new IllegalStateException("WHYYY");
@@ -362,7 +385,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
         }
     }
     
-    private void setFluid(FluidStack fluid)
+    protected void setFluid(FluidStack fluid)
     {
         currentFluid = fluid;
         for(Section section : sections.values())
@@ -410,6 +433,10 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
     
     public FluidStack getFluidStack(int side)
     {
+        if(side == -1)
+        {
+            return sections.get(Parts.fromFacing(null)).getFluid();
+        }
         return sections.get(Parts.fromFacing(Direction.from3DDataValue(side))).getFluid();
     }
     
@@ -437,7 +464,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
             if(compound.contains("tank[" + direction + "]"))
             {
                 CompoundTag tag = compound.getCompound("tank[" + direction + "]");
-                if(true)//if(tag.contains("FluidName"))
+                if(true)//tag.contains("FluidName"))
                 {
                     FluidStack stack = FluidStack.loadFluidStackFromNBT(tag);
                     if(currentFluid == null)
@@ -465,9 +492,9 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
     {
         super.saveAdditional(compound);
         
-        if(currentFluid != null)
+        if(true)//if(currentFluid != FluidStack.EMPTY)
         {
-            System.out.println("heya");
+            //System.out.println("heya");
             CompoundTag fluidTag = new CompoundTag();
             currentFluid.writeToNBT(fluidTag);
             compound.put("Fluid", fluidTag);
@@ -525,23 +552,22 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
         return super.getCapability(cap, facing);
     }
     
-    protected class Section extends FluidTank
+    class Section extends FluidTank
     {
         public Section(int capacity, Parts part)
         {
             super(capacity);
             this.pipePart = part;
         }
-    
-        //Null means center
-        Parts pipePart;
         
-        int currentTime = 0;
+        //Null means center
+        final Parts pipePart;
         int lastTickAmount = 0;
-        int ticksInDirection = 0;
-        int incomingTotalCache = 0;
+        FlowDirection lastFlowDirection = FlowDirection.NONE;
+        int currentTime = 0;
         int[] incoming = new int[1];
-        FlowDirection lastFlowDirection;
+        int incomingTotalCache = 0;
+        int ticksInDirection = 0;
         
         @Override
         public FluidTank readFromNBT(CompoundTag nbt)
@@ -596,6 +622,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
             {
                 incoming[currentTime] += amountToFill;
                 incomingTotalCache += amountToFill;
+                this.setFluid(currentFluid);
                 fluid.setAmount(fluid.getAmount() + amountToFill);
             }
             return amountToFill;
@@ -618,11 +645,17 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
             }
         }
         
+        public void advanceForMovement()
+        {
+            incomingTotalCache -= incoming[currentTime];
+            incoming[currentTime] = 0;
+        }
+        
         public FlowDirection getCurrentFlowDirection()
         {
             return ticksInDirection == 0 ? FlowDirection.NONE : ticksInDirection < 0 ? FlowDirection.IN : FlowDirection.OUT;
         }
-    
+        
         @Override
         public int fill(FluidStack resource, FluidAction action)
         {

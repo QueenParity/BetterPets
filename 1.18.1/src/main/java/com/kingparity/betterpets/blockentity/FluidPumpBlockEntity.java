@@ -65,6 +65,7 @@ public class FluidPumpBlockEntity extends FluidPipeBlockEntity
                 if(fluidHandler != null)
                 {
                     FluidUtils.transferFluid(fluidHandler, this.sections.get(Parts.CENTER), 20);
+                    setFluid(this.sections.get(Parts.CENTER).getFluid());
                 }
             }
         }

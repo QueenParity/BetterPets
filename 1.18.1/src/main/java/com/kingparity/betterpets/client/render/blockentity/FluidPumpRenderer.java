@@ -87,7 +87,7 @@ public class FluidPumpRenderer implements BlockEntityRenderer<FluidPumpBlockEnti
             }
         }
     
-        float height = (6.0F * ((Mth.clamp(blockEntity.getFluidLevelCenter(), 0, 216)) / 216.0F));
+        float height = (6.0F * ((Mth.clamp(blockEntity.getFluidLevelCenter(), 0, 80)) / 80.0F));
         if(height > 0)
         {
             this.drawFluid(blockEntity.getFluidStack(-1).getFluid(), blockEntity, poseStack, buffer, 5.01F * 0.0625F, 5.01F * 0.0625F, 5.01F * 0.0625F, (6 - 0.02F) * 0.0625F, (height - 0.02F) * 0.0625F, (6 - 0.02F) * 0.0625F);
