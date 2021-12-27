@@ -27,7 +27,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
 {
     protected final int[] links = new int[6];
     
-    public static final int SECTION_CAPACITY = 80;
+    public static final int SECTION_CAPACITY = 500;
     public static final int TRANSFER_RATE = 20;
     public static final int TRANSFER_DELAY = 10;
     public static final int DIRECTION_COOLDOWN = 60;
@@ -53,7 +53,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
                 @Override
                 protected void onContentsChanged()
                 {
-                    FluidPipeBlockEntity.this.syncToClient();
+                    //FluidPipeBlockEntity.this.syncToClient();
                 }
             });
         }
@@ -182,13 +182,31 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
                     }
                 }
             }
-    
-            this.syncToClient();
+            
+            
+            if(send)
+            {
+            
+            }
+            this.setChanged();
+            //this.syncToClient();
     
             /*if(send)
             {
                 this.syncToClient();
             }*/
+            
+            if(this.level.random.nextFloat() < 0.5F)
+            {
+                for(Section section : sections.values())
+                {
+                    section.incomingTotalCache = 0;
+                }
+                if(this.level.random.nextFloat() < 0.1F)
+                {
+                    this.syncToClient();
+                }
+            }
         }
     }
     
@@ -213,13 +231,10 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
                     {
                         continue;
                     }
-                    
-                    if(part != Parts.CENTER)
+    
+                    if(links[part.getIndex()] == 0)
                     {
-                        if(links[part.getIndex()] == 0)
-                        {
-                            continue;
-                        }
+                        continue;
                     }
     
                     FluidStack fluidToPush = new FluidStack(currentFluid, maxDrain);
@@ -244,7 +259,12 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
         int totalAvailable = center.getMaxDrained();
         if(totalAvailable < 1)
         {
+            System.out.println(worldPosition.getX() + ", " + worldPosition.getY() + ", " + worldPosition.getZ());
             return;
+        }
+        else
+        {
+            System.out.println(":D");
         }
         
         Set<Direction> realDirections = EnumSet.noneOf(Direction.class);
@@ -272,29 +292,39 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
             List<Direction> random = new ArrayList<>(set);
             Collections.shuffle(random);
             
+            System.out.println("???");
+            
             float min = Math.min(TRANSFER_RATE * realDirections.size(), totalAvailable) / (float) TRANSFER_RATE / realDirections.size();
             for(Direction direction : random)
             {
                 Section section = sections.get(Parts.fromFacing(direction));
-                int available = section.fill(new FluidStack(currentFluid.getFluid(), TRANSFER_RATE), IFluidHandler.FluidAction.SIMULATE);
+                int available = section.fill(TRANSFER_RATE, false);
                 int amountToPush = (int)(available * min);
                 if(amountToPush < 1)
                 {
                     amountToPush++;
                 }
                 
-                FluidStack fluidToPush = center.drain(amountToPush, IFluidHandler.FluidAction.SIMULATE);
-                amountToPush = fluidToPush.getAmount();
+                amountToPush = center.drainInternal(amountToPush, false);
                 if(amountToPush > 0)
                 {
-                    int filled = section.fill(fluidToPush, IFluidHandler.FluidAction.EXECUTE);
+                    int filled = section.fill(amountToPush, true);
                     if(filled > 0)
                     {
-                        center.drain(filled, IFluidHandler.FluidAction.EXECUTE);
+                        center.drainInternal(filled, true);
                         section.ticksInDirection = COOLDOWN_OUTPUT;
+                        System.out.println("sanity");
                     }
                 }
+                else
+                {
+                    System.out.println("awwwwwww");
+                }
             }
+        }
+        else
+        {
+            System.out.println("?");
         }
     }
     
@@ -319,11 +349,27 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
             inputPerTick[part.getIndex()] = 0;
             if(section.getCurrentFlowDirection().canInput())
             {
-                inputPerTick[part.getIndex()] = section.drain(new FluidStack(currentFluid.getFluid(), TRANSFER_RATE), IFluidHandler.FluidAction.SIMULATE).getAmount();
+                inputPerTick[part.getIndex()] = section.drainInternal(TRANSFER_RATE, false);
                 if(inputPerTick[part.getIndex()] > 0)
                 {
                     transferInCount++;
                 }
+            }
+        }
+        
+        int[] totalOffered = Arrays.copyOf(inputPerTick, 6);
+        int[] actuallyOffered = inputPerTick;
+        int[] totalOfferedCheck = Arrays.copyOf(totalOffered, totalOffered.length);
+        
+        for(int i = 0; i < totalOffered.length; i++)
+        {
+            if(totalOffered[i] != totalOfferedCheck[i])
+            {
+                System.out.println("Changed totalOffered");
+            }
+            if(actuallyOffered[i] > totalOffered[i])
+            {
+                System.out.println("actuallyOffered[" + i + "](=" + actuallyOffered[i] + ") shouldn't be greater than totalOffered[" + i + "](=" + totalOffered[i] + ")");
             }
         }
         
@@ -346,7 +392,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
                 {
                     amountToDrain = left;
                 }
-                int amountToPush = section.drain(new FluidStack(currentFluid.getFluid(), amountToDrain), IFluidHandler.FluidAction.SIMULATE).getAmount();
+                int amountToPush = section.drainInternal(amountToDrain, false);
                 if(amountToPush > 0)
                 {
                     fluidLeavingSide[i] = amountToPush;
@@ -356,6 +402,26 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
         }
         
         int[] fluidEnteringCentre = Arrays.copyOf(fluidLeavingSide, 6);
+    
+        int[] fluidLeaveCheck = Arrays.copyOf(fluidLeavingSide, fluidLeavingSide.length);
+        int[] fluidEnterCheck = Arrays.copyOf(fluidEnteringCentre, fluidEnteringCentre.length);
+        
+        for(int i = 0; i < fluidLeavingSide.length; i++)
+        {
+            if(fluidLeavingSide[i] > fluidLeaveCheck[i])
+            {
+                System.out.println("fluidLeavingSide[" + i + "](=" + fluidLeavingSide[i] + ") shouldn't be bigger than its original value!(=" + fluidLeaveCheck[i] + ")");
+            }
+            if(fluidEnteringCentre[i] > fluidEnterCheck[i])
+            {
+                System.out.println("fluidEnteringCentre[" + i + "](=" + fluidEnteringCentre[i] + ") shouldn't be bigger than its original value!(=" + fluidEnterCheck[i] + ")");
+            }
+            if(fluidEnteringCentre[i] > fluidLeavingSide[i])
+            {
+                System.out.println("fluidEnteringCentre[" + i + "](=" + fluidEnteringCentre[i] + ") shouldn't be bigger than fluidLeavingSide[" + i + "](=" + fluidLeavingSide[i] + ")");
+            }
+        }
+        
         for(Parts part : Parts.FACES)
         {
             Section section = sections.get(part);
@@ -363,7 +429,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
             int leaving = fluidLeavingSide[i];
             if(leaving > 0)
             {
-                int actuallyDrained = section.drain(new FluidStack(currentFluid, leaving), IFluidHandler.FluidAction.EXECUTE).getAmount();
+                int actuallyDrained = section.drainInternal(leaving, true);
                 if(actuallyDrained != leaving)
                 {
                     throw new IllegalStateException("Couldn't drain " + leaving + " from " + part + ", only drained " + actuallyDrained);
@@ -375,7 +441,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
                 int entering = fluidEnteringCentre[i];
                 if(entering > 0)
                 {
-                    int actuallyFilled = center.fill(new FluidStack(currentFluid, entering), IFluidHandler.FluidAction.EXECUTE);
+                    int actuallyFilled = center.fill(entering, true);
                     if(actuallyFilled != entering)
                     {
                         throw new IllegalStateException("Couldn't fill " + entering + " from " + part + ", only filled " + actuallyFilled);
@@ -390,7 +456,8 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
         currentFluid = fluid;
         for(Section section : sections.values())
         {
-            section.incoming = new int[SECTION_CAPACITY];
+            section.setValidator(stack -> stack.getFluid() == fluid.getFluid());
+            section.incoming = new int[TRANSFER_DELAY];
             section.currentTime = 0;
             section.ticksInDirection = 0;
         }
@@ -583,7 +650,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
             
             return super.readFromNBT(nbt);
         }
-    
+        
         @Override
         public CompoundTag writeToNBT(CompoundTag nbt)
         {
@@ -607,6 +674,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
         
         public int getMaxDrained()
         {
+            System.out.println(incomingTotalCache);
             return Math.min(fluid.getAmount() - incomingTotalCache, TRANSFER_RATE);
         }
         
@@ -622,8 +690,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
             {
                 incoming[currentTime] += amountToFill;
                 incomingTotalCache += amountToFill;
-                this.setFluid(currentFluid);
-                fluid.setAmount(fluid.getAmount() + amountToFill);
+                super.fill(new FluidStack(currentFluid, amountToFill), FluidAction.EXECUTE);
             }
             return amountToFill;
         }
@@ -639,7 +706,14 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
             {
                 if(doDrain)
                 {
-                    fluid.setAmount(fluid.getAmount() - maxDrain);
+                    if(fluid.getFluid() == Fluids.EMPTY)
+                    {
+                        System.out.println("This aint good @drainInternal(int maxFill, boolean doFill) in FluidPipeBlockEntity");
+                    }
+                    else
+                    {
+                        super.drain(new FluidStack(currentFluid, maxDrain), FluidAction.EXECUTE);
+                    }
                 }
                 return maxDrain;
             }
@@ -659,25 +733,26 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
         @Override
         public int fill(FluidStack resource, FluidAction action)
         {
-            return super.fill(resource, action);
-            /*if(!getCurrentFlowDirection().canInput() || !pipe.isConnected(part.face) || resource == null)
+            //return super.fill(resource, action);
+            if(!getCurrentFlowDirection().canInput() /*|| !pipe.isConnected(part.face)*/ || resource == null)
             {
+                System.out.println("nuu");
                 return 0;
             }
-            resource = resource.copy();*/
+            resource = resource.copy();
             //PipeEventFluid.TryInsert tryInsert = new PipeEventFluid.TryInsert(pipe.getHolder(), PipeFlowFluids.this, part.face, resource);
             //pipe.getHolder().fireEvent(tryInsert);
             /*if(tryInsert.isCanceled())
             {
                 return 0;
             }*/
-    
-            /*if(currentFluid == null || currentFluid.isFluidEqual(resource))
+            
+            if(currentFluid == FluidStack.EMPTY || currentFluid.isFluidEqual(resource))
             {
                 boolean doFill = action == FluidAction.EXECUTE;
                 if(doFill)
                 {
-                    if(currentFluid == null)
+                    if(currentFluid == FluidStack.EMPTY)
                     {
                         setFluid(resource.copy());
                     }
@@ -689,7 +764,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
                 }
                 return filled;
             }
-            return 0;*/
+            return 0;
         }
     }
     
@@ -780,6 +855,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
                 }
                 return allowed;
             }
+            
             int[] ordered = Arrays.copyOf(priority, 6);
             Arrays.sort(ordered);
             int last = 0;
