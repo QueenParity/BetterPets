@@ -55,6 +55,7 @@ public class FluidPumpBlockEntity extends FluidPipeBlockEntity
     {
         if(!this.level.isClientSide)
         {
+            System.out.println(this.sections.get(Parts.CENTER).ticksInDirection);
             this.updateLinks(this.level, this.worldPosition);
     
             Direction facing = this.getBlockState().getValue(FluidPumpBlock.DIRECTION);
@@ -64,8 +65,25 @@ public class FluidPumpBlockEntity extends FluidPipeBlockEntity
                 IFluidHandler fluidHandler = fluidReceiver.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing).orElse(null);
                 if(fluidHandler != null)
                 {
-                    FluidUtils.transferFluid(fluidHandler, this.sections.get(Parts.CENTER), 20);
-                    setFluid(this.sections.get(Parts.CENTER).getFluid());
+                    /*if(this.sections.get(Parts.CENTER).getCurrentFlowDirection().canInput())
+                    {
+                        FluidUtils.transferFluid(fluidHandler, this.sections.get(Parts.CENTER), 20);
+                    }
+                    if(this.sections.get(Parts.CENTER).ticksInDirection == -1)
+                    {
+                        this.sections.get(Parts.CENTER).ticksInDirection = COOLDOWN_OUTPUT / 2;
+                        System.out.println("hahahahahfgjgfhdhghjfjhgjfhgjfhgjfglhjkl");
+                    }
+                    else if(this.sections.get(Parts.CENTER).ticksInDirection == 0)
+                    {
+                        this.sections.get(Parts.CENTER).ticksInDirection = COOLDOWN_INPUT / 2;
+                        System.out.println("feckhgfdddddddddddddddddddddddddddjghffjhjfjfhgjhfg");
+                    }*/
+                    //setFluid(this.sections.get(Parts.CENTER).getFluid());
+                    if(this.level.getGameTime() % 10 == 0)
+                    {
+                        FluidUtils.transferFluid(fluidHandler, this.sections.get(Parts.CENTER), 20);
+                    }
                 }
             }
         }

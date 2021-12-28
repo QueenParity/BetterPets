@@ -1,9 +1,12 @@
 package com.kingparity.betterpets.client.render.blockentity;
 
 import com.kingparity.betterpets.blockentity.FluidPipeBlockEntity;
+import com.kingparity.betterpets.blockentity.Parts;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -12,6 +15,8 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.material.Fluid;
@@ -20,15 +25,46 @@ import net.minecraftforge.client.ForgeHooksClient;
 
 public class FluidPipeRenderer implements BlockEntityRenderer<FluidPipeBlockEntity>
 {
+    private BlockEntityRendererProvider.Context context;
+    
     public FluidPipeRenderer(BlockEntityRendererProvider.Context context)
     {
-        super();
+        this.context = context;
     }
     
     @Override
     public void render(FluidPipeBlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay)
     {
         poseStack.pushPose();
+    
+        poseStack.pushPose();
+        poseStack.translate(0.5D, 1.0D, 0.5D);
+        poseStack.mulPose(this.context.getBlockEntityRenderDispatcher().camera.rotation());
+        poseStack.scale(-0.025F, -0.025F, 0.025F);
+        Matrix4f matrix4f = poseStack.last().pose();
+        float f1 = Minecraft.getInstance().options.getBackgroundOpacity(0.25F);
+        int j = (int)(f1 * 255.0F) << 24;
+        Font font = Minecraft.getInstance().font;
+        
+        TextComponent component = new TextComponent("c: " + blockEntity.sections.get(Parts.CENTER).ticksInDirection);
+        
+        float f2 = (float)(-font.width(component) / 2);
+    
+        font.drawInBatch(component, f2, 0, 553648127, false, matrix4f, buffer, true, j, light);
+        font.drawInBatch(component, f2, 0, -1, false, matrix4f, buffer, false, 0, light);
+        
+        for(Parts part : Parts.FACES)
+        {
+            poseStack.translate(0.0D, -10, 0.0D);
+            TextComponent component2 = new TextComponent(part.face.getName().substring(0,1) + ": " + blockEntity.sections.get(part).ticksInDirection);
+    
+            f2 = (float)(-font.width(component2) / 2);
+            font.drawInBatch(component2, f2, 0, 553648127, false, matrix4f, buffer, true, j, light);
+            font.drawInBatch(component2, f2, 0, -1, false, matrix4f, buffer, false, 0, light);
+        }
+        
+        poseStack.popPose();
+        
         poseStack.translate(0.5, 0.5, 0.5);
         //Direction direction = blockEntity.getBlockState().getValue(FluidPipeBlock.DIRECTION);
         //poseStack.mulPose(Vector3f.YP.rotationDegrees(direction.get2DDataValue() * -90F - 90F));
@@ -38,10 +74,10 @@ public class FluidPipeRenderer implements BlockEntityRenderer<FluidPipeBlockEnti
         direction = Direction.DOWN.get3DDataValue();
         if(blockEntity.getLinkBoolean(direction))
         {
-            float height = (5.0F * ((Mth.clamp(blockEntity.getFluidLevelSide(direction), 0, FluidPipeBlockEntity.SECTION_CAPACITY)) / (float)FluidPipeBlockEntity.SECTION_CAPACITY));
+            float height = (4.0F * ((Mth.clamp(blockEntity.getFluidLevelSide(direction), 0, FluidPipeBlockEntity.SECTION_CAPACITY)) / (float)FluidPipeBlockEntity.SECTION_CAPACITY));
             if(height > 0)
             {
-                this.drawFluid(blockEntity.getFluidStack(direction).getFluid(), blockEntity, poseStack, buffer, 6.01F * 0.0625F, 0.01F * 0.0625F, 6.01F * 0.0625F, (height - 0.02F) * 0.0625F, (5 - 0.02F) * 0.0625F, (4 - 0.02F) * 0.0625F);
+                this.drawFluid(blockEntity.getFluidStack(direction).getFluid(), blockEntity, poseStack, buffer, 6.01F * 0.0625F, 0.01F * 0.0625F, 6.01F * 0.0625F, (height - 0.02F) * 0.0625F, (6 - 0.02F) * 0.0625F, (4 - 0.02F) * 0.0625F);
             }
         }
         direction = Direction.NORTH.get3DDataValue();
@@ -50,7 +86,7 @@ public class FluidPipeRenderer implements BlockEntityRenderer<FluidPipeBlockEnti
             float height = (4.0F * ((Mth.clamp(blockEntity.getFluidLevelSide(direction), 0, FluidPipeBlockEntity.SECTION_CAPACITY)) / (float)FluidPipeBlockEntity.SECTION_CAPACITY));
             if(height > 0)
             {
-                this.drawFluid(blockEntity.getFluidStack(direction).getFluid(), blockEntity, poseStack, buffer, 6.01F * 0.0625F, 6.01F * 0.0625F, 0.01F * 0.0625F, (4 - 0.02F) * 0.0625F, (height - 0.02F) * 0.0625F, (5 - 0.02F) * 0.0625F);
+                this.drawFluid(blockEntity.getFluidStack(direction).getFluid(), blockEntity, poseStack, buffer, 6.01F * 0.0625F, 6.01F * 0.0625F, 0.01F * 0.0625F, (4 - 0.02F) * 0.0625F, (height - 0.02F) * 0.0625F, (6 - 0.02F) * 0.0625F);
             }
         }
         direction = Direction.SOUTH.get3DDataValue();
@@ -59,7 +95,7 @@ public class FluidPipeRenderer implements BlockEntityRenderer<FluidPipeBlockEnti
             float height = (4.0F * ((Mth.clamp(blockEntity.getFluidLevelSide(direction), 0, FluidPipeBlockEntity.SECTION_CAPACITY)) / (float)FluidPipeBlockEntity.SECTION_CAPACITY));
             if(height > 0)
             {
-                this.drawFluid(blockEntity.getFluidStack(direction).getFluid(), blockEntity, poseStack, buffer, 6.01F * 0.0625F, 6.01F * 0.0625F, 11.01F * 0.0625F, (4 - 0.02F) * 0.0625F, (height - 0.02F) * 0.0625F, (5 - 0.02F) * 0.0625F);
+                this.drawFluid(blockEntity.getFluidStack(direction).getFluid(), blockEntity, poseStack, buffer, 6.01F * 0.0625F, 6.01F * 0.0625F, 10.01F * 0.0625F, (4 - 0.02F) * 0.0625F, (height - 0.02F) * 0.0625F, (6 - 0.02F) * 0.0625F);
             }
         }
         direction = Direction.WEST.get3DDataValue();
@@ -68,7 +104,7 @@ public class FluidPipeRenderer implements BlockEntityRenderer<FluidPipeBlockEnti
             float height = (4.0F * ((Mth.clamp(blockEntity.getFluidLevelSide(direction), 0, FluidPipeBlockEntity.SECTION_CAPACITY)) / (float)FluidPipeBlockEntity.SECTION_CAPACITY));
             if(height > 0)
             {
-                this.drawFluid(blockEntity.getFluidStack(direction).getFluid(), blockEntity, poseStack, buffer, 0.01F * 0.0625F, 6.01F * 0.0625F, 6.01F * 0.0625F, (5 - 0.02F) * 0.0625F, (height - 0.02F) * 0.0625F, (4 - 0.02F) * 0.0625F);
+                this.drawFluid(blockEntity.getFluidStack(direction).getFluid(), blockEntity, poseStack, buffer, 0.01F * 0.0625F, 6.01F * 0.0625F, 6.01F * 0.0625F, (6 - 0.02F) * 0.0625F, (height - 0.02F) * 0.0625F, (4 - 0.02F) * 0.0625F);
             }
         }
         direction = Direction.EAST.get3DDataValue();
@@ -77,7 +113,7 @@ public class FluidPipeRenderer implements BlockEntityRenderer<FluidPipeBlockEnti
             float height = (4.0F * ((Mth.clamp(blockEntity.getFluidLevelSide(direction), 0, FluidPipeBlockEntity.SECTION_CAPACITY)) / (float)FluidPipeBlockEntity.SECTION_CAPACITY));
             if(height > 0)
             {
-                this.drawFluid(blockEntity.getFluidStack(direction).getFluid(), blockEntity, poseStack, buffer, 11.01F * 0.0625F, 6.01F * 0.0625F, 6.01F * 0.0625F, (5 - 0.02F) * 0.0625F, (height - 0.02F) * 0.0625F, (4 - 0.02F) * 0.0625F);
+                this.drawFluid(blockEntity.getFluidStack(direction).getFluid(), blockEntity, poseStack, buffer, 10.01F * 0.0625F, 6.01F * 0.0625F, 6.01F * 0.0625F, (6 - 0.02F) * 0.0625F, (height - 0.02F) * 0.0625F, (4 - 0.02F) * 0.0625F);
             }
         }
         direction = Direction.UP.get3DDataValue();
@@ -86,16 +122,32 @@ public class FluidPipeRenderer implements BlockEntityRenderer<FluidPipeBlockEnti
             float height = (4.0F * ((Mth.clamp(blockEntity.getFluidLevelSide(direction), 0, FluidPipeBlockEntity.SECTION_CAPACITY)) / (float)FluidPipeBlockEntity.SECTION_CAPACITY));
             if(height > 0)
             {
-                this.drawFluid(blockEntity.getFluidStack(direction).getFluid(), blockEntity, poseStack, buffer, 6.01F * 0.0625F, 11.01F * 0.0625F, 6.01F * 0.0625F, (height - 0.02F) * 0.0625F, (5 - 0.02F) * 0.0625F, (4 - 0.02F) * 0.0625F);
+                this.drawFluid(blockEntity.getFluidStack(direction).getFluid(), blockEntity, poseStack, buffer, 6.01F * 0.0625F, 10.01F * 0.0625F, 6.01F * 0.0625F, (height - 0.02F) * 0.0625F, (6 - 0.02F) * 0.0625F, (4 - 0.02F) * 0.0625F);
             }
         }
         
-        float height = (6.0F * ((Mth.clamp(blockEntity.getFluidLevelCenter(), 0, FluidPipeBlockEntity.SECTION_CAPACITY)) / (float)FluidPipeBlockEntity.SECTION_CAPACITY));
+        float height = (4.0F * ((Mth.clamp(blockEntity.getFluidLevelCenter(), 0, FluidPipeBlockEntity.SECTION_CAPACITY)) / (float)FluidPipeBlockEntity.SECTION_CAPACITY));
         if(height > 0)
         {
-            this.drawFluid(blockEntity.getFluidStack(-1).getFluid(), blockEntity, poseStack, buffer, 5.01F * 0.0625F, 5.01F * 0.0625F, 5.01F * 0.0625F, (6 - 0.02F) * 0.0625F, (height - 0.02F) * 0.0625F, (6 - 0.02F) * 0.0625F);
+            this.drawFluid(blockEntity.getFluidStack(-1).getFluid(), blockEntity, poseStack, buffer, 6.01F * 0.0625F, 6.01F * 0.0625F, 6.01F * 0.0625F, (4 - 0.02F) * 0.0625F, (height - 0.02F) * 0.0625F, (4 - 0.02F) * 0.0625F);
         }
         
+        poseStack.popPose();
+    }
+    
+    private void renderText(Component component, PoseStack poseStack, MultiBufferSource buffer, int light)
+    {
+        poseStack.pushPose();
+        poseStack.translate(0.5D, 1.0D, 0.5D);
+        poseStack.mulPose(this.context.getBlockEntityRenderDispatcher().camera.rotation());
+        poseStack.scale(-0.025F, -0.025F, 0.025F);
+        Matrix4f matrix4f = poseStack.last().pose();
+        float f1 = Minecraft.getInstance().options.getBackgroundOpacity(0.25F);
+        int j = (int)(f1 * 255.0F) << 24;
+        Font font = Minecraft.getInstance().font;
+        float f2 = (float)(-font.width(component) / 2);
+        font.drawInBatch(component, f2, 0, 553648127, false, matrix4f, buffer, true, j, light);
+        font.drawInBatch(component, f2, 0, -1, false, matrix4f, buffer, false, 0, light);
         poseStack.popPose();
     }
     
