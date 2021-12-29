@@ -10,11 +10,9 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
@@ -83,12 +81,16 @@ public class FluidUtils
             if(filled > 0)
             {
                 drained = source.drain(filled, IFluidHandler.FluidAction.EXECUTE);
+                if(maxAmount >= 500)
+                {
+                    drained = new FluidStack(drained, maxAmount);
+                }
                 return target.fill(drained, IFluidHandler.FluidAction.EXECUTE);
             }
         }
         return 0;
     }
-
+    
     @OnlyIn(Dist.CLIENT)
     public static void drawFluidTankInGUI(FluidStack fluid, double x, double y, double percent, int height, int color)
     {

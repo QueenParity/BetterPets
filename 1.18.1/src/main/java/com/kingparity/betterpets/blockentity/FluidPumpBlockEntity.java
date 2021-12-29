@@ -7,8 +7,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
@@ -80,9 +82,12 @@ public class FluidPumpBlockEntity extends FluidPipeBlockEntity
                         System.out.println("fegfdddddddddddddddddddddddddddjghffjhjfjfhgjhfg");
                     }*/
                     //setFluid(this.sections.get(Parts.CENTER).getFluid());
-                    if(this.level.getGameTime() % 1 == 0)
+                    if(this.level.getBlockState(this.worldPosition.relative(Direction.NORTH)).getBlock() == Blocks.REDSTONE_BLOCK)
                     {
-                        FluidUtils.transferFluid(fluidHandler, this.sections.get(Parts.CENTER), 500);
+                        if(this.level.getGameTime() % 50 < 25)
+                        {
+                            FluidUtils.transferFluid(fluidHandler, this.sections.get(Parts.CENTER), 500);
+                        }
                     }
                 }
             }

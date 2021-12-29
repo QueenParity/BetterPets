@@ -1,5 +1,6 @@
 package com.kingparity.betterpets.client.render.blockentity;
 
+import com.kingparity.betterpets.blockentity.FluidPipeBlockEntity;
 import com.kingparity.betterpets.blockentity.FluidPumpBlockEntity;
 import com.kingparity.betterpets.blockentity.Parts;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -39,13 +40,15 @@ public class FluidPumpRenderer implements BlockEntityRenderer<FluidPumpBlockEnti
         poseStack.pushPose();
         poseStack.translate(0.5D, 1.0D, 0.5D);
         poseStack.mulPose(this.context.getBlockEntityRenderDispatcher().camera.rotation());
-        poseStack.scale(-0.025F, -0.025F, 0.025F);
+        poseStack.scale(-0.01F, -0.01F, 0.01F);
         Matrix4f matrix4f = poseStack.last().pose();
         float f1 = Minecraft.getInstance().options.getBackgroundOpacity(0.25F);
         int j = (int)(f1 * 255.0F) << 24;
         Font font = Minecraft.getInstance().font;
-    
-        TextComponent component = new TextComponent("c: " + blockEntity.sections.get(Parts.CENTER).inputTicks + ", " + blockEntity.sections.get(Parts.CENTER).currentTime);
+        
+        FluidPipeBlockEntity.Section section = blockEntity.sections.get(Parts.CENTER);
+        String flow = section.lastFlowDirection.isInput() ? "In" : section.lastFlowDirection.isOutput() ? "Out" : "None";
+        TextComponent component = new TextComponent("c: " + section.inputTicks + " " + section.outputTicks + " " + flow + " " + section.getFluidAmount());
     
         float f2 = (float)(-font.width(component) / 2);
     
@@ -55,12 +58,57 @@ public class FluidPumpRenderer implements BlockEntityRenderer<FluidPumpBlockEnti
         for(Parts part : Parts.FACES)
         {
             poseStack.translate(0.0D, -10, 0.0D);
-            TextComponent component2 = new TextComponent(part.face.getName().substring(0,1) + ": " + blockEntity.sections.get(part).inputTicks + ", " + blockEntity.sections.get(part).currentTime);
-        
+            FluidPipeBlockEntity.Section section2 = blockEntity.sections.get(part);
+            String flow2 = section2.lastFlowDirection.isInput() ? "In" : section2.lastFlowDirection.isOutput() ? "Out" : "None";
+            TextComponent component2 = new TextComponent(part.face.getName().substring(0,1) + ": " + section2.inputTicks + " " + section2.outputTicks + " " + flow2 + " " + section2.getFluidAmount());
+            
             f2 = (float)(-font.width(component2) / 2);
             font.drawInBatch(component2, f2, 0, 553648127, false, matrix4f, buffer, true, j, light);
             font.drawInBatch(component2, f2, 0, -1, false, matrix4f, buffer, false, 0, light);
         }
+    
+        Fluid currentFluid = Fluids.EMPTY;
+        for(FluidPipeBlockEntity.Section sectionL : blockEntity.sections.values())
+        {
+            if(sectionL.getFluid().getFluid() != Fluids.EMPTY)
+            {
+                currentFluid = sectionL.getFluid().getFluid();
+            }
+        }
+    
+        TextComponent component3 = new TextComponent(currentFluid.getRegistryName().getPath());
+    
+        poseStack.translate(0.0D, -10, 0.0D);
+        f2 = (float)(-font.width(component3) / 2);
+        font.drawInBatch(component3, f2, 0, 553648127, false, matrix4f, buffer, true, j, light);
+        font.drawInBatch(component3, f2, 0, -1, false, matrix4f, buffer, false, 0, light);
+    
+        TextComponent component4 = new TextComponent(blockEntity.getLevel().getGameTime() % 50 < 25 ? "True" : "False");
+    
+        poseStack.translate(0.0D, -10, 0.0D);
+        f2 = (float)(-font.width(component4) / 2);
+        font.drawInBatch(component4, f2, 0, 553648127, false, matrix4f, buffer, true, j, light);
+        font.drawInBatch(component4, f2, 0, -1, false, matrix4f, buffer, false, 0, light);
+    
+        String component5Str = "in[";
+        for(int i = 0; i < Mth.clamp(Math.round(16F / (FluidPipeBlockEntity.TRANSFER_RATE / FluidPipeBlockEntity.TRANSFER_RATE)), 1, FluidPipeBlockEntity.MAX_TRANSFER_DELAY); ++i)
+        {
+            String temp = Integer.toString(blockEntity.sections.get(Parts.CENTER).incoming[i]);
+            if(temp.length() < 2)
+            {
+                temp = "0" + temp;
+            }
+            component5Str += temp + ", ";
+        }
+        component5Str = component5Str.substring(0, component5Str.length() - 3);
+        component5Str += "]";
+    
+        TextComponent component5 = new TextComponent(component5Str);
+        
+        poseStack.translate(0.0D, -10, 0.0D);
+        f2 = (float)(-font.width(component5) / 2);
+        font.drawInBatch(component5, f2, 0, 553648127, false, matrix4f, buffer, true, j, light);
+        font.drawInBatch(component5, f2, 0, -1, false, matrix4f, buffer, false, 0, light);
     
         poseStack.popPose();
     

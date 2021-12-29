@@ -6,6 +6,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -14,6 +16,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -21,15 +24,36 @@ import net.minecraftforge.client.ForgeHooksClient;
 
 public class WaterCollectorRenderer implements BlockEntityRenderer<WaterCollectorBlockEntity>
 {
+    private BlockEntityRendererProvider.Context context;
+    
     public WaterCollectorRenderer(BlockEntityRendererProvider.Context context)
     {
-        super();
+        this.context = context;
     }
     
     @Override
     public void render(WaterCollectorBlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay)
     {
         poseStack.pushPose();
+        
+        poseStack.pushPose();
+        poseStack.translate(0.5D, 1.5D, 0.5D);
+        poseStack.mulPose(this.context.getBlockEntityRenderDispatcher().camera.rotation());
+        poseStack.scale(-0.01F, -0.01F, 0.01F);
+        Matrix4f matrix4f = poseStack.last().pose();
+        float f1 = Minecraft.getInstance().options.getBackgroundOpacity(0.25F);
+        int j = (int)(f1 * 255.0F) << 24;
+        Font font = Minecraft.getInstance().font;
+        
+        TextComponent component = new TextComponent(Integer.toString(blockEntity.getFluidLevel()));
+    
+        float f2 = (float)(-font.width(component) / 2);
+    
+        font.drawInBatch(component, f2, 0, 553648127, false, matrix4f, buffer, true, j, light);
+        font.drawInBatch(component, f2, 0, -1, false, matrix4f, buffer, false, 0, light);
+        
+        poseStack.popPose();
+        
         poseStack.translate(0.5, 0.5, 0.5);
         Direction direction = blockEntity.getBlockState().getValue(WaterCollectorBlock.DIRECTION);
         poseStack.mulPose(Vector3f.YP.rotationDegrees(direction.get2DDataValue() * -90F - 90F));

@@ -22,6 +22,7 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.fluids.FluidStack;
 
 public class FluidPipeRenderer implements BlockEntityRenderer<FluidPipeBlockEntity>
 {
@@ -40,13 +41,15 @@ public class FluidPipeRenderer implements BlockEntityRenderer<FluidPipeBlockEnti
         poseStack.pushPose();
         poseStack.translate(0.5D, 1.0D, 0.5D);
         poseStack.mulPose(this.context.getBlockEntityRenderDispatcher().camera.rotation());
-        poseStack.scale(-0.025F, -0.025F, 0.025F);
+        poseStack.scale(-0.01F, -0.01F, 0.01F);
         Matrix4f matrix4f = poseStack.last().pose();
         float f1 = Minecraft.getInstance().options.getBackgroundOpacity(0.25F);
         int j = (int)(f1 * 255.0F) << 24;
         Font font = Minecraft.getInstance().font;
         
-        TextComponent component = new TextComponent("c: " + blockEntity.sections.get(Parts.CENTER).inputTicks + ", " + blockEntity.sections.get(Parts.CENTER).currentTime);
+        FluidPipeBlockEntity.Section section = blockEntity.sections.get(Parts.CENTER);
+        String flow = section.lastFlowDirection.isInput() ? "In" : section.lastFlowDirection.isOutput() ? "Out" : "None";
+        TextComponent component = new TextComponent("c: " + section.inputTicks + " " + section.outputTicks + " " + flow + " " + section.getFluidAmount());
         
         float f2 = (float)(-font.width(component) / 2);
     
@@ -56,12 +59,30 @@ public class FluidPipeRenderer implements BlockEntityRenderer<FluidPipeBlockEnti
         for(Parts part : Parts.FACES)
         {
             poseStack.translate(0.0D, -10, 0.0D);
-            TextComponent component2 = new TextComponent(part.face.getName().substring(0,1) + ": " + blockEntity.sections.get(part).inputTicks + ", " + blockEntity.sections.get(part).currentTime);
+            FluidPipeBlockEntity.Section section2 = blockEntity.sections.get(part);
+            String flow2 = section2.lastFlowDirection.isInput() ? "In" : section2.lastFlowDirection.isOutput() ? "Out" : "None";
+            TextComponent component2 = new TextComponent(part.face.getName().substring(0,1) + ": " + section2.inputTicks + " " + section2.outputTicks + " " + flow2 + " " + section2.getFluidAmount());
     
             f2 = (float)(-font.width(component2) / 2);
             font.drawInBatch(component2, f2, 0, 553648127, false, matrix4f, buffer, true, j, light);
             font.drawInBatch(component2, f2, 0, -1, false, matrix4f, buffer, false, 0, light);
         }
+    
+        Fluid currentFluid = Fluids.EMPTY;
+        for(FluidPipeBlockEntity.Section sectionL : blockEntity.sections.values())
+        {
+            if(sectionL.getFluid().getFluid() != Fluids.EMPTY)
+            {
+                currentFluid = sectionL.getFluid().getFluid();
+            }
+        }
+        
+        TextComponent component3 = new TextComponent(currentFluid.getRegistryName().getPath());
+    
+        poseStack.translate(0.0D, -10, 0.0D);
+        f2 = (float)(-font.width(component3) / 2);
+        font.drawInBatch(component3, f2, 0, 553648127, false, matrix4f, buffer, true, j, light);
+        font.drawInBatch(component3, f2, 0, -1, false, matrix4f, buffer, false, 0, light);
         
         poseStack.popPose();
         
@@ -154,6 +175,11 @@ public class FluidPipeRenderer implements BlockEntityRenderer<FluidPipeBlockEnti
     private void drawFluid(Fluid fluid, FluidPipeBlockEntity be, PoseStack poseStack, MultiBufferSource bufferSource, float x, float y, float z, float width, float height, float depth)
     {
         if(fluid == Fluids.EMPTY) return;
+        
+        if(height < 0.0625F * 0.5F)
+        {
+            return;
+        }
         
         TextureAtlasSprite sprite = ForgeHooksClient.getFluidSprites(be.getLevel(), be.getBlockPos(), fluid.defaultFluidState())[0];
         float minU = sprite.getU0();
