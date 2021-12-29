@@ -45,7 +45,7 @@ public class FluidPumpRenderer implements BlockEntityRenderer<FluidPumpBlockEnti
         int j = (int)(f1 * 255.0F) << 24;
         Font font = Minecraft.getInstance().font;
     
-        TextComponent component = new TextComponent("c: " + blockEntity.sections.get(Parts.CENTER).ticksInDirection);
+        TextComponent component = new TextComponent("c: " + blockEntity.sections.get(Parts.CENTER).inputTicks + ", " + blockEntity.sections.get(Parts.CENTER).currentTime);
     
         float f2 = (float)(-font.width(component) / 2);
     
@@ -55,7 +55,7 @@ public class FluidPumpRenderer implements BlockEntityRenderer<FluidPumpBlockEnti
         for(Parts part : Parts.FACES)
         {
             poseStack.translate(0.0D, -10, 0.0D);
-            TextComponent component2 = new TextComponent(part.face.getName().substring(0,1) + ": " + blockEntity.sections.get(part).ticksInDirection);
+            TextComponent component2 = new TextComponent(part.face.getName().substring(0,1) + ": " + blockEntity.sections.get(part).inputTicks + ", " + blockEntity.sections.get(part).currentTime);
         
             f2 = (float)(-font.width(component2) / 2);
             font.drawInBatch(component2, f2, 0, 553648127, false, matrix4f, buffer, true, j, light);

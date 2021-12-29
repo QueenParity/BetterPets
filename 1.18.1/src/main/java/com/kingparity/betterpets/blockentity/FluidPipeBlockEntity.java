@@ -34,9 +34,8 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
     public static final int SECTION_CAPACITY = 250;
     public static final int TRANSFER_RATE = 10;
     public static final int MAX_TRANSFER_DELAY = 12;
-    public static final int DIRECTION_COOLDOWN = 30;
-    public static final int COOLDOWN_INPUT = -DIRECTION_COOLDOWN;
-    public static final int COOLDOWN_OUTPUT = DIRECTION_COOLDOWN;
+    public static final int INPUT_TICKS = 60;
+    public static final int OUTPUT_TICKS = 80;
     
     //private FluidStack currentFluid;
     
@@ -66,10 +65,9 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
         }
         //this.currentFluid = FluidStack.EMPTY;
         
-        int baseFlowRate = 10;
-        capacity = 25 * baseFlowRate;
-        transferRate = 1 * baseFlowRate;
-        transferDelay = Mth.clamp(Math.round(16F / (transferRate / baseFlowRate)), 1, MAX_TRANSFER_DELAY);
+        capacity = 25 * TRANSFER_RATE;
+        transferRate = 1 * TRANSFER_RATE;
+        transferDelay = Mth.clamp(Math.round(16F / (transferRate / TRANSFER_RATE)), 1, MAX_TRANSFER_DELAY);
     }
     
     public void syncToClient()
@@ -127,12 +125,12 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
                 }
                 else
                 {
-                    System.out.println("FUCK");
+                    System.out.println("aww");
                 }
             }
             else
             {
-                System.out.println("FUCK");
+                System.out.println("aww");
             }
             CompoundTag entityCompound = new CompoundTag();*/
             //entityCompound.putString("CustomName", "Yooo");
@@ -157,69 +155,18 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
                 //currentFluid = sections.get(Parts.CENTER).getFluid();//this.setFluid(sections.get(Parts.CENTER).getFluid());//currentFluid = sections.get(Parts.CENTER)
             }
     
-            if(stack != FluidStack.EMPTY || this instanceof FluidPumpBlockEntity)
+            if(stack != FluidStack.EMPTY)
             {
                 this.updateLinks(this.level, this.worldPosition);
     
-                int totalFluid = 0;
-                boolean canOutput = false;
                 int newTime = (int)(this.level.getGameTime() % transferDelay);
-    
-                for(Parts part : Parts.values())
-                {
-                    Section section = sections.get(part);
-                    totalFluid += section.getFluidAmount();
-                    section.setTime(newTime > 0 && newTime < transferDelay ? newTime : 0);
-                    section.advanceForMovement();
-                    
-                    /*if(this instanceof FluidPumpBlockEntity)
-                    {
-                        if(section.ticksInDirection < 0)
-                        {
-                            section.ticksInDirection++;
-                        }
-                        else if(section.ticksInDirection > 0)
-                        {
-                            section.ticksInDirection--;
-                        }
-                    }
-                    else*/
-                    {
-                        if(part == Parts.CENTER)
-                        {
-                            continue;
-                        }
-                        if(section.ticksInDirection < 0)
-                        {
-                            section.ticksInDirection++;
-                            continue;
-                        }
-                        if(links[part.face.get3DDataValue()] == 0)
-                        {
-                            section.ticksInDirection = 0;
-                            continue;
-                        }
-                        if(section.ticksInDirection == 1)
-                        {
-                            section.ticksInDirection = COOLDOWN_OUTPUT;
-                            continue;
-                        }
-    
-                        if(section.getCurrentFlowDirection().canOutput())
-                        {
-                            if(links[part.face.get3DDataValue()] != 0)
-                            {
-                                canOutput = true;
-                            }
-                        }
-                    }
-                }
+                boolean[] canOutput = compute(newTime > 0 && newTime < transferDelay ? newTime : 0);
                 
                 if(stack != FluidStack.EMPTY)
                 {
-                    if(totalFluid != 0)
+                    if(canOutput[1])
                     {
-                        if(canOutput)
+                        if(canOutput[0])
                         {
                             moveFromPipe();
                         }
@@ -233,18 +180,21 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
                 for(Parts part : Parts.values())
                 {
                     Section section = sections.get(part);
-                    if(section.ticksInDirection < 0)
+                    if(section.lastFlowDirection == FlowDirection.IN)
                     {
-                        section.ticksInDirection++;
-                    }
-                    else
-                    {
-                        section.ticksInDirection = 0;
+                        if(section.inputTicks > 0)
+                        {
+                            section.inputTicks--;
+                        }
+                        else
+                        {
+                            section.lastFlowDirection = FlowDirection.NONE;
+                        }
                     }
                 }
             }
     
-            boolean send = false;
+            /*boolean send = false;
     
             for(Parts part : Parts.values())
             {
@@ -269,7 +219,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
             if(send)
             {
             
-            }
+            }*/
             this.setChanged();
             //this.syncToClient();
     
@@ -282,7 +232,63 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
             {
                 this.syncToClient();
             }
+            if(this.level.random.nextFloat() < 0.1)
+            {
+                BlockEntityUtil.sendUpdatePacket(this, this.saveWithFullMetadata());
+            }
         }
+    }
+    
+    protected boolean[] compute(int newTime)
+    {
+        int totalFluid = 0;
+        boolean[] canOutput = new boolean[]{false, true};
+        
+        for(Parts part : Parts.values())
+        {
+            Section section = sections.get(part);
+            totalFluid += section.getFluidAmount();
+            section.setTime(newTime);
+            section.advanceForMovement();
+            
+            if(part == Parts.CENTER)
+            {
+                continue;
+            }
+            if(section.lastFlowDirection.isInput())
+            {
+                section.inputTicks--;
+                if(section.inputTicks <= 0)
+                {
+                    section.lastFlowDirection = FlowDirection.NONE;
+                }
+                continue;
+            }
+            if(links[part.face.get3DDataValue()] == 0)
+            {
+                section.lastFlowDirection = FlowDirection.NONE;
+                continue;
+            }
+            if(section.outputTicks <= 0)
+            {
+                section.lastFlowDirection = FlowDirection.NONE;
+                section.outputTicks = OUTPUT_TICKS;
+                continue;
+            }
+        
+            if(links[part.face.get3DDataValue()] != 0)
+            {
+                section.lastFlowDirection = FlowDirection.OUT;
+                canOutput[0] = true;
+            }
+        }
+        
+        if(totalFluid == 0)
+        {
+            canOutput[1] = false;
+        }
+        
+        return canOutput;
     }
     
     protected void moveFromPipe()
@@ -290,7 +296,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
         for(Parts part : Parts.FACES)
         {
             Section section = sections.get(part);
-            if(section.getCurrentFlowDirection().isOutput())
+            if(section.lastFlowDirection.isOutput())
             {
                 int maxDrain = section.drain(transferRate, IFluidHandler.FluidAction.SIMULATE).getAmount();
                 if(maxDrain <= 0)
@@ -315,25 +321,24 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
                 if(fluidToPush.getAmount() > 0)
                 {
                     int filled = fluidHandler.fill(fluidToPush, IFluidHandler.FluidAction.EXECUTE);
+                    
                     if(filled > 0)
                     {
-                        section.drain(filled, IFluidHandler.FluidAction.EXECUTE);
                         if(blockEntity instanceof FluidPipeBlockEntity)
                         {
                             FluidPipeBlockEntity fluidPipeBlockEntity = (FluidPipeBlockEntity)blockEntity;
-                            fluidPipeBlockEntity.sections.get(Parts.fromFacing(part.face.getOpposite())).ticksInDirection = COOLDOWN_INPUT;
+                            fluidPipeBlockEntity.sections.get(Parts.fromFacing(part.face.getOpposite())).lastFlowDirection = FlowDirection.IN;
+                            fluidPipeBlockEntity.sections.get(Parts.fromFacing(part.face.getOpposite())).inputTicks = INPUT_TICKS;
                         }
                         else
                         {
                             System.out.println("nuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
                         }
+                        section.drain(filled, IFluidHandler.FluidAction.EXECUTE);
                     }
                     else
                     {
-                        if(section.ticksInDirection > 0)
-                        {
-                            section.ticksInDirection--;
-                        }
+                        section.outputTicks--;
                     }
                 }
             }
@@ -360,7 +365,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
         for(Direction direction : Direction.values())
         {
             Section section = sections.get(Parts.fromFacing(direction));
-            if(links[direction.get3DDataValue()] != 0 && section.getCurrentFlowDirection().canOutput())
+            if(links[direction.get3DDataValue()] != 0 && section.lastFlowDirection.isOutput())
             {
                 realDirections.add(direction);
             }
@@ -425,7 +430,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
         {
             Section section = sections.get(part);
             inputPerTick[part.getIndex()] = 0;
-            if(section.getCurrentFlowDirection().canInput())
+            if(section.lastFlowDirection.canInput())
             {
                 inputPerTick[part.getIndex()] = section.drain(new FluidStack(section.getFluid(), transferRate), IFluidHandler.FluidAction.SIMULATE).getAmount();
                 if(inputPerTick[part.getIndex()] > 0)
@@ -622,13 +627,17 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
         public FlowDirection lastFlowDirection = FlowDirection.NONE;
         public int currentTime = 0;
         public int[] incoming = new int[MAX_TRANSFER_DELAY];
-        public int ticksInDirection = COOLDOWN_OUTPUT;
+        public int outputTicks = OUTPUT_TICKS;
+        public int inputTicks = 0;
         
         @Override
         public FluidTank readFromNBT(CompoundTag nbt)
         {
             this.lastTickAmount = nbt.getInt("LastTickAmount");
-            this.ticksInDirection = nbt.getInt("TicksInDirection");
+            this.outputTicks = nbt.getInt("OutputTicks");
+            this.inputTicks = nbt.getInt("InputTicks");
+            this.lastFlowDirection = FlowDirection.get(nbt.getInt("FlowDirection"));
+            this.currentTime = nbt.getInt("CurrentTime");
             
             for(int i = 0; i < transferDelay; ++i)
             {
@@ -642,7 +651,10 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
         public CompoundTag writeToNBT(CompoundTag nbt)
         {
             nbt.putInt("LastTickAmount", this.lastTickAmount);
-            nbt.putInt("TicksInDirection", this.ticksInDirection);
+            nbt.putInt("OutputTicks", this.outputTicks);
+            nbt.putInt("InputTicks", this.inputTicks);
+            nbt.putInt("FluidDirection", this.lastFlowDirection.nbtValue);
+            nbt.putInt("CurrentTime", this.currentTime);
             
             for(int i = 0; i < transferDelay; ++i)
             {
@@ -683,11 +695,6 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
         {
             this.setFluid(FluidStack.EMPTY);
             incoming = new int[MAX_TRANSFER_DELAY];
-        }
-        
-        public FlowDirection getCurrentFlowDirection()
-        {
-            return ticksInDirection == 0 ? FlowDirection.NONE : ticksInDirection < 0 ? FlowDirection.IN : FlowDirection.OUT;
         }
         
         @Override

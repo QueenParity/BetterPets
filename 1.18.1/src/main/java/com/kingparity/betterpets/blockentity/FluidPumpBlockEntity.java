@@ -55,7 +55,7 @@ public class FluidPumpBlockEntity extends FluidPipeBlockEntity
     {
         if(!this.level.isClientSide)
         {
-            System.out.println(this.sections.get(Parts.CENTER).ticksInDirection);
+            //System.out.println(this.sections.get(Parts.CENTER).ticksInDirection);
             this.updateLinks(this.level, this.worldPosition);
     
             Direction facing = this.getBlockState().getValue(FluidPumpBlock.DIRECTION);
@@ -77,12 +77,12 @@ public class FluidPumpBlockEntity extends FluidPipeBlockEntity
                     else if(this.sections.get(Parts.CENTER).ticksInDirection == 0)
                     {
                         this.sections.get(Parts.CENTER).ticksInDirection = COOLDOWN_INPUT / 2;
-                        System.out.println("feckhgfdddddddddddddddddddddddddddjghffjhjfjfhgjhfg");
+                        System.out.println("fegfdddddddddddddddddddddddddddjghffjhjfjfhgjhfg");
                     }*/
                     //setFluid(this.sections.get(Parts.CENTER).getFluid());
-                    if(this.level.getGameTime() % 10 == 0)
+                    if(this.level.getGameTime() % 1 == 0)
                     {
-                        FluidUtils.transferFluid(fluidHandler, this.sections.get(Parts.CENTER), 20);
+                        FluidUtils.transferFluid(fluidHandler, this.sections.get(Parts.CENTER), 500);
                     }
                 }
             }
