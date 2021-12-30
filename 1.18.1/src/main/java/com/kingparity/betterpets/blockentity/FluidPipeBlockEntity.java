@@ -171,7 +171,7 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidTankWrite
                             moveFromPipe();
                         }
                         moveFromCenter();
-                        //moveToCenter();
+                        moveToCenter();
                         //System.out.println("aw " + (this.level.getGameTime() % 50 < 25 ? "ya" : "nu"));
                     }
                 }
